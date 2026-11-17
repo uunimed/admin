@@ -3,25 +3,30 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <meta name="theme-color" content="#f3f5ef">
+        <meta name="theme-color" content="#03071f">
         <title>Shogi Space</title>
-        <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='20' fill='%23354e3d'/%3E%3Cpath d='m32 10 6 16 16 6-16 6-6 16-6-16-16-6 16-6Z' fill='%23e2edc4'/%3E%3C/svg%3E">
+        <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23091432'/%3E%3Cg fill='none' stroke='%237ddaff' stroke-width='3'%3E%3Cellipse cx='32' cy='32' rx='23' ry='10' transform='rotate(-35 32 32)'/%3E%3Cellipse cx='32' cy='32' rx='23' ry='10' transform='rotate(35 32 32)'/%3E%3C/g%3E%3Ccircle cx='32' cy='32' r='5' fill='%23c0efff'/%3E%3C/svg%3E">
         <style>
             @font-face {
                 font-family: 'Mark GEO CAPS';
                 src: local('Mark GEO CAPS'),local('Mark GEO CAPS Regular'),local('MarkGEOCAPS');
-                font-style: normal;
                 font-weight: 100 900;
+                font-style: normal;
                 font-display: swap
             }
 
             :root {
-                --ink: #2e4536;
-                --muted: #89927f;
-                --line: #536c3c20;
+                --ink: #edf6ff;
+                --muted: #a5bed8;
                 --font: 'Mark GEO CAPS','Segoe UI','Noto Sans Georgian',sans-serif;
                 --number: 'Segoe UI',Arial,sans-serif;
-                --ticker-height: 60px
+                --ticker-height: 70px;
+                --background-color: #03071f;
+                --wave-opacity: .91;
+                --wave-contrast: 1.12;
+                --wave-brightness: 1.05;
+                --line: #7491b526;
+                --accent: #3269bb
             }
 
             * {
@@ -31,10 +36,10 @@
             body {
                 margin: 0;
                 overflow: hidden;
-                background: #f3f5ef;
-                color: var(--ink);
-                font-family: var(--font);
-                font-size: 14px
+                isolation: isolate;
+                background: var(--background-color);
+                font: 14px var(--font);
+                color: var(--ink)
             }
 
             button,input,select {
@@ -57,23 +62,26 @@
                 text-decoration: none
             }
 
-            h1,h2,p {
+            h1,h2,h3,p {
                 margin: 0
             }
 
-            h1,h2 {
-                font-size: 20px;
-                font-weight: 500
+            h1,h2,h3 {
+                font-weight: 600
+            }
+
+            h2 {
+                font-size: 18px
             }
 
             button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible {
-                outline: 2px solid #6a8d51;
+                outline: 2px solid #5f99ef;
                 outline-offset: 4px
             }
 
             button:disabled {
-                opacity: .5;
-                cursor: wait
+                cursor: wait;
+                opacity: .6
             }
 
             [hidden] {
@@ -81,9 +89,9 @@
             }
 
             svg {
-                display: block;
                 width: 21px;
                 height: 21px;
+                display: block;
                 fill: none;
                 stroke: currentColor;
                 stroke-width: 1.5;
@@ -100,75 +108,17 @@
                 position: fixed;
                 inset: 0;
                 z-index: -1;
-                overflow: hidden;
                 pointer-events: none;
-                background: linear-gradient(120deg,#f1f6e9,#faf8f5 53%,#f2f3f7)
+                background: var(--background-color);
+                overflow: hidden
             }
 
-            .glow {
-                position: absolute;
-                filter: blur(85px);
-                opacity: .6;
-                border-radius: 50%;
-                animation: drift 25s ease-in-out infinite alternate;
-                will-change: transform
-            }
-
-            .glow-a {
-                width: 74vw;
-                height: 75vh;
-                background: #c4e8b7;
-                left: -24vw;
-                top: -38vh
-            }
-
-            .glow-b {
-                width: 72vw;
-                height: 80vh;
-                background: #cfc7f0;
-                right: -31vw;
-                top: 10vh;
-                animation-delay: -8s
-            }
-
-            .glow-c {
-                width: 67vw;
-                height: 77vh;
-                background: #f4ccbb;
-                left: 15vw;
-                bottom: -52vh;
-                animation-delay: -16s
-            }
-
-            .grain {
-                position: absolute;
-                inset: 0;
-                opacity: .12;
-                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath d='M0 0h180v180H0z' filter='url(%23n)' opacity='.3'/%3E%3C/svg%3E")
-            }
-
-            body[data-theme=lilac] .glow-a {
-                background: #dac2f0
-            }
-
-            body[data-theme=lilac] .glow-b {
-                background: #f2c7d3
-            }
-
-            body[data-theme=lilac] .glow-c {
-                background: #bcd8f1
-            }
-
-            body[data-theme=sea] .glow-a {
-                background: #afe4cf
-            }
-
-            body[data-theme=sea] .glow-b {
-                background: #b4d6f1
-            }
-
-            body[data-theme=sea] .glow-c {
-                background: #dce9aa
+            #waveCanvas {
+                display: block;
+                width: 100%;
+                height: 100%;
+                opacity: var(--wave-opacity);
+                filter: contrast(var(--wave-contrast)) brightness(var(--wave-brightness))
             }
 
             .brand {
@@ -179,23 +129,31 @@
                 display: flex;
                 align-items: center;
                 gap: 8px;
+                padding: 0;
                 font-family: var(--number);
-                letter-spacing: -1px
+                letter-spacing: -1px;
+                color: var(--ink);
+                user-select: none;
+                -webkit-user-select: none;
+                -webkit-user-drag: none
             }
 
             .brand>span {
-                background: #35513d;
-                color: #e4eecb;
-                border-radius: 10px;
-                width: 31px;
-                height: 31px;
+                width: 35px;
+                height: 35px;
+                border-radius: 11px;
+                background: #10284980;
+                color: #8de4ff;
                 display: grid;
-                place-items: center
+                place-items: center;
+                border: 1px solid #83cfff30;
+                box-shadow: 0 0 18px #0fbaff12
             }
 
             .brand>span svg {
-                width: 21px;
-                height: 21px
+                width: 27px;
+                height: 27px;
+                stroke-width: 1.2
             }
 
             .brand b {
@@ -207,21 +165,25 @@
                 font-weight: 350
             }
 
+            .brand.refreshing>span svg {
+                animation: spin 1.4s linear infinite
+            }
+
             .round-button {
-                width: 40px;
-                height: 40px;
-                border: 1px solid #ffffffbd;
-                border-radius: 50%;
-                background: #ffffff90;
                 display: grid;
                 place-items: center;
+                width: 39px;
+                height: 39px;
+                border: 1px solid #badbff35;
+                border-radius: 50%;
+                background: #c0dcff12;
                 backdrop-filter: blur(12px);
-                color: #718564;
+                color: #bddcff;
                 flex: none
             }
 
             .round-button:hover {
-                background: #fff
+                background: #d8edff28
             }
 
             .round-button svg {
@@ -229,13 +191,37 @@
                 height: 18px
             }
 
-            .all-button {
+            .all-reveal {
                 position: fixed;
-                top: 8px;
-                right: 8px;
-                z-index: 6;
-                width: 34px;
-                height: 34px
+                right: 0;
+                top: 0;
+                width: 60px;
+                height: 60px;
+                display: grid;
+                place-items: center;
+                z-index: 7
+            }
+
+            .all-reveal>.round-button,.settings-reveal>.round-button {
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity .35s
+            }
+
+            .all-reveal.visible>.round-button,.all-reveal:hover>.round-button,.all-reveal>.round-button:focus-visible,.settings-reveal.visible>.round-button,.settings-reveal:hover>.round-button,.settings-reveal>.round-button:focus-visible {
+                opacity: 1;
+                pointer-events: auto
+            }
+
+            .settings-reveal {
+                position: fixed;
+                right: 0;
+                bottom: calc(var(--ticker-height) + 4px);
+                width: 60px;
+                height: 63px;
+                display: grid;
+                place-items: center;
+                z-index: 7
             }
 
             #main {
@@ -245,34 +231,40 @@
 
             .clocks {
                 position: absolute;
-                left: clamp(20px,4.5vw,80px);
+                left: 8px;
                 top: 50%;
                 transform: translateY(-50%);
                 width: max-content;
-                max-width: calc(100vw - 40px);
+                max-width: calc(100vw - 16px);
                 z-index: 2;
                 pointer-events: none;
-                border-radius: 22px
+                border-radius: 24px;
+                text-shadow: 0 2px 22px #0004
+            }
+
+            .clock-block {
+                width: max-content;
+                max-width: 100%
             }
 
             .clock-block+.clock-block {
-                margin-top: 52px
+                margin-top: 45px
             }
 
             .clock-row {
                 display: flex;
-                gap: 24px;
+                gap: 18px;
                 align-items: center
             }
 
             .flag {
+                display: block;
+                flex: none;
                 width: 45px;
                 height: 31px;
-                flex: none;
-                display: block;
                 border-radius: 3px;
                 overflow: hidden;
-                box-shadow: 0 0 0 1px #3448320d
+                box-shadow: 0 0 0 1px #d5ebff12
             }
 
             .flag svg {
@@ -283,27 +275,35 @@
 
             .clock-row time {
                 font-family: var(--number);
-                font-weight: 350;
+                font-weight: 300;
                 letter-spacing: -8px;
-                line-height: 1.07;
-                font-size: clamp(92px,10vw,156px);
+                line-height: 1.02;
                 font-variant-numeric: tabular-nums;
                 display: block;
-                color: #2e4536
+                color: var(--ink)
             }
 
-            .clock-block:nth-child(2) time {
-                color: #65785b
+            #berlinTime {
+                font-size: clamp(118px,12.1vw,184px)
+            }
+
+            #tbilisiTime {
+                font-size: clamp(93px,8.9vw,134px);
+                color: var(--muted)
             }
 
             .clock-date {
                 font-size: clamp(12px,1.1vw,17px);
                 line-height: 1.6;
                 text-align: right;
-                color: #77866c;
-                margin: 12px 0 0 65px;
+                color: var(--muted);
+                margin: 12px 0 0 62px;
                 letter-spacing: .01em;
                 white-space: nowrap
+            }
+
+            .clock-impact {
+                animation: clock-hit .65s ease-out
             }
 
             #siteBubbles {
@@ -318,35 +318,46 @@
                 position: absolute;
                 left: 0;
                 top: 0;
+                width: var(--bubble-size,150px);
+                height: var(--bubble-size,150px);
                 pointer-events: auto;
-                width: 150px;
-                height: 150px;
+                border-radius: 50%;
+                will-change: transform;
+                touch-action: manipulation;
+                outline-offset: 3px
+            }
+
+            .bubble-shell {
+                position: absolute;
+                inset: 0;
+                border-radius: 50%;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                gap: 15px;
-                border-radius: 50%;
+                gap: 12px;
+                background: radial-gradient(ellipse at 26% 18%,#fffffff0 0%,#ffffff8a 23%,#ffffff10 61%),var(--bubble,#dce8be);
                 border: 1px solid #ffffffd9;
-                background: radial-gradient(circle at 30% 20%,#ffffffb5,transparent 66%),var(--bubble,#dce8be);
-                box-shadow: inset 0 2px 7px #ffffff80,0 16px 35px -24px #637653b3;
-                will-change: transform;
-                transition: filter .25s,box-shadow .25s;
-                touch-action: manipulation
+                box-shadow: inset 0 1px 8px #ffffff80,inset -7px -10px 20px #567fa51c,0 15px 40px #020b2e4d,0 0 25px #71b7ff14;
+                pointer-events: none;
+                will-change: transform,border-radius
             }
 
-            .site-bubble.lead {
-                width: 178px;
-                height: 178px
+            .bubble-shell:before {
+                content: '';
+                position: absolute;
+                top: 11%;
+                left: 20%;
+                width: 33%;
+                height: 12%;
+                border-radius: 50%;
+                background: #fff8;
+                filter: blur(3px);
+                rotate: -30deg
             }
 
-            .site-bubble:hover {
-                filter: brightness(1.04);
-                box-shadow: inset 0 2px 8px #fff9,0 16px 40px -17px #63765380
-            }
-
-            .site-bubble:focus-visible {
-                outline-offset: -4px
+            .site-bubble:hover .bubble-shell {
+                filter: brightness(1.045)
             }
 
             .bubble-label {
@@ -355,32 +366,31 @@
                 width: 100%;
                 height: 100%;
                 stroke: none;
-                fill: #435d3c;
+                fill: #334f64;
                 pointer-events: none
             }
 
             .bubble-label text {
                 font: 500 15px var(--font);
                 letter-spacing: .4px;
-                fill: #435d3c;
+                fill: #334f64;
                 stroke: none
             }
 
             .bubble-icon {
-                color: #4e6945;
-                margin-top: 25px;
-                pointer-events: none
+                margin-top: 23px;
+                color: #45687a
             }
 
             .bubble-icon svg {
-                width: 37px;
-                height: 37px;
+                width: 36px;
+                height: 36px;
                 stroke-width: 1.25
             }
 
             .lead .bubble-icon svg {
-                width: 43px;
-                height: 43px
+                width: 41px;
+                height: 41px
             }
 
             .bubble-domain {
@@ -388,18 +398,9 @@
                 font-size: 8px;
                 max-width: 78%;
                 overflow: hidden;
-                text-overflow: ellipsis;
                 white-space: nowrap;
-                color: #78846d;
-                pointer-events: none
-            }
-
-            .impact {
-                animation: bubble-hit .6s ease-out
-            }
-
-            .clock-impact {
-                animation: clock-hit .65s ease-out
+                text-overflow: ellipsis;
+                color: #697f8c
             }
 
             .ticker {
@@ -407,17 +408,17 @@
                 inset: auto 0 0;
                 height: var(--ticker-height);
                 z-index: 5;
-                background: var(--ticker-background,#e9efe2);
-                color: var(--ticker-foreground,#536949);
-                border-top: 1px solid #ffffff9c;
-                box-shadow: 0 -2px 25px #354f380a;
+                background: var(--ticker-background,#e3edf7);
+                color: var(--ticker-foreground,#355473);
+                border-top: 1px solid #ffffffa0;
+                box-shadow: 0 -4px 24px #00000013;
                 transition: background .5s,color .5s;
                 overflow: hidden
             }
 
             .ticker-window {
-                height: 100%;
                 width: 100%;
+                height: 100%;
                 overflow: hidden;
                 display: flex;
                 align-items: center
@@ -426,34 +427,35 @@
             #tickerTrack {
                 position: relative;
                 display: block;
-                width: max-content;
                 flex: none;
+                width: max-content;
                 will-change: transform
             }
 
             .ticker-item {
                 display: flex;
                 align-items: center;
-                gap: 13px;
+                gap: 15px;
                 white-space: nowrap;
+                min-height: 48px;
                 padding: 10px 5px;
-                font-size: 15px;
+                font-size: 20px;
                 line-height: 1.5;
-                color: inherit;
-                min-height: 44px
+                color: inherit
             }
 
             .ticker-item strong {
-                font-weight: 600
+                font-weight: 800
             }
 
             .ticker-item svg {
-                width: 21px;
-                height: 21px
+                width: 24px;
+                height: 24px;
+                stroke-width: 1.65
             }
 
             .ticker-item:hover {
-                filter: brightness(.82)
+                filter: brightness(.85)
             }
 
             .ticker-item:focus-visible {
@@ -461,36 +463,17 @@
                 border-radius: 4px
             }
 
-            .settings-reveal {
-                position: fixed;
-                right: 0;
-                bottom: calc(var(--ticker-height) + 5px);
-                width: 64px;
-                height: 66px;
-                display: grid;
-                place-items: center;
-                z-index: 7
-            }
-
-            .settings-reveal>.round-button {
-                opacity: 0;
-                pointer-events: none;
-                transition: opacity .35s
-            }
-
-            .settings-reveal.visible>.round-button,.settings-reveal:hover>.round-button,.settings-reveal:focus-within>.round-button {
-                opacity: 1;
-                pointer-events: auto
-            }
-
             dialog {
+                --ink: #243f65;
+                --muted: #8397b3;
+                --line: #6c8baa26;
                 padding: 0;
-                border: 1px solid #ffffffda;
-                background: #f9faf5;
+                border: 1px solid #e2efffce;
+                background: #f4f7fcfa;
                 color: var(--ink);
                 border-radius: 22px;
-                box-shadow: 0 30px 100px #253a352a;
-                width: min(570px,calc(100vw - 32px));
+                box-shadow: 0 30px 100px #0007;
+                width: min(600px,calc(100vw - 32px));
                 max-height: calc(100dvh - 38px);
                 overflow: hidden;
                 margin: auto
@@ -503,38 +486,11 @@
             }
 
             dialog::backdrop {
-                background: #263d3330;
-                backdrop-filter: blur(10px)
+                background: #030b2554;
+                backdrop-filter: blur(12px)
             }
 
-            .dialog-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 20px;
-                padding: 23px 27px;
-                border-bottom: 1px solid var(--line);
-                flex: none
-            }
-
-            .dialog-header h1,.dialog-header h2 {
-                font-size: 22px
-            }
-
-            .dialog-header .round-button {
-                width: 33px;
-                height: 33px;
-                background: transparent;
-                border: 0
-            }
-
-            .dialog-body {
-                padding: 24px 27px;
-                overflow: auto;
-                overscroll-behavior: contain
-            }
-
-            .settings-dialog {
+            .full-dialog {
                 inset: .5cm;
                 width: calc(100vw - 1cm);
                 height: calc(100dvh - 1cm);
@@ -543,18 +499,51 @@
                 margin: 0
             }
 
-            .settings-dialog .dialog-header {
-                padding: 25px 34px
+            .dialog-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+                padding: 23px 28px;
+                border-bottom: 1px solid var(--line);
+                flex: none
             }
 
-            .settings-dialog .dialog-header h1 {
-                font-size: 27px
+            .dialog-header h1,.dialog-header h2 {
+                font-size: 23px
+            }
+
+            .full-dialog .dialog-header {
+                padding: 24px 32px
+            }
+
+            .full-dialog .dialog-header h1,.full-dialog .dialog-header h2 {
+                font-size: 26px
+            }
+
+            .dialog-header .round-button {
+                width: 33px;
+                height: 33px;
+                border: 0;
+                background: #e7eef8;
+                color: #7893b6;
+                backdrop-filter: none
+            }
+
+            .dialog-header .round-button:hover {
+                background: #dce8f9
+            }
+
+            .dialog-body {
+                padding: 25px 28px;
+                overflow: auto;
+                overscroll-behavior: contain
             }
 
             .tabs {
                 display: flex;
                 gap: 30px;
-                padding: 0 34px;
+                padding: 0 32px;
                 border-bottom: 1px solid var(--line);
                 flex: none;
                 overflow-x: auto
@@ -562,142 +551,158 @@
 
             .tabs button {
                 padding: 16px 0 13px;
-                border-bottom: 2px solid transparent;
                 font-size: 13px;
-                color: #93a085;
+                border-bottom: 2px solid transparent;
+                color: #8397b3;
                 white-space: nowrap
             }
 
             .tabs button[aria-selected=true] {
-                color: #46613a;
-                border-color: #879f6d
+                color: #2e66b7;
+                border-color: #6395dd
             }
 
             .settings-body {
-                padding: 30px 34px;
+                padding: 28px 32px;
                 overflow: auto;
                 flex: 1;
                 min-height: 0;
                 overscroll-behavior: contain
             }
 
+            .settings-body>section {
+                min-height: 100%;
+                width: 100%;
+                max-width: none
+            }
+
             .site-management {
                 display: grid;
-                grid-template-columns: minmax(260px,.8fr) minmax(0,1.5fr);
-                gap: 48px;
+                grid-template-columns: minmax(260px,.7fr) minmax(0,1.7fr);
+                gap: 32px;
                 align-items: start
             }
 
             .site-management form {
                 padding: 25px;
-                border: 1px solid #e0e6d6;
-                background: #fff8;
+                border: 1px solid #d7e3f2;
+                background: #fff9;
                 border-radius: 16px;
                 position: sticky;
                 top: 0
             }
 
-            .site-management h2,.settings-body>section>h2 {
+            .site-management h2 {
                 font-size: 17px;
-                margin: 0 0 24px
+                margin-bottom: 23px
+            }
+
+            .site-management form>.primary-button {
+                margin-top: 24px
             }
 
             label {
-                font-size: 12px;
-                color: #7a8b6b;
                 display: block;
+                font-size: 12px;
+                color: #7b93b2;
                 margin-bottom: 8px
             }
 
-            input:not([type=checkbox]):not([type=hidden]),select {
+            input:not([type=checkbox]):not([type=hidden]):not([type=color]):not([type=range]),select {
                 font: inherit;
                 font-size: 13px;
-                background: #ffffffb0;
-                border: 1px solid #dbe3d1;
+                border: 1px solid #d3dfee;
+                background: #ffffffc0;
                 border-radius: 9px;
                 padding: 12px;
                 width: 100%;
                 min-width: 0;
-                color: #4b633e
+                color: #35577f
             }
 
             input::placeholder {
-                color: #acb5a2
+                color: #a4b5ca
             }
 
-            #siteForm label:not(:first-of-type) {
+            #siteForm label:not(:first-of-type),#editSiteForm label:not(:first-of-type) {
                 margin-top: 21px
             }
 
             .form-actions {
                 display: flex;
                 align-items: center;
+                justify-content: flex-end;
                 gap: 12px;
                 margin-top: 24px;
                 flex-wrap: wrap
             }
 
             .primary-button,.secondary-button {
-                padding: 11px 18px;
-                min-height: 39px;
-                border-radius: 9px;
-                font-size: 12px;
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                gap: 8px
+                gap: 8px;
+                font-size: 12px;
+                border-radius: 9px;
+                padding: 11px 18px;
+                min-height: 40px
             }
 
             .primary-button {
-                background: #405a40;
-                color: #fff
+                background: #3972c1;
+                color: white;
+                box-shadow: 0 4px 12px #3072ca14
             }
 
             .primary-button:hover {
-                background: #304c32
+                background: #2c60a7
             }
 
             .secondary-button {
-                border: 1px solid #dce4d3;
-                background: #eef3e7;
-                color: #6c825c
+                background: #e9f0fa;
+                border: 1px solid #d8e4f4;
+                color: #6d8bb4
+            }
+
+            .secondary-button:hover {
+                background: #e0eafa
             }
 
             .list-heading {
                 display: flex;
+                align-items: center;
                 justify-content: space-between;
-                gap: 15px;
-                align-items: center
+                gap: 15px
             }
 
             .list-heading>span {
                 font-family: var(--number);
                 font-size: 11px;
-                color: #99a58c
+                color: #93a8c3
             }
 
             .settings-site {
                 display: flex;
                 align-items: center;
                 gap: 13px;
-                padding: 17px 0;
-                border-bottom: 1px solid var(--line)
+                border-bottom: 1px solid var(--line);
+                padding: 17px 0
             }
 
             .mini-bubble {
-                width: 43px;
-                height: 43px;
-                border-radius: 50%;
-                background: var(--bubble,#dce8be);
+                width: 44px;
+                height: 44px;
                 display: grid;
                 place-items: center;
-                flex: none;
-                color: #637952
+                border-radius: 50%;
+                background: var(--bubble,#cdddF3);
+                color: #647fa4;
+                flex: none
             }
 
             .mini-bubble svg {
-                width: 20px;
-                height: 20px
+                width: 21px;
+                height: 21px
             }
 
             .site-info {
@@ -706,35 +711,36 @@
             }
 
             .site-name {
-                font-size: 13px;
                 display: block;
+                font-size: 13px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap
             }
 
             .site-url {
-                font-size: 10px;
-                color: #98a489;
                 display: block;
+                font: 10px var(--number);
+                color: #93a6bf;
                 margin-top: 5px;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                white-space: nowrap;
-                font-family: var(--number)
+                white-space: nowrap
             }
 
             .site-visits {
                 font-size: 10px;
-                color: #a2ad95;
+                color: #99acc3;
                 white-space: nowrap
             }
 
             .settings-site .round-button {
-                width: 33px;
-                height: 33px;
-                background: #eaf0e2;
-                border: 0
+                width: 34px;
+                height: 34px;
+                border: 0;
+                background: #e5edf9;
+                color: #7094c3;
+                backdrop-filter: none
             }
 
             .settings-site .round-button svg {
@@ -743,22 +749,223 @@
             }
 
             .settings-site [data-delete-site] {
-                background: #f6e8e1;
-                color: #b27b61
+                background: #fae9ed;
+                color: #bd6d7f
+            }
+
+            .panel-title {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
+                margin-bottom: 24px
+            }
+
+            .panel-title>span {
+                font-size: 11px;
+                color: #8da1bb
             }
 
             .empty {
-                color: #96a387;
-                font-size: 13px;
-                padding: 30px 12px;
+                display: grid;
+                place-items: center;
                 text-align: center;
-                line-height: 1.7
+                color: #91a6c2;
+                font-size: 14px;
+                line-height: 1.8;
+                padding: 32px;
+                min-height: 240px;
+                grid-column: 1/-1
             }
 
-            .short-note {
+            .empty.full {
+                min-height: calc(100dvh - 260px);
+                width: 100%;
+                border: 1px dashed #d0dff0;
+                border-radius: 17px;
+                background: #ffffff45
+            }
+
+            #taskDeadlines {
+                display: grid;
+                grid-template-columns: repeat(auto-fit,minmax(min(360px,100%),1fr));
+                gap: 18px;
+                width: 100%
+            }
+
+            .deadline-card {
+                padding: 24px;
+                border: 1px solid #d7e2f1;
+                border-radius: 16px;
+                background: #fff9;
+                display: flex;
+                flex-direction: column;
+                gap: 17px;
+                min-height: 180px
+            }
+
+            .deadline-card h3 {
+                font-size: 15px;
+                line-height: 1.7;
+                overflow-wrap: anywhere
+            }
+
+            .deadline-card p {
+                font-size: 12px;
+                color: #859fbd
+            }
+
+            .deadline-card .secondary-button {
+                align-self: flex-start;
+                margin-top: auto
+            }
+
+            #deadlineTaskName {
+                font-size: 14px;
+                line-height: 1.8;
+                margin-bottom: 24px;
+                overflow-wrap: anywhere
+            }
+
+            .appearance-layout {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 26px;
+                width: 100%
+            }
+
+            .appearance-column {
+                display: flex;
+                flex-direction: column;
+                gap: 19px;
+                min-width: 0
+            }
+
+            .control-card {
+                background: #ffffffa6;
+                border: 1px solid #d9e4f1;
+                border-radius: 16px;
+                padding: 23px
+            }
+
+            .control-card h2 {
+                font-size: 16px;
+                margin-bottom: 21px
+            }
+
+            .theme-presets {
+                display: grid;
+                grid-template-columns: repeat(3,minmax(0,1fr));
+                gap: 11px
+            }
+
+            .theme-preset {
+                padding: 8px;
+                border: 1px solid #dde6f2;
+                border-radius: 11px;
+                background: #f7faff;
                 font-size: 11px;
-                color: #98a38d;
-                margin: 0 0 23px
+                color: #8198b6
+            }
+
+            .theme-preset.active {
+                border-color: #729ddc;
+                box-shadow: 0 0 0 2px #779fda15;
+                color: #3e70af
+            }
+
+            .theme-preset>span {
+                display: block;
+                height: 43px;
+                border-radius: 6px;
+                margin-bottom: 8px
+            }
+
+            .color-controls {
+                display: grid;
+                grid-template-columns: repeat(3,minmax(0,1fr));
+                gap: 16px
+            }
+
+            .color-control {
+                margin: 0;
+                font-size: 11px
+            }
+
+            .color-control input[type=color] {
+                width: 100%;
+                height: 42px;
+                margin-top: 8px;
+                padding: 3px;
+                border: 1px solid #d8e4f3;
+                border-radius: 8px;
+                background: white;
+                cursor: pointer
+            }
+
+            .preview-card {
+                position: relative;
+                overflow: hidden;
+                border: 1px solid #b5d3f55c;
+                border-radius: 16px;
+                aspect-ratio: 16/8.3;
+                background: #07142b;
+                flex: none
+            }
+
+            .preview-card canvas {
+                width: 100%;
+                height: 100%;
+                display: block
+            }
+
+            .preview-card>span {
+                position: absolute;
+                bottom: 12px;
+                left: 15px;
+                font-size: 10px;
+                letter-spacing: .06em;
+                color: #c4d9efb3;
+                pointer-events: none
+            }
+
+            .effect-controls {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 23px 27px
+            }
+
+            .range-label {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                font-size: 12px;
+                margin-bottom: 12px
+            }
+
+            .range-label output {
+                font: 11px var(--number);
+                color: #91a7c5
+            }
+
+            input[type=range] {
+                width: 100%;
+                height: 5px;
+                appearance: none;
+                background: #dce7f5;
+                border-radius: 20px;
+                cursor: pointer;
+                accent-color: #6595d9
+            }
+
+            input[type=range]::-webkit-slider-thumb {
+                appearance: none;
+                width: 15px;
+                height: 15px;
+                background: #6494d5;
+                border: 3px solid #eef4ff;
+                border-radius: 50%;
+                box-shadow: 0 1px 5px #6192d146
             }
 
             .setting-row {
@@ -766,17 +973,28 @@
                 align-items: center;
                 justify-content: space-between;
                 gap: 20px;
-                border-top: 1px solid var(--line);
-                padding: 22px 0
+                padding: 15px 0;
+                border-top: 1px solid var(--line)
+            }
+
+            .setting-row:first-child {
+                border: 0;
+                padding-top: 0
+            }
+
+            .setting-row:last-child {
+                padding-bottom: 0
             }
 
             .setting-row label {
-                font-size: 13px;
-                margin: 0
+                font-size: 12px;
+                margin: 0;
+                line-height: 1.8
             }
 
             .setting-row select {
-                width: 108px
+                width: 112px;
+                padding: 9px
             }
 
             .switch {
@@ -784,7 +1002,7 @@
                 width: 39px;
                 height: 23px;
                 border-radius: 20px;
-                background: #d3ddc8;
+                background: #cedcee;
                 position: relative;
                 cursor: pointer;
                 flex: none
@@ -797,154 +1015,148 @@
                 position: absolute;
                 top: 3px;
                 left: 3px;
-                background: #fff;
+                background: white;
                 border-radius: 50%;
-                box-shadow: 0 1px 3px #34472b15;
+                box-shadow: 0 1px 3px #132a4a15;
                 transition: transform .2s
             }
 
             .switch:checked {
-                background: #809d68
+                background: #6694d1
             }
 
             .switch:checked:after {
                 transform: translateX(16px)
             }
 
-            #panelView,#panelData {
-                max-width: 850px
-            }
-
-            #panelDates {
-                max-width: 1050px
-            }
-
-            .themes {
+            .appearance-actions {
                 display: flex;
+                justify-content: flex-end;
                 gap: 13px;
-                margin-bottom: 29px
+                margin-top: auto;
+                padding-top: 2px
             }
 
-            .theme {
+            #panelData {
+                display: flex;
+                flex-direction: column
+            }
+
+            .source-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: repeat(2,minmax(200px,1fr));
+                gap: 22px;
                 flex: 1;
-                padding: 10px;
-                border: 1px solid transparent;
+                min-height: 0
+            }
+
+            .source-card {
+                border: 1px solid #d6e3f3;
+                border-radius: 18px;
+                background: #fff9;
+                padding: 28px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                min-height: 200px
+            }
+
+            .source-card-head {
+                display: flex;
+                align-items: center;
+                gap: 13px;
+                font-size: 17px;
+                font-weight: 600
+            }
+
+            .source-card-head>span {
+                display: grid;
+                place-items: center;
+                width: 40px;
+                height: 40px;
                 border-radius: 12px;
-                font-size: 12px;
-                color: #8a997b
+                background: #eaf2fd;
+                color: #6d94c6
             }
 
-            .theme[aria-pressed=true] {
-                border-color: #a0b78a;
-                background: #eef3e8;
-                color: #5f7a49
-            }
-
-            .theme>span {
-                display: block;
-                border-radius: 8px;
-                height: 77px;
-                margin-bottom: 10px
-            }
-
-            .aurora>span {
-                background: linear-gradient(130deg,#cbe3b7,#e8e9db,#cdc4ed)
-            }
-
-            .lilac>span {
-                background: linear-gradient(130deg,#d6bfef,#f0d5df,#bbd1ed)
-            }
-
-            .sea>span {
-                background: linear-gradient(130deg,#b4e0ce,#c4d9ee,#e0eabf)
-            }
-
-            .backup-actions {
-                display: flex;
-                gap: 12px;
-                margin-top: 24px
-            }
-
-            .deadline-row {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 20px;
-                border-top: 1px solid var(--line);
-                padding: 16px 0
-            }
-
-            .deadline-row label {
-                font-size: 13px;
-                line-height: 1.7;
-                margin: 0;
-                overflow-wrap: anywhere
-            }
-
-            .deadline-row input[type=date] {
-                width: 155px;
-                flex: none;
-                font-size: 12px
-            }
-
-            .source-row {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                gap: 20px;
-                padding: 22px 0;
-                border-bottom: 1px solid var(--line)
-            }
-
-            .source-name {
-                display: flex;
-                align-items: center;
-                gap: 9px
-            }
-
-            .status-dot {
-                width: 6px;
-                height: 6px;
-                background: #8ea776;
-                border-radius: 50%;
-                flex: none
-            }
-
-            .status-dot.error {
-                background: #c18c60
-            }
-
-            .status-dot.pending {
-                background: #b9ac74
+            .source-card-head svg {
+                width: 22px;
+                height: 22px
             }
 
             .source-state {
-                color: #99a38e;
-                font-size: 11px
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                font-size: 14px;
+                color: #789b86;
+                margin-top: 30px
             }
 
-            .source-row.error .source-state {
-                color: #b88763
+            .status-dot {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: #7ea98d;
+                flex: none
             }
 
-            #refreshDataButton {
-                margin-top: 24px
+            .error .status-dot {
+                background: #d77783
+            }
+
+            .pending .status-dot {
+                background: #a3aed0
+            }
+
+            .source-card.error .source-state {
+                color: #bd6d7f
+            }
+
+            .source-card time {
+                font-size: 12px;
+                color: #a0b0c4;
+                margin-top: 15px
+            }
+
+            .source-card small {
+                font-size: 11px;
+                color: #a1b1c8;
+                margin-top: 10px;
+                line-height: 1.7
+            }
+
+            .all-body {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                min-height: 0;
+                padding: 27px 32px
+            }
+
+            .all-toolbar {
+                display: flex;
+                align-items: center;
+                gap: 25px;
+                flex: none
             }
 
             .search {
                 display: flex;
                 align-items: center;
                 gap: 12px;
-                border: 1px solid #dce4d2;
+                border: 1px solid #d4e0ef;
                 border-radius: 10px;
-                padding-left: 12px;
-                margin: 0
+                padding-left: 13px;
+                margin: 0;
+                flex: 1
             }
 
             .search svg {
                 width: 17px;
                 height: 17px;
-                color: #a1ae92
+                color: #96adcc
             }
 
             .search input {
@@ -954,35 +1166,38 @@
 
             #allSitesGrid {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-                margin: 22px 0
+                grid-template-columns: repeat(auto-fit,minmax(205px,1fr));
+                align-content: start;
+                gap: 18px;
+                margin: 27px 0 0;
+                flex: 1
             }
 
             .all-site {
-                padding: 20px 13px;
+                padding: 25px 18px;
                 display: flex;
                 align-items: center;
                 flex-direction: column;
-                gap: 12px;
-                background: #fff8;
-                border: 1px solid var(--line);
-                border-radius: 14px;
+                gap: 14px;
+                background: #ffffff9c;
+                border: 1px solid #d6e3f3;
+                border-radius: 17px;
                 min-width: 0
             }
 
             .all-site:hover {
-                background: #fff
+                background: white;
+                border-color: #b8cfee
             }
 
             .all-site .mini-bubble {
-                width: 56px;
-                height: 56px
+                width: 66px;
+                height: 66px
             }
 
             .all-site .mini-bubble svg {
-                width: 25px;
-                height: 25px
+                width: 29px;
+                height: 29px
             }
 
             .all-site .site-name,.all-site .site-url {
@@ -990,12 +1205,8 @@
                 margin: 0
             }
 
-            .all-site .site-visits {
-                font-size: 9px
-            }
-
             .detail-row {
-                padding: 17px 0;
+                padding: 18px 0;
                 border-bottom: 1px solid var(--line)
             }
 
@@ -1005,21 +1216,21 @@
 
             .detail-row strong {
                 font-size: 15px;
-                font-weight: 500;
+                font-weight: 600;
                 line-height: 1.7;
                 overflow-wrap: anywhere
             }
 
             .detail-row p {
                 font-size: 12px;
-                color: #90a07f;
-                line-height: 1.8;
-                margin-top: 7px;
+                color: #849ab7;
+                line-height: 1.9;
+                margin-top: 8px;
                 white-space: pre-line
             }
 
             .detail-row .overdue {
-                color: #b07854
+                color: #bd6e7e
             }
 
             .detail-actions {
@@ -1027,7 +1238,7 @@
                 gap: 12px;
                 align-items: center;
                 flex-wrap: wrap;
-                margin-top: 24px
+                margin-top: 25px
             }
 
             .finance-grid {
@@ -1037,7 +1248,7 @@
             }
 
             .finance-box {
-                background: #edf2e6;
+                background: #eaf1fb;
                 border-radius: 14px;
                 padding: 22px 16px
             }
@@ -1045,19 +1256,17 @@
             .finance-box>span {
                 display: block;
                 font-size: 11px;
-                color: #8c9c7d;
-                margin-bottom: 13px
+                color: #859ebd;
+                margin-bottom: 14px
             }
 
             .finance-box strong {
-                font-family: var(--number);
-                font-size: 27px;
-                font-weight: 500;
+                font: 500 27px var(--number);
                 white-space: nowrap
             }
 
             .confirm-dialog {
-                width: min(420px,calc(100vw - 36px));
+                width: min(440px,calc(100vw - 36px));
                 padding: 30px;
                 text-align: center;
                 align-items: center;
@@ -1065,14 +1274,14 @@
             }
 
             .confirm-symbol {
-                width: 49px;
-                height: 49px;
+                width: 50px;
+                height: 50px;
                 border-radius: 15px;
-                background: #e6efdc;
-                color: #7a9563;
+                background: #e4edfc;
+                color: #759ad2;
                 display: grid;
                 place-items: center;
-                margin-bottom: 20px
+                margin-bottom: 22px
             }
 
             .confirm-symbol svg {
@@ -1081,154 +1290,134 @@
             }
 
             .confirm-dialog h2 {
-                font-size: 19px;
-                line-height: 1.5
+                font-size: 20px;
+                line-height: 1.6
             }
 
             .confirm-dialog p {
-                font-size: 12px;
+                font-size: 13px;
                 line-height: 1.9;
-                color: #8c9c7c;
-                margin: 14px 0 25px;
-                overflow-wrap: anywhere
+                color: #849ab7;
+                margin: 14px 0 27px;
+                overflow-wrap: anywhere;
+                white-space: pre-line
             }
 
             .confirm-actions {
                 display: flex;
-                gap: 12px;
                 justify-content: center;
+                gap: 13px;
                 flex-wrap: wrap
             }
 
             .confirm-dialog.destructive .confirm-symbol {
-                background: #f9e7de;
-                color: #b47760
+                background: #fae5eb;
+                color: #c47d90
             }
 
             .confirm-dialog.destructive #confirmAccept {
-                background: #b3765f
+                background: #bf657e
             }
 
             .notifications {
                 position: fixed;
-                inset: auto auto calc(var(--ticker-height) + 19px) 20px;
+                inset: auto 18px calc(var(--ticker-height) + 18px) auto;
                 margin: 0;
                 padding: 0;
                 border: 0;
                 background: transparent;
-                max-width: min(430px,calc(100vw - 40px));
+                max-width: min(440px,calc(100vw - 36px));
                 width: max-content;
                 pointer-events: none;
-                overflow: visible;
-                color: #526846
+                overflow: visible
             }
 
             .notifications:popover-open,.notifications.legacy-visible {
                 display: flex;
                 flex-direction: column;
-                gap: 9px
+                align-items: flex-end;
+                gap: 10px
             }
 
             .notification {
                 display: flex;
                 align-items: flex-start;
-                gap: 11px;
-                padding: 15px;
-                border-radius: 12px;
-                border: 1px solid #dbe7cf;
-                background: #f8fcf1;
-                box-shadow: 0 8px 35px #33472b20;
-                font-size: 12px;
+                gap: 12px;
+                padding: 16px 19px;
+                border-radius: 13px;
+                border: 1px solid #b4d3f4;
+                background: #e0efff;
+                color: #35658f;
+                box-shadow: 0 10px 35px #0003;
+                font-size: 13px;
                 line-height: 1.8;
-                pointer-events: auto;
-                animation: notice-up .3s ease-out both;
-                overflow-wrap: anywhere
+                animation: notice-up .4s cubic-bezier(.2,.8,.2,1) both;
+                overflow-wrap: anywhere;
+                max-width: 100%
             }
 
             .notification>span:first-child {
-                color: #8ca674;
                 flex: none;
-                margin-top: 2px
+                margin-top: 3px;
+                color: #6799ca
             }
 
             .notification svg {
-                width: 17px;
-                height: 17px
-            }
-
-            .notification>span:nth-child(2) {
-                flex: 1
-            }
-
-            .notification>button {
-                padding: 0;
-                color: #9eaa90;
-                flex: none;
-                margin-top: 2px
-            }
-
-            .notification>button svg {
-                width: 13px;
-                height: 13px
+                width: 18px;
+                height: 18px
             }
 
             .notification.error {
-                border-color: #efd5c8;
-                background: #fff5ee;
-                color: #aa7658
+                background: #ffe4eb;
+                border-color: #f0b9c8;
+                color: #ac3d59
             }
 
             .notification.error>span:first-child {
-                color: #c18a6e
+                color: #cd718c
+            }
+
+            .notification.success {
+                background: #e0f6eb;
+                border-color: #b2dfc9;
+                color: #397a5c
+            }
+
+            .notification.success>span:first-child {
+                color: #6cae8b
+            }
+
+            .notification.warning {
+                background: #fff0dd;
+                border-color: #efd3ad;
+                color: #a97736
+            }
+
+            .notification.warning>span:first-child {
+                color: #c69d60
             }
 
             .notification.leaving {
-                animation: notice-away .22s ease-in both
+                animation: notice-away .25s ease-in both
             }
 
-            @keyframes drift {
-                0% {
-                    transform: translate3d(0,0,0) scale(1)
-                }
-
-                50% {
-                    transform: translate3d(9%,12%,0) scale(1.1)
-                }
-
-                100% {
-                    transform: translate3d(-5%,7%,0) scale(1.04)
-                }
-            }
-
-            @keyframes bubble-hit {
-                0% {
-                    scale: 1
-                }
-
-                27% {
-                    scale: .91 1.04
-                }
-
-                70% {
-                    scale: 1.02 .99
-                }
-
-                100% {
-                    scale: 1
+            @keyframes spin {
+                to {
+                    rotate: 360deg
                 }
             }
 
             @keyframes clock-hit {
                 0% {
-                    box-shadow: 0 0 0 0 #7aa06600
+                    box-shadow: 0 0 0 0 #7ecfff00
                 }
 
                 30% {
-                    box-shadow: 0 0 0 10px #7aa06619,0 0 38px #7aa06620
+                    box-shadow: 0 0 0 11px #7ecfff16,0 0 42px #5fbbff1c
                 }
 
                 100% {
-                    box-shadow: 0 0 0 24px #7aa06600
+                    box-shadow: 0 0 0 25px #7ecfff00
                 }
             }
 
@@ -1247,7 +1436,7 @@
             @keyframes notice-up {
                 from {
                     opacity: 0;
-                    transform: translateY(25px)
+                    transform: translateY(calc(100% + var(--ticker-height) + 25px))
                 }
 
                 to {
@@ -1259,23 +1448,22 @@
             @keyframes notice-away {
                 to {
                     opacity: 0;
-                    transform: translateY(-12px)
+                    transform: translateY(-14px)
                 }
             }
 
-            body.reduced-motion .glow {
-                animation: none
-            }
+            @media(max-width: 1100px) {
+                #berlinTime {
+                    font-size:136px
+                }
 
-            @media(max-width: 1050px) {
-                .clock-row time {
-                    font-size:110px;
-                    letter-spacing: -6px
+                #tbilisiTime {
+                    font-size: 106px
                 }
 
                 .flag,.flag svg {
-                    width: 36px;
-                    height: 25px
+                    width: 37px;
+                    height: 27px
                 }
 
                 .clock-row {
@@ -1288,56 +1476,60 @@
                 }
 
                 .clock-block+.clock-block {
-                    margin-top: 42px
-                }
-
-                .site-bubble {
-                    width: 132px;
-                    height: 132px
-                }
-
-                .site-bubble.lead {
-                    width: 157px;
-                    height: 157px
+                    margin-top: 37px
                 }
 
                 .site-management {
-                    gap: 28px;
-                    grid-template-columns: minmax(230px,.9fr) minmax(0,1.3fr)
+                    grid-template-columns: minmax(230px,.85fr) minmax(0,1.4fr);
+                    gap: 26px
                 }
 
                 .settings-body {
-                    padding: 25px
+                    padding: 24px
                 }
 
-                .settings-dialog .dialog-header,.tabs {
-                    padding-left: 25px;
-                    padding-right: 25px
+                .full-dialog .dialog-header,.tabs {
+                    padding-left: 24px;
+                    padding-right: 24px
+                }
+
+                .appearance-layout {
+                    gap: 20px
+                }
+
+                .control-card {
+                    padding: 19px
+                }
+
+                .effect-controls {
+                    gap: 21px 19px
+                }
+
+                .source-card {
+                    padding: 23px
                 }
             }
 
-            @media(max-width: 760px) {
-                .site-management {
-                    grid-template-columns:1fr;
-                    gap: 25px
+            @media(max-width: 850px) {
+                #berlinTime {
+                    font-size:125px
                 }
 
-                .site-management form {
-                    position: static
+                #tbilisiTime {
+                    font-size: 96px
                 }
 
                 .clock-row time {
-                    font-size: 98px;
-                    letter-spacing: -5px
-                }
-
-                .clock-row {
-                    gap: 16px
+                    letter-spacing: -6px
                 }
 
                 .flag,.flag svg {
-                    width: 32px;
-                    height: 23px
+                    width: 33px;
+                    height: 24px
+                }
+
+                .clock-row {
+                    gap: 14px
                 }
 
                 .clock-date {
@@ -1345,108 +1537,138 @@
                 }
 
                 .clocks {
-                    left: 22px
+                    left: 6px
                 }
 
-                .site-bubble {
-                    width: 117px;
-                    height: 117px
+                .appearance-layout {
+                    grid-template-columns: 1fr
                 }
 
-                .site-bubble.lead {
-                    width: 139px;
-                    height: 139px
+                .appearance-column {
+                    gap: 19px
                 }
 
-                .bubble-domain {
-                    font-size: 7px
+                .appearance-actions {
+                    margin-top: 0
                 }
 
-                .bubble-icon svg {
-                    width: 30px;
-                    height: 30px
+                .appearance-column:last-child {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    align-items: start
                 }
 
-                .lead .bubble-icon svg {
-                    width: 35px;
-                    height: 35px
+                .appearance-column:last-child .appearance-actions {
+                    grid-column: 1/-1
+                }
+
+                .preview-card {
+                    aspect-ratio: 1/1
+                }
+
+                .site-management {
+                    grid-template-columns: 1fr
+                }
+
+                .site-management form {
+                    position: static
                 }
 
                 .ticker-item {
-                    font-size: 13px
+                    font-size: 18px
+                }
+
+                .source-grid {
+                    gap: 16px
+                }
+
+                .source-card {
+                    min-height: 190px
+                }
+
+                .panel-title {
+                    align-items: flex-start
+                }
+
+                .panel-title>span {
+                    max-width: 45%;
+                    line-height: 1.8
                 }
             }
 
-            @media(max-width: 480px) {
+            @media(max-width: 560px) {
                 :root {
-                    --ticker-height:56px
+                    --ticker-height:64px
                 }
 
                 .brand {
-                    left: 6px;
-                    top: 6px;
+                    top: 4px;
+                    left: 4px;
                     gap: 7px
                 }
 
                 .brand>span {
-                    width: 27px;
-                    height: 27px;
-                    border-radius: 8px
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 9px
+                }
+
+                .brand>span svg {
+                    width: 24px;
+                    height: 24px
                 }
 
                 .brand b {
-                    font-size: 20px
+                    font-size: 21px
                 }
 
-                .all-button {
-                    right: 6px;
-                    top: 6px;
-                    width: 31px;
-                    height: 31px
+                .all-reveal {
+                    width: 53px;
+                    height: 54px
+                }
+
+                .all-reveal>.round-button {
+                    width: 33px;
+                    height: 33px
+                }
+
+                .clocks {
+                    left: 5px;
+                    max-width: calc(100vw - 10px)
+                }
+
+                #berlinTime {
+                    font-size: 118px
+                }
+
+                #tbilisiTime {
+                    font-size: 90px
                 }
 
                 .clock-row time {
-                    font-size: 100px;
                     letter-spacing: -6px
                 }
 
                 .clock-row {
-                    gap: 15px
+                    gap: 12px
                 }
 
                 .flag,.flag svg {
-                    width: 31px;
+                    width: 30px;
                     height: 22px
-                }
-
-                .clocks {
-                    left: 20px;
-                    max-width: calc(100vw - 40px)
                 }
 
                 .clock-date {
                     font-size: 11px;
-                    margin-top: 11px;
-                    margin-left: 40px
+                    margin: 11px 0 0 40px
                 }
 
                 .clock-block+.clock-block {
-                    margin-top: 33px
-                }
-
-                .site-bubble {
-                    width: 106px;
-                    height: 106px;
-                    gap: 10px
-                }
-
-                .site-bubble.lead {
-                    width: 124px;
-                    height: 124px
+                    margin-top: 31px
                 }
 
                 .bubble-icon {
-                    margin-top: 20px
+                    margin-top: 21px
                 }
 
                 .bubble-icon svg,.lead .bubble-icon svg {
@@ -1455,19 +1677,39 @@
                 }
 
                 .bubble-domain {
-                    font-size: 6px
+                    font-size: 7px
                 }
 
-                .settings-dialog .dialog-header {
-                    padding: 19px
+                .ticker-item {
+                    font-size: 17px;
+                    gap: 12px
                 }
 
-                .settings-dialog .dialog-header h1 {
+                .ticker-item svg {
+                    width: 22px;
+                    height: 22px
+                }
+
+                .settings-reveal {
+                    width: 54px;
+                    height: 58px
+                }
+
+                .settings-reveal>.round-button {
+                    width: 35px;
+                    height: 35px
+                }
+
+                .full-dialog .dialog-header {
+                    padding: 20px 17px
+                }
+
+                .full-dialog .dialog-header h1,.full-dialog .dialog-header h2 {
                     font-size: 22px
                 }
 
                 .tabs {
-                    padding: 0 19px;
+                    padding: 0 17px;
                     gap: 22px
                 }
 
@@ -1476,20 +1718,21 @@
                 }
 
                 .settings-body {
-                    padding: 20px 17px
+                    padding: 20px 16px
                 }
 
                 .site-management form {
-                    padding: 20px 17px
-                }
-
-                .site-management h2 {
-                    font-size: 16px
+                    padding: 22px 18px
                 }
 
                 .settings-site {
                     gap: 8px;
                     padding: 15px 0
+                }
+
+                .mini-bubble {
+                    width: 36px;
+                    height: 36px
                 }
 
                 .site-name {
@@ -1509,60 +1752,173 @@
                     height: 29px
                 }
 
-                .mini-bubble {
-                    width: 35px;
-                    height: 35px
+                .settings-site .round-button svg {
+                    width: 14px;
+                    height: 14px
                 }
 
-                .setting-row label {
-                    font-size: 12px
-                }
-
-                .deadline-row {
-                    flex-wrap: wrap;
+                .panel-title {
+                    flex-direction: column;
                     gap: 12px
                 }
 
-                .deadline-row label {
-                    font-size: 12px
-                }
-
-                .deadline-row input[type=date] {
-                    width: 148px
-                }
-
-                .theme {
-                    font-size: 11px;
-                    padding: 8px
-                }
-
-                .theme>span {
-                    height: 55px
-                }
-
-                .source-row {
-                    gap: 12px;
-                    font-size: 12px
-                }
-
-                .source-state {
+                .panel-title>span {
+                    max-width: none;
                     font-size: 10px
                 }
 
+                .panel-title h2 {
+                    font-size: 17px
+                }
+
+                .source-grid {
+                    grid-template-columns: 1fr;
+                    grid-template-rows: none;
+                    gap: 15px
+                }
+
+                .source-card {
+                    min-height: 200px;
+                    padding: 24px
+                }
+
+                .source-card-head {
+                    font-size: 16px
+                }
+
+                .source-state {
+                    font-size: 13px;
+                    margin-top: 24px
+                }
+
+                .appearance-column:last-child {
+                    display: flex;
+                    flex-direction: column
+                }
+
+                .appearance-column:last-child>* {
+                    width: 100%
+                }
+
+                .preview-card {
+                    aspect-ratio: 16/9
+                }
+
+                .control-card {
+                    padding: 20px 17px
+                }
+
+                .control-card h2 {
+                    font-size: 15px
+                }
+
+                .theme-presets {
+                    gap: 9px
+                }
+
+                .theme-preset {
+                    font-size: 10px;
+                    padding: 7px
+                }
+
+                .theme-preset>span {
+                    height: 40px
+                }
+
+                .color-controls {
+                    gap: 13px
+                }
+
+                .color-control {
+                    font-size: 10px
+                }
+
+                .color-control input[type=color] {
+                    height: 38px
+                }
+
+                .effect-controls {
+                    gap: 23px 20px
+                }
+
+                .range-label {
+                    font-size: 11px
+                }
+
+                .range-label output {
+                    font-size: 10px
+                }
+
+                .setting-row label {
+                    font-size: 11px
+                }
+
+                .setting-row select {
+                    width: 100px;
+                    font-size: 12px
+                }
+
+                .appearance-actions {
+                    justify-content: flex-end
+                }
+
                 .dialog-header {
-                    padding: 20px
+                    padding: 21px
                 }
 
                 .dialog-body {
-                    padding: 21px
+                    padding: 22px
                 }
 
                 .dialog-header h2 {
                     font-size: 19px
                 }
 
+                .all-toolbar {
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 15px
+                }
+
+                .all-toolbar>.primary-button {
+                    align-self: flex-start
+                }
+
+                .all-body {
+                    padding: 21px 17px
+                }
+
+                #allSitesGrid {
+                    grid-template-columns: repeat(2,minmax(0,1fr));
+                    gap: 12px;
+                    margin-top: 23px
+                }
+
+                .all-site {
+                    padding: 21px 11px;
+                    gap: 12px
+                }
+
+                .all-site .mini-bubble {
+                    width: 52px;
+                    height: 52px
+                }
+
+                .all-site .site-name {
+                    font-size: 11px
+                }
+
+                .all-site .site-url {
+                    font-size: 9px
+                }
+
+                .all-site .mini-bubble svg {
+                    width: 25px;
+                    height: 25px
+                }
+
                 .finance-box {
-                    padding: 18px 12px
+                    padding: 19px 12px
                 }
 
                 .finance-box strong {
@@ -1573,84 +1929,78 @@
                     font-size: 10px
                 }
 
-                .ticker-item {
-                    font-size: 12px;
-                    gap: 10px
-                }
-
-                .ticker-item svg {
-                    width: 18px;
-                    height: 18px
-                }
-
-                .settings-reveal {
-                    width: 54px;
-                    height: 58px
-                }
-
-                .settings-reveal>.round-button {
-                    width: 35px;
-                    height: 35px
-                }
-
-                .notifications {
-                    left: 13px;
-                    max-width: calc(100vw - 26px)
-                }
-
-                .notification {
-                    font-size: 11px;
-                    padding: 13px
-                }
-
                 .confirm-dialog {
-                    padding: 27px 22px
+                    padding: 28px 23px
                 }
 
                 .confirm-dialog h2 {
-                    font-size: 17px
+                    font-size: 18px
+                }
+
+                .confirm-dialog p {
+                    font-size: 12px
+                }
+
+                .notifications {
+                    right: 12px;
+                    max-width: calc(100vw - 24px)
+                }
+
+                .notification {
+                    font-size: 12px;
+                    padding: 15px 17px
+                }
+
+                .deadline-card {
+                    padding: 21px
+                }
+
+                .deadline-card h3 {
+                    font-size: 14px
                 }
             }
 
             @media(max-width: 360px) {
+                #berlinTime {
+                    font-size:102px
+                }
+
+                #tbilisiTime {
+                    font-size: 82px
+                }
+
                 .clock-row time {
-                    font-size:86px;
                     letter-spacing: -5px
+                }
+
+                .clock-row {
+                    gap: 10px
                 }
 
                 .clock-date {
                     font-size: 10px
                 }
 
-                .clock-row {
-                    gap: 13px
+                .flag,.flag svg {
+                    width: 28px;
+                    height: 21px
                 }
 
-                .clocks {
-                    left: 16px;
-                    max-width: calc(100vw - 32px)
+                .tabs {
+                    gap: 19px
                 }
 
-                .site-bubble {
-                    width: 96px;
-                    height: 96px
+                .tabs button {
+                    font-size: 10px
                 }
 
-                .site-bubble.lead {
-                    width: 112px;
-                    height: 112px
-                }
-            }
-
-            @media(pointer: coarse) {
-                .settings-reveal>.round-button {
-                    opacity:1;
-                    pointer-events: auto
+                .ticker-item {
+                    font-size: 16px
                 }
             }
 
             @media(prefers-reduced-motion:reduce) {
-                .glow,.impact,.clock-impact,dialog[open],.notification {
+                dialog[open],.clock-impact,.notification,.brand.refreshing>span svg {
                     animation: none
                 }
 
@@ -1660,20 +2010,19 @@
             }
         </style>
     </head>
-    <body data-theme="aurora">
+    <body>
         <div class="background" aria-hidden="true">
-            <div class="glow glow-a"></div>
-            <div class="glow glow-b"></div>
-            <div class="glow glow-c"></div>
-            <div class="grain"></div>
+            <canvas id="waveCanvas"></canvas>
         </div>
-        <a class="brand" href="#" aria-label="Shogi Space">
-            <span data-icon="sparkle"></span>
+        <button class="brand" id="brandRefresh" aria-label="Daten aktualisieren" title="Daten aktualisieren" type="button">
+            <span data-icon="logo"></span>
             <b>
                 shogi<span>space</span>.
             </b>
-        </a>
-        <button class="all-button round-button" id="allSitesButton" aria-label="Alle Websites" title="Alle Websites" data-icon="grid"></button>
+        </button>
+        <div class="all-reveal" id="allReveal">
+            <button class="all-button round-button" id="allSitesButton" aria-label="Alle Internetseiten" title="Alle Internetseiten" data-icon="grid"></button>
+        </div>
         <main id="main">
             <section class="clocks" aria-label="Uhrzeiten">
                 <div class="clock-block" aria-label="Deutschland">
@@ -1691,7 +2040,7 @@
                     <p class="clock-date" id="tbilisiDate"></p>
                 </div>
             </section>
-            <div id="siteBubbles" aria-label="Websites"></div>
+            <div id="siteBubbles" aria-label="Internetseiten"></div>
         </main>
         <section class="ticker" aria-label="Informationen">
             <div class="ticker-window">
@@ -1701,35 +2050,31 @@
         <div class="settings-reveal" id="settingsReveal">
             <button class="round-button" id="settingsButton" aria-label="Einstellungen" title="Einstellungen" data-icon="settings"></button>
         </div>
-        <dialog id="settingsDialog" class="settings-dialog" aria-labelledby="settingsTitle">
+        <dialog id="settingsDialog" class="settings-dialog full-dialog" aria-labelledby="settingsTitle">
             <div class="dialog-header">
                 <h1 id="settingsTitle">Einstellungen</h1>
                 <button class="round-button" data-close="settingsDialog" aria-label="Schließen" data-icon="x"></button>
             </div>
             <div class="tabs" role="tablist" aria-label="Einstellungen">
-                <button role="tab" id="tabSites" aria-controls="panelSites" aria-selected="true" data-tab="Sites">Websites</button>
+                <button role="tab" id="tabSites" aria-controls="panelSites" aria-selected="true" data-tab="Sites">Internetseiten</button>
                 <button role="tab" id="tabDates" aria-controls="panelDates" aria-selected="false" tabindex="-1" data-tab="Dates">Aufgaben</button>
-                <button role="tab" id="tabView" aria-controls="panelView" aria-selected="false" tabindex="-1" data-tab="View">Anzeige</button>
-                <button role="tab" id="tabData" aria-controls="panelData" aria-selected="false" tabindex="-1" data-tab="Data">Verbindungen</button>
+                <button role="tab" id="tabView" aria-controls="panelView" aria-selected="false" tabindex="-1" data-tab="View">Gestaltung</button>
+                <button role="tab" id="tabData" aria-controls="panelData" aria-selected="false" tabindex="-1" data-tab="Data">Datenquellen</button>
             </div>
             <div class="settings-body">
                 <section id="panelSites" role="tabpanel" aria-labelledby="tabSites">
                     <div class="site-management">
                         <form id="siteForm" novalidate>
-                            <h2 id="siteFormTitle">Website hinzufügen</h2>
-                            <input type="hidden" id="editSiteId">
+                            <h2>Internetseite hinzufügen</h2>
                             <label for="siteName">Name</label>
                             <input id="siteName" maxlength="80" required autocomplete="off">
-                            <label for="siteUrl">Link</label>
+                            <label for="siteUrl">Internetadresse</label>
                             <input type="url" id="siteUrl" maxlength="2000" required placeholder="https://example.com" autocomplete="off">
-                            <div class="form-actions">
-                                <button type="submit" class="primary-button" id="saveSiteButton">Hinzufügen</button>
-                                <button type="button" class="secondary-button" id="cancelEditSite" hidden>Abbrechen</button>
-                            </div>
+                            <button type="submit" class="primary-button">Hinzufügen</button>
                         </form>
-                        <div>
+                        <div class="site-list-panel">
                             <div class="list-heading">
-                                <h2>Websites</h2>
+                                <h2>Meine Internetseiten</h2>
                                 <span id="siteCount"></span>
                             </div>
                             <div id="settingsSites"></div>
@@ -1737,68 +2082,115 @@
                     </div>
                 </section>
                 <section id="panelDates" role="tabpanel" aria-labelledby="tabDates" hidden>
-                    <h2>Fristen</h2>
-                    <p class="short-note">Fristen werden in diesem Browser gespeichert.</p>
+                    <div class="panel-title">
+                        <h2>Aufgaben und Fristen</h2>
+                        <span>Fristen werden in diesem Browser gespeichert.</span>
+                    </div>
                     <div id="taskDeadlines"></div>
                 </section>
                 <section id="panelView" role="tabpanel" aria-labelledby="tabView" hidden>
-                    <h2>Farben</h2>
-                    <div class="themes">
-                        <button class="theme aurora" data-theme-choice="aurora" aria-pressed="true">
-                            <span></span>Aurora
-                        </button>
-                        <button class="theme lilac" data-theme-choice="lilac" aria-pressed="false">
-                            <span></span>Flieder
-                        </button>
-                        <button class="theme sea" data-theme-choice="sea" aria-pressed="false">
-                            <span></span>Meer
-                        </button>
-                    </div>
-                    <div class="setting-row">
-                        <label for="visibleCount">Sichtbare Websites</label>
-                        <select id="visibleCount">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
-                    </div>
-                    <div class="setting-row">
-                        <label for="motionToggle">Bewegung</label>
-                        <input type="checkbox" class="switch" id="motionToggle">
-                    </div>
-                    <div class="setting-row">
-                        <label for="horizonSelect">Vorschau</label>
-                        <select id="horizonSelect">
-                            <option value="7">7 Tage</option>
-                            <option value="14">14 Tage</option>
-                            <option value="30">30 Tage</option>
-                        </select>
-                    </div>
-                    <div class="backup-actions">
-                        <button class="secondary-button" id="exportSettings">Exportieren</button>
-                        <button class="secondary-button" id="importSettings">Importieren</button>
-                        <input type="file" id="importFile" accept=".json,application/json" hidden>
+                    <div class="appearance-layout">
+                        <div class="appearance-column">
+                            <div class="control-card">
+                                <h2>Farbwelten</h2>
+                                <div id="themePresets" class="theme-presets"></div>
+                            </div>
+                            <div class="control-card">
+                                <h2>Eigene Farben</h2>
+                                <div id="colorControls" class="color-controls"></div>
+                            </div>
+                            <div class="control-card">
+                                <div class="setting-row">
+                                    <label for="visibleCount">Sichtbare Internetseiten</label>
+                                    <select id="visibleCount"></select>
+                                </div>
+                                <div class="setting-row">
+                                    <label for="motionToggle">Hintergrund und Blasen bewegen</label>
+                                    <input type="checkbox" class="switch" id="motionToggle">
+                                </div>
+                                <div class="setting-row">
+                                    <label for="horizonSelect">Zeitraum für kommende Termine</label>
+                                    <select id="horizonSelect">
+                                        <option value="7">7 Tage</option>
+                                        <option value="14">14 Tage</option>
+                                        <option value="30">30 Tage</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="appearance-column">
+                            <div class="preview-card">
+                                <canvas id="appearancePreview" aria-label="Hintergrundvorschau"></canvas>
+                                <span>Vorschau</span>
+                            </div>
+                            <div class="control-card">
+                                <h2>Wellen und Licht</h2>
+                                <div id="effectControls" class="effect-controls"></div>
+                            </div>
+                            <div class="appearance-actions">
+                                <button class="secondary-button" id="discardAppearance">Verwerfen</button>
+                                <button class="primary-button" id="saveAppearance">Übernehmen</button>
+                            </div>
+                        </div>
                     </div>
                 </section>
                 <section id="panelData" role="tabpanel" aria-labelledby="tabData" hidden>
-                    <div id="sourceStatus"></div>
-                    <button class="primary-button" id="refreshDataButton">Aktualisieren</button>
+                    <div class="panel-title">
+                        <h2>Datenquellen</h2>
+                        <button class="primary-button" id="refreshDataButton">Daten aktualisieren</button>
+                    </div>
+                    <div id="sourceStatus" class="source-grid"></div>
                 </section>
             </div>
         </dialog>
-        <dialog id="allSitesDialog" class="all-dialog" aria-labelledby="allSitesTitle">
+        <dialog id="allSitesDialog" class="all-dialog full-dialog" aria-labelledby="allSitesTitle">
             <div class="dialog-header">
-                <h2 id="allSitesTitle">Websites</h2>
+                <h2 id="allSitesTitle">Meine Internetseiten</h2>
                 <button class="round-button" data-close="allSitesDialog" aria-label="Schließen" data-icon="x"></button>
             </div>
-            <div class="dialog-body">
-                <label class="search">
-                    <span data-icon="search"></span>
-                    <input id="siteSearch" placeholder="Suchen" aria-label="Websites durchsuchen">
-                </label>
+            <div class="dialog-body all-body">
+                <div class="all-toolbar">
+                    <label class="search">
+                        <span data-icon="search"></span>
+                        <input id="siteSearch" placeholder="Suchen" aria-label="Internetseiten durchsuchen">
+                    </label>
+                    <button class="primary-button" id="addFromAll">Internetseite hinzufügen</button>
+                </div>
                 <div id="allSitesGrid"></div>
-                <button class="secondary-button" id="addFromAll">Website hinzufügen</button>
             </div>
+        </dialog>
+        <dialog id="editSiteDialog" class="edit-dialog" aria-labelledby="editSiteTitle">
+            <div class="dialog-header">
+                <h2 id="editSiteTitle">Internetseite bearbeiten</h2>
+                <button class="round-button" data-close="editSiteDialog" aria-label="Schließen" data-icon="x"></button>
+            </div>
+            <form id="editSiteForm" class="dialog-body" novalidate>
+                <input type="hidden" id="editSiteId">
+                <label for="editSiteName">Name</label>
+                <input id="editSiteName" maxlength="80" required>
+                <label for="editSiteUrl">Internetadresse</label>
+                <input id="editSiteUrl" type="url" maxlength="2000" required>
+                <div class="form-actions">
+                    <button class="secondary-button" type="button" data-close="editSiteDialog">Abbrechen</button>
+                    <button class="primary-button" type="submit">Speichern</button>
+                </div>
+            </form>
+        </dialog>
+        <dialog id="deadlineDialog" class="edit-dialog" aria-labelledby="deadlineTitle">
+            <div class="dialog-header">
+                <h2 id="deadlineTitle">Frist bearbeiten</h2>
+                <button class="round-button" data-close="deadlineDialog" aria-label="Schließen" data-icon="x"></button>
+            </div>
+            <form class="dialog-body" id="deadlineForm">
+                <p id="deadlineTaskName"></p>
+                <input type="hidden" id="deadlineTaskId">
+                <label for="deadlineDate">Datum</label>
+                <input type="date" id="deadlineDate">
+                <div class="form-actions">
+                    <button class="secondary-button" type="button" data-close="deadlineDialog">Abbrechen</button>
+                    <button class="primary-button" type="submit">Speichern</button>
+                </div>
+            </form>
         </dialog>
         <dialog id="detailDialog" class="detail-dialog" aria-labelledby="detailTitle">
             <div class="dialog-header">
@@ -1971,10 +2363,10 @@
                     try {
                         url = new URL(value);
                     } catch {
-                        throw new Error('Bitte einen gültigen http- oder https-Link eingeben.');
+                        throw new Error('Bitte geben Sie eine gültige Internetadresse mit http oder https ein.');
                     }
                     if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password)
-                        throw new Error('Bitte einen gültigen http- oder https-Link eingeben.');
+                        throw new Error('Bitte geben Sie eine gültige Internetadresse mit http oder https ein.');
                     return url.href;
                 }
                 function rankSites(sites) {
@@ -1999,8 +2391,8 @@
                             background: '#eaf0e4'
                         },
                         error: {
-                            foreground: '#985e32',
-                            background: '#fff0df'
+                            foreground: '#b23850',
+                            background: '#ffe5eb'
                         }
                     };
                     if (type === 'balance')
@@ -2094,30 +2486,129 @@
                     global.ShogiData = api;
             }
             )(typeof globalThis !== 'undefined' ? globalThis : this);
+
+            (function(global) {
+                'use strict';
+                const presets = {
+                    midnight: {
+                        name: 'Mitternacht',
+                        colors: ['#03071f', '#101a48', '#194baf', '#0489e8', '#37dfff', '#7770e8']
+                    },
+                    ocean: {
+                        name: 'Ozean',
+                        colors: ['#031b29', '#09394d', '#086993', '#04a5bd', '#68efe4', '#9ecfff']
+                    },
+                    emerald: {
+                        name: 'Smaragd',
+                        colors: ['#041d19', '#0c4035', '#0b7457', '#18ad80', '#7ff4be', '#b3dd71']
+                    },
+                    violet: {
+                        name: 'Violett',
+                        colors: ['#120b29', '#30205c', '#6441a5', '#9a6ee8', '#d6a4ff', '#8dbeff']
+                    },
+                    ember: {
+                        name: 'Abendrot',
+                        colors: ['#230b20', '#4e1839', '#9c365d', '#d86b69', '#ffb38a', '#d9a5ff']
+                    },
+                    ice: {
+                        name: 'Eisblau',
+                        colors: ['#071a30', '#143a57', '#317d9e', '#63bbcf', '#c1f5ef', '#a0b9ff']
+                    }
+                };
+                const base = {
+                    preset: 'midnight',
+                    colors: [...presets.midnight.colors],
+                    transparency: 9,
+                    contrast: 112,
+                    brightness: 105,
+                    speed: 75,
+                    amplitude: 70,
+                    density: 28
+                };
+                function normalize(raw) {
+                    const out = {
+                        ...base,
+                        colors: [...base.colors]
+                    };
+                    if (!raw || typeof raw !== 'object')
+                        return out;
+                    out.preset = Object.hasOwn(presets, raw.preset) ? raw.preset : 'custom';
+                    if (Array.isArray(raw.colors))
+                        out.colors = out.colors.map( (c, i) => /^#[0-9a-f]{6}$/i.test(raw.colors[i]) ? raw.colors[i] : c);
+                    for (const [key,min,max] of [['transparency', 0, 85], ['contrast', 50, 180], ['brightness', 40, 160], ['speed', 10, 180], ['amplitude', 15, 130], ['density', 16, 42]]) {
+                        const n = Number(raw[key]);
+                        if (Number.isFinite(n))
+                            out[key] = Math.max(min, Math.min(max, n));
+                    }
+                    return out;
+                }
+                function point(u, v, time, width, height, layer, appearance) {
+                    const t = time * appearance.speed / 75
+                      , depth = Math.pow(v, 1.25)
+                      , spread = .45 + depth * 1.05;
+                    const x = width * .5 + (u - .5) * width * spread;
+                    const phase = u * 9.5 + v * 4.2 - t * .58 + layer * 2.4;
+                    const wave = Math.sin(phase) * .7 + Math.sin(u * 16 - v * 3.6 + t * .36) * .3;
+                    const amplitude = height * .105 * appearance.amplitude / 70 * (.25 + depth * .75);
+                    const y = height * (layer === 0 ? .21 : .43) + depth * height * .52 + wave * amplitude;
+                    return {
+                        x,
+                        y,
+                        radius: .42 + depth * 1.2,
+                        alpha: .12 + depth * .6,
+                        depth
+                    };
+                }
+                function halton(index, base) {
+                    let value = 0
+                      , fraction = 1;
+                    while (index > 0) {
+                        fraction /= base;
+                        value += fraction * (index % base);
+                        index = Math.floor(index / base);
+                    }
+                    return value;
+                }
+                const api = {
+                    presets,
+                    base,
+                    normalize,
+                    point,
+                    halton
+                };
+                if (typeof module !== 'undefined' && module.exports)
+                    module.exports = api;
+                else
+                    global.ShogiVisual = api;
+            }
+            )(typeof globalThis !== 'undefined' ? globalThis : this);
         </script>
         <script>
+            window.ShogiIcons = {
+                logo: '<ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(-35 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(35 12 12)"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/>',
+                grid: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
+                settings: '<path d="m9.5 3-.7 2.2-2.1 1-2.2-.5-2 3.5L4 11v2l-1.5 1.8 2 3.5 2.2-.5 2.1 1 .7 2.2h5l.7-2.2 2.1-1 2.2.5 2-3.5L20 13v-2l1.5-1.8-2-3.5-2.2.5-2.1-1-.7-2.2Z"/><circle cx="12" cy="12" r="3"/>',
+                x: '<path d="m6 6 12 12M6 18 18 6"/>',
+                check: '<path d="m5 12 4 4L19 6"/>',
+                info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.01"/>',
+                edit: '<path d="m15 4 5 5M4 20l5-1L21 7a2.8 2.8 0 0 0-4-4L5 15Zm0 0h16"/>',
+                trash: '<path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/>',
+                search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
+                tasks: '<rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 4V2h6v4H9Zm0 8 2 2 4-4m-6 8h6"/>',
+                shifts: '<rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 4V2h6v4H9Zm3 6v6m-3-3h6"/>',
+                budget: '<rect x="5" y="2.5" width="14" height="19" rx="3"/><path d="M8.5 6h7M9 11h.01M15 11h.01M9 15h.01M15 15h.01M9 18h.01M15 18h.01"/>',
+                calendar: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4m10-4v4M3 11h18M7 15h.01M12 15h.01M17 15h.01M7 18h.01M12 18h.01"/>',
+                globe: '<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M4 7h16M4 17h16"/>',
+                'flag-germany': '<g stroke="none"><path fill="#353632" d="M1 4h22v5H1z"/><path fill="#bb5148" d="M1 9h22v5H1z"/><path fill="#e8c164" d="M1 14h22v5H1z"/></g>',
+                'flag-georgia': '<g stroke="none"><path fill="#fff" d="M1 4h22v15H1z"/><path fill="#bc4650" d="M10.5 4h3v15h-3zM1 10h22v3H1zM5 5.3h1.5v3.4H5zM4 6.3h3.5v1.4H4zM17.5 5.3H19v3.4h-1.5zM16.5 6.3H20v1.4h-3.5zM5 14.3h1.5v3.4H5zM4 15.3h3.5v1.4H4zM17.5 14.3H19v3.4h-1.5zM16.5 15.3H20v1.4h-3.5z"/></g>'
+            };
+
             ( () => {
                 'use strict';
                 const D = window.ShogiData
+                  , V = window.ShogiVisual
+                  , icons = window.ShogiIcons
                   , $ = id => document.getElementById(id);
-                const icons = {
-                    sparkle: '<path d="m12 2 2.6 7.4L22 12l-7.4 2.6L12 22l-2.6-7.4L2 12l7.4-2.6Z"/>',
-                    grid: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
-                    settings: '<path d="m9.5 3-.7 2.2-2.1 1-2.2-.5-2 3.5L4 11v2l-1.5 1.8 2 3.5 2.2-.5 2.1 1 .7 2.2h5l.7-2.2 2.1-1 2.2.5 2-3.5L20 13v-2l1.5-1.8-2-3.5-2.2.5-2.1-1-.7-2.2Z"/><circle cx="12" cy="12" r="3"/>',
-                    x: '<path d="m6 6 12 12M6 18 18 6"/>',
-                    check: '<path d="m5 12 4 4L19 6"/>',
-                    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.01"/>',
-                    edit: '<path d="m15 4 5 5M4 20l5-1L21 7a2.8 2.8 0 0 0-4-4L5 15Zm0 0h16"/>',
-                    trash: '<path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/>',
-                    search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
-                    tasks: '<rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 4V2h6v4H9Zm0 8 2 2 4-4m-6 8h6"/>',
-                    shifts: '<rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 4V2h6v4H9Zm3 6v6m-3-3h6"/>',
-                    budget: '<rect x="5" y="2.5" width="14" height="19" rx="3"/><path d="M8.5 6h7M9 11h.01M15 11h.01M9 15h.01M15 15h.01M9 18h.01M15 18h.01"/>',
-                    calendar: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4m10-4v4M3 11h18M7 15h.01M12 15h.01M17 15h.01M7 18h.01M12 18h.01"/>',
-                    globe: '<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M4 7h16M4 17h16"/>',
-                    'flag-germany': '<g stroke="none"><path fill="#353632" d="M1 4h22v5H1z"/><path fill="#bb5148" d="M1 9h22v5H1z"/><path fill="#e8c164" d="M1 14h22v5H1z"/></g>',
-                    'flag-georgia': '<g stroke="none"><path fill="#fff" d="M1 4h22v15H1z"/><path fill="#bc4650" d="M10.5 4h3v15h-3zM1 10h22v3H1zM5 5.3h1.5v3.4H5zM4 6.3h3.5v1.4H4zM17.5 5.3H19v3.4h-1.5zM16.5 6.3H20v1.4h-3.5zM5 14.3h1.5v3.4H5zM4 15.3h3.5v1.4H4zM17.5 14.3H19v3.4h-1.5zM16.5 15.3H20v1.4h-3.5z"/></g>'
-                };
                 const icon = name => `<svg viewBox="0 0 24 24" aria-hidden="true">${icons[name] || icons.info}</svg>`;
                 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({
                     '&': '&amp;',
@@ -2126,27 +2617,28 @@
                     '"': '&quot;',
                     "'": '&#39;'
                 }[c]));
+                const clone = value => JSON.parse(JSON.stringify(value));
                 document.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = icon(el.dataset.icon));
                 const builtin = [{
                     id: 'tasks',
                     name: 'Aufgaben',
                     icon: 'tasks',
-                    color: '#dce8be'
+                    color: '#d8e6fa'
                 }, {
                     id: 'shifts',
                     name: 'Dienste',
                     icon: 'shifts',
-                    color: '#eadac8'
+                    color: '#d4e9e4'
                 }, {
                     id: 'budget',
                     name: 'CALCULATE',
                     icon: 'budget',
-                    color: '#d9d5ee'
+                    color: '#ded9f5'
                 }, {
                     id: 'calendar',
                     name: 'Kalender',
                     icon: 'calendar',
-                    color: '#cde3dc'
+                    color: '#f0dce6'
                 }];
                 const STORE = 'shogi-space-v1'
                   , mediaMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -2159,20 +2651,21 @@
                         lastUsed: 0,
                         order: i
                     })),
-                    theme: 'aurora',
                     visibleCount: 3,
                     motion: !mediaMotion.matches,
                     horizon: 14,
-                    deadlines: {}
+                    deadlines: {},
+                    appearance: V.normalize()
                 });
                 function normalize(raw) {
                     const out = defaults();
                     if (!raw || typeof raw !== 'object')
                         return out;
-                    out.theme = ['aurora', 'lilac', 'sea'].includes(raw.theme) ? raw.theme : 'aurora';
-                    out.visibleCount = [1, 2, 3].includes(Number(raw.visibleCount)) ? Number(raw.visibleCount) : 3;
+                    const count = Math.floor(Number(raw.visibleCount));
+                    out.visibleCount = Number.isFinite(count) ? Math.max(1, Math.min(10, count)) : 3;
                     out.horizon = [7, 14, 30].includes(Number(raw.horizon)) ? Number(raw.horizon) : 14;
                     out.motion = typeof raw.motion === 'boolean' ? raw.motion : out.motion;
+                    out.appearance = V.normalize(raw.appearance);
                     if (Array.isArray(raw.sites)) {
                         const seen = new Set();
                         out.sites = raw.sites.slice(0, 250).filter(s => s && typeof s === 'object').map( (s, i) => {
@@ -2185,7 +2678,7 @@
                                 if (s.url)
                                     url = D.safeUrl(s.url);
                             } catch {}
-                            let name = String(s.name || 'Website').slice(0, 80);
+                            let name = String(s.name || 'Internetseite').slice(0, 80);
                             const base = builtin.find(b => b.id === id);
                             if (base && /^[\u10a0-\u10ff\s]+$/u.test(name))
                                 name = base.name;
@@ -2194,7 +2687,7 @@
                                 name,
                                 url,
                                 icon: Object.hasOwn(icons, s.icon) ? s.icon : 'globe',
-                                color: /^#[0-9a-f]{6}$/i.test(s.color) ? s.color : '#d9d5ee',
+                                color: /^#[0-9a-f]{6}$/i.test(s.color) ? s.color : base?.color || '#d8e6fa',
                                 order: i,
                                 visits: Math.max(0, Math.min(1e9, Math.floor(Number(s.visits) || 0))),
                                 lastUsed: Math.max(0, Number(s.lastUsed) || 0)
@@ -2203,10 +2696,9 @@
                         ).filter(Boolean);
                     }
                     if (raw.deadlines && typeof raw.deadlines === 'object' && !Array.isArray(raw.deadlines))
-                        for (const [id,date] of Object.entries(raw.deadlines)) {
+                        for (const [id,date] of Object.entries(raw.deadlines))
                             if (!['__proto__', 'constructor', 'prototype'].includes(id) && (date === '' || D.validDate(date)))
                                 out.deadlines[id] = date;
-                        }
                     return out;
                 }
                 let settings;
@@ -2215,7 +2707,9 @@
                 } catch {
                     settings = defaults();
                 }
-                let storageWarned = false;
+                let draft = clone(settings.appearance)
+                  , draftDirty = false
+                  , storageWarned = false;
                 function save() {
                     try {
                         localStorage.setItem(STORE, JSON.stringify(settings));
@@ -2231,7 +2725,7 @@
                       , entry = document.createElement('div');
                     entry.className = 'notification ' + type;
                     entry.setAttribute('role', type === 'error' ? 'alert' : 'status');
-                    entry.innerHTML = `<span>${icon(type === 'success' ? 'check' : 'info')}</span><span>${esc(text)}</span><button aria-label="Schließen">${icon('x')}</button>`;
+                    entry.innerHTML = `<span>${icon(type === 'success' ? 'check' : 'info')}</span><span>${esc(text)}</span>`;
                     host.append(entry);
                     if (host.children.length > 4)
                         host.firstElementChild.remove();
@@ -2245,30 +2739,24 @@
                     } catch {
                         host.classList.add('legacy-visible');
                     }
-                    let dismissed = false;
-                    const dismiss = () => {
-                        if (dismissed)
-                            return;
-                        dismissed = true;
+                    setTimeout( () => {
                         entry.classList.add('leaving');
                         setTimeout( () => {
                             entry.remove();
                             if (!host.children.length && host.hidePopover)
                                 host.hidePopover();
                         }
-                        , 230);
+                        , 260);
                     }
-                    ;
-                    entry.querySelector('button').addEventListener('click', dismiss);
-                    setTimeout(dismiss, type === 'error' ? 7500 : 5000);
+                    , type === 'error' ? 7500 : 5000);
                 }
                 let confirmResolve = null;
-                function confirmAction(title, text, destructive=false) {
+                function confirmAction(title, text, destructive=false, action='Bestätigen') {
                     if (confirmResolve)
                         return Promise.resolve(false);
                     $('confirmTitle').textContent = title;
                     $('confirmDescription').textContent = text;
-                    $('confirmAccept').textContent = destructive ? 'Löschen' : 'Bestätigen';
+                    $('confirmAccept').textContent = destructive ? 'Löschen' : action;
                     $('confirmSymbol').innerHTML = icon(destructive ? 'trash' : 'check');
                     $('confirmDialog').classList.toggle('destructive', destructive);
                     return new Promise(resolve => {
@@ -2286,8 +2774,8 @@
                 }
                 $('confirmAccept').addEventListener('click', () => finishConfirm(true));
                 $('confirmCancel').addEventListener('click', () => finishConfirm(false));
-                $('confirmDialog').addEventListener('cancel', e => {
-                    e.preventDefault();
+                $('confirmDialog').addEventListener('cancel', event => {
+                    event.preventDefault();
                     finishConfirm(false);
                 }
                 );
@@ -2332,6 +2820,13 @@
                     month: 'short',
                     timeZone: 'UTC'
                 }).format(new Date(key + 'T12:00:00Z'));
+                const shiftDate = key => new Intl.DateTimeFormat('de-DE',{
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    timeZone: 'UTC'
+                }).format(new Date(key + 'T12:00:00Z'));
                 const fullDate = (date, zone) => new Intl.DateTimeFormat('de-DE',{
                     timeZone: zone,
                     weekday: 'long',
@@ -2355,6 +2850,14 @@
                     } catch {
                         return '';
                     }
+                }
+                function shiftType(shift) {
+                    const text = String(shift.type || '');
+                    if (/fr[üu]h/i.test(text))
+                        return 'Frühdienst';
+                    if (/zwischen/i.test(text))
+                        return 'Zwischendienst';
+                    return text || 'Dienstart nicht angegeben';
                 }
                 function snapshot() {
                     const now = new Date();
@@ -2390,13 +2893,150 @@
                     if (activeDetail && $('detailDialog').open)
                         renderDetail(activeDetail);
                 }
+                const colorNames = ['Grundfarbe', 'Tiefenfarbe', 'Wellenfarbe', 'Lichtfarbe', 'Akzentfarbe', 'Glanzfarbe'];
+                const effectFields = [['transparency', 'Transparenz', 0, 85, '%'], ['contrast', 'Kontrast', 50, 180, '%'], ['brightness', 'Helligkeit', 40, 160, '%'], ['speed', 'Geschwindigkeit', 10, 180, '%'], ['amplitude', 'Wellenhöhe', 15, 130, '%'], ['density', 'Punktdichte', 16, 42, '']];
+                function applyAppearance(value) {
+                    const a = V.normalize(value)
+                      , root = document.documentElement;
+                    root.style.setProperty('--background-color', a.colors[0]);
+                    root.style.setProperty('--wave-opacity', 1 - a.transparency / 100);
+                    root.style.setProperty('--wave-contrast', a.contrast / 100);
+                    root.style.setProperty('--wave-brightness', a.brightness / 100);
+                    const rgb = hex(a.colors[0])
+                      , light = rgb[0] * .2126 + rgb[1] * .7152 + rgb[2] * .0722 > 145;
+                    root.style.setProperty('--ink', light ? '#213d61' : '#edf6ff');
+                    root.style.setProperty('--muted', light ? '#607c9e' : '#a5bed8');
+                    const preview = $('appearancePreview');
+                    preview.style.opacity = 1 - a.transparency / 100;
+                    preview.style.filter = `contrast(${a.contrast / 100}) brightness(${a.brightness / 100})`;
+                    preview.parentElement.style.background = a.colors[0];
+                    waveDirty = true;
+                }
                 function applyPreferences() {
-                    document.body.dataset.theme = settings.theme;
                     document.body.classList.toggle('reduced-motion', !settings.motion || mediaMotion.matches);
                     $('visibleCount').value = settings.visibleCount;
                     $('motionToggle').checked = settings.motion;
                     $('horizonSelect').value = settings.horizon;
-                    document.querySelectorAll('[data-theme-choice]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeChoice === settings.theme)));
+                    applyAppearance(draftDirty ? draft : settings.appearance);
+                }
+                function renderAppearance() {
+                    $('themePresets').innerHTML = Object.entries(V.presets).map( ([id,p]) => `<button class="theme-preset${draft.preset === id ? ' active' : ''}" data-preset="${id}" aria-pressed="${draft.preset === id}"><span style="background:linear-gradient(135deg,${p.colors.join(',')})"></span>${p.name}</button>`).join('');
+                    $('colorControls').innerHTML = draft.colors.map( (c, i) => `<label class="color-control">${colorNames[i]}<input type="color" value="${c}" data-wave-color="${i}" aria-label="${colorNames[i]}"></label>`).join('');
+                    $('effectControls').innerHTML = effectFields.map( ([key,label,min,max,unit]) => `<label class="range-control"><span class="range-label">${label}<output id="effectValue-${key}">${draft[key]}${unit}</output></span><input type="range" min="${min}" max="${max}" step="1" value="${draft[key]}" data-effect="${key}" aria-label="${label}"></label>`).join('');
+                    updateAppearanceButtons();
+                    requestAnimationFrame( () => sizeCanvas($('appearancePreview')));
+                }
+                function updateAppearanceButtons() {
+                    draftDirty = JSON.stringify(draft) !== JSON.stringify(settings.appearance);
+                    $('saveAppearance').disabled = !draftDirty;
+                    $('discardAppearance').disabled = !draftDirty;
+                    document.querySelectorAll('[data-preset]').forEach(el => {
+                        el.classList.toggle('active', el.dataset.preset === draft.preset);
+                        el.setAttribute('aria-pressed', String(el.dataset.preset === draft.preset));
+                    }
+                    );
+                }
+                const canvasStates = new Map();
+                let waveTime = 0
+                  , lastWavePaint = 0
+                  , waveDirty = true;
+                function hex(color) {
+                    return [parseInt(color.slice(1, 3), 16), parseInt(color.slice(3, 5), 16), parseInt(color.slice(5, 7), 16)];
+                }
+                function mix(a, b, k, alpha=1) {
+                    const x = hex(a)
+                      , y = hex(b);
+                    return `rgba(${x.map( (v, i) => Math.round(v + (y[i] - v) * k)).join(',')},${alpha})`;
+                }
+                function sizeCanvas(canvas) {
+                    const rect = canvas.getBoundingClientRect();
+                    if (rect.width < 1 || rect.height < 1)
+                        return;
+                    const dpr = Math.min(devicePixelRatio || 1, 1.5);
+                    canvas.width = Math.round(rect.width * dpr);
+                    canvas.height = Math.round(rect.height * dpr);
+                    const ctx = canvas.getContext('2d', {
+                        alpha: false
+                    });
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                    canvasStates.set(canvas, {
+                        ctx,
+                        width: rect.width,
+                        height: rect.height
+                    });
+                    waveDirty = true;
+                }
+                function paintWaves(canvas, time, a) {
+                    const state = canvasStates.get(canvas);
+                    if (!state)
+                        return;
+                    const {ctx, width: w, height: h} = state
+                      , colors = a.colors;
+                    ctx.globalAlpha = 1;
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.fillStyle = colors[0];
+                    ctx.fillRect(0, 0, w, h);
+                    const backdrop = ctx.createLinearGradient(0, 0, w * .3, h);
+                    backdrop.addColorStop(0, colors[0]);
+                    backdrop.addColorStop(.55, colors[1]);
+                    backdrop.addColorStop(1, colors[0]);
+                    ctx.fillStyle = backdrop;
+                    ctx.fillRect(0, 0, w, h);
+                    for (let i = 0; i < 2; i++) {
+                        const x = w * (i ? .75 : .18) + Math.sin(time * .1 + i) * w * .09
+                          , y = h * (i ? .14 : .72)
+                          , r = Math.max(w, h) * .55;
+                        const glow = ctx.createRadialGradient(x, y, 0, x, y, r);
+                        glow.addColorStop(0, mix(colors[3], colors[5], i, .09));
+                        glow.addColorStop(1, mix(colors[3], colors[5], i, 0));
+                        ctx.fillStyle = glow;
+                        ctx.fillRect(0, 0, w, h);
+                    }
+                    ctx.globalCompositeOperation = 'screen';
+                    const rows = Math.round(a.density)
+                      , cols = Math.max(48, Math.min(120, Math.round(w / 14)));
+                    for (let layer = 0; layer < 2; layer++) {
+                        for (let row = 0; row <= rows; row++) {
+                            const v = row / rows;
+                            ctx.fillStyle = mix(colors[2 + layer], colors[4 + layer], v, (.13 + v * .47) * (layer ? .9 : 1));
+                            ctx.beginPath();
+                            for (let col = 0; col <= cols; col++) {
+                                const p = V.point(col / cols, v, time, w, h, layer, a);
+                                if (p.x < -4 || p.x > w + 4 || p.y < -4 || p.y > h + 4)
+                                    continue;
+                                ctx.moveTo(p.x + p.radius, p.y);
+                                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                            }
+                            ctx.fill();
+                        }
+                        for (const v of [.04, .1]) {
+                            ctx.beginPath();
+                            for (let col = 0; col <= 90; col++) {
+                                const p = V.point(col / 90, v, time, w, h, layer, a);
+                                if (col === 0)
+                                    ctx.moveTo(p.x, p.y);
+                                else
+                                    ctx.lineTo(p.x, p.y);
+                            }
+                            ctx.strokeStyle = mix(colors[3], colors[4], .6, .24);
+                            ctx.lineWidth = 1.1;
+                            ctx.shadowColor = colors[4];
+                            ctx.shadowBlur = 10;
+                            ctx.stroke();
+                            ctx.shadowBlur = 0;
+                        }
+                    }
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                function renderWaveFrames(now) {
+                    if (now - lastWavePaint < 32 && !waveDirty)
+                        return;
+                    lastWavePaint = now;
+                    const appearance = draftDirty ? draft : settings.appearance;
+                    paintWaves($('waveCanvas'), waveTime, appearance);
+                    if ($('settingsDialog').open && !$('panelView').hidden)
+                        paintWaves($('appearancePreview'), waveTime, appearance);
+                    waveDirty = false;
                 }
                 let bodies = []
                   , bounds = {
@@ -2410,52 +3050,92 @@
                     bounds = {
                         width: r.width,
                         height: r.height,
-                        obstacles: [...document.querySelectorAll('.clocks,.brand,.all-button,.settings-reveal')].map(el => {
+                        obstacles: [...document.querySelectorAll('.clocks,.brand,.all-reveal,.settings-reveal')].map(el => {
                             const b = el.getBoundingClientRect();
                             return {
-                                left: b.left - r.left - 8,
-                                right: b.right - r.left + 8,
-                                top: b.top - r.top - 8,
-                                bottom: b.bottom - r.top + 8,
+                                left: b.left - r.left - 7,
+                                right: b.right - r.left + 7,
+                                top: b.top - r.top - 7,
+                                bottom: b.bottom - r.top + 7,
                                 el
                             };
                         }
                         )
                     };
                 }
-                function position(body) {
-                    body.el.style.transform = `translate3d(${body.x - body.radius}px,${body.y - body.radius}px,0)`;
+                function position(b) {
+                    b.el.style.transform = `translate3d(${b.x - b.radius}px,${b.y - b.radius}px,0)`;
+                }
+                function clearOfObstacles(x, y, radius) {
+                    return bounds.obstacles.every(o => Math.hypot(x - Math.max(o.left, Math.min(x, o.right)), y - Math.max(o.top, Math.min(y, o.bottom))) >= radius + 4);
                 }
                 function resetMotion() {
                     measure();
                     const {width: w, height: h} = bounds;
                     if (!w || !h)
                         return;
-                    const mobile = w < 760;
-                    bodies = [...$('siteBubbles').querySelectorAll('.site-bubble')].map( (el, i) => {
-                        const radius = el.getBoundingClientRect().width / 2
-                          , body = {
+                    const elements = [...$('siteBubbles').querySelectorAll('.site-bubble')]
+                      , count = elements.length;
+                    const clock = bounds.obstacles[0]
+                      , clockArea = clock ? Math.max(0, clock.right - clock.left) * Math.max(0, clock.bottom - clock.top) : 0
+                      , available = Math.max(w * h * .4, w * h - clockArea);
+                    const base = w < 560 ? 112 : w < 900 ? 134 : 151
+                      , normal = Math.max(65, Math.min(base, Math.sqrt(available / Math.max(1, count) / 1.9 / Math.PI) * 2) * Math.min(1, Math.sqrt(6 / Math.max(1, count))));
+                    bodies = [];
+                    elements.forEach( (el, i) => {
+                        const size = Math.min(Math.min(w, h) * .35, normal * (i === 0 ? 1.16 : 1));
+                        el.style.setProperty('--bubble-size', size + 'px');
+                        const radius = size / 2;
+                        let best = null
+                          , bestScore = -Infinity;
+                        for (let sample = 1; sample <= 420; sample++) {
+                            const x = radius + (w - 2 * radius) * V.halton(sample + i * 97, 2)
+                              , y = radius + (h - 2 * radius) * V.halton(sample + i * 97, 3);
+                            if (!clearOfObstacles(x, y, radius))
+                                continue;
+                            const score = bodies.length ? Math.min(...bodies.map(b => Math.hypot(x - b.x, y - b.y) - b.radius - radius)) : Math.abs(x - w * .7) * -.15 + 40;
+                            if (score > bestScore) {
+                                best = {
+                                    x,
+                                    y
+                                };
+                                bestScore = score;
+                            }
+                            if (score > 12)
+                                break;
+                        }
+                        if (!best)
+                            best = {
+                                x: w * .8,
+                                y: Math.max(radius, Math.min(h - radius, h * .2))
+                            };
+                        const angle = (i * 2.399 + 2.55)
+                          , speed = 36 + (i % 4) * 4;
+                        const b = {
                             el,
+                            shell: el.querySelector('.bubble-shell'),
                             radius,
-                            x: w * (mobile ? [.73, .29, .25][i] : [.69, .86, .44][i]),
-                            y: h * (mobile ? [.17, .82, .14][i] : [.32, .67, .14][i]),
-                            vx: [-40, 33, -31][i],
-                            vy: [21, -19, 23][i],
+                            x: best.x,
+                            y: best.y,
+                            vx: Math.cos(angle) * speed,
+                            vy: Math.sin(angle) * speed,
                             held: false,
-                            lastImpact: 0
+                            lastImpact: -1000,
+                            deformation: null
                         };
-                        for (const rect of bounds.obstacles)
-                            D.bounceCircleRect(body, rect);
-                        body.x = Math.max(radius, Math.min(w - radius, body.x));
-                        body.y = Math.max(radius, Math.min(h - radius, body.y));
-                        el.addEventListener('pointerenter', () => body.held = true);
-                        el.addEventListener('pointerleave', () => body.held = false);
-                        el.addEventListener('focus', () => body.held = true);
-                        el.addEventListener('blur', () => body.held = false);
-                        position(body);
-                        return body;
+                        for (const o of bounds.obstacles)
+                            D.bounceCircleRect(b, o);
+                        b.x = Math.max(radius, Math.min(w - radius, b.x));
+                        b.y = Math.max(radius, Math.min(h - radius, b.y));
+                        el.onpointerenter = () => b.held = true;
+                        el.onpointerleave = () => b.held = false;
+                        el.onfocus = () => b.held = true;
+                        el.onblur = () => b.held = false;
+                        bodies.push(b);
+                        position(b);
                     }
                     );
+                    fitLabels();
                 }
                 function fitLabels() {
                     document.querySelectorAll('.bubble-label text').forEach(text => {
@@ -2467,96 +3147,157 @@
                     );
                 }
                 function renderBubbles() {
-                    const list = D.rankSites(settings.sites).slice(0, settings.visibleCount);
-                    $('siteBubbles').innerHTML = list.map( (s, i) => `<a class="site-bubble${i === 0 ? ' lead' : ''}" href="${s.url ? esc(s.url) : '#'}" target="_self" data-open-site="${esc(s.id)}" style="--bubble:${s.color}" aria-label="${esc(s.name)}"><svg class="bubble-label" viewBox="0 0 180 180" aria-hidden="true"><defs><path id="siteArc${i}" d="M 23 94 A 67 67 0 0 1 157 94"/></defs><text><textPath href="#siteArc${i}" text-anchor="middle" startOffset="50%">${esc(s.name)}</textPath></text></svg><span class="bubble-icon">${icon(s.icon)}</span><span class="bubble-domain">${esc(domain(s))}</span></a>`).join('');
+                    $('siteBubbles').innerHTML = D.rankSites(settings.sites).slice(0, settings.visibleCount).map( (s, i) => `<a class="site-bubble${i === 0 ? ' lead' : ''}" href="${s.url ? esc(s.url) : '#'}" target="_self" data-open-site="${esc(s.id)}" style="--bubble:${s.color}" aria-label="${esc(s.name)}"><span class="bubble-shell"><svg class="bubble-label" viewBox="0 0 180 180" aria-hidden="true"><defs><path id="siteArc${i}" d="M 23 94 A 67 67 0 0 1 157 94"/></defs><text><textPath href="#siteArc${i}" text-anchor="middle" startOffset="50%">${esc(s.name)}</textPath></text></svg><span class="bubble-icon">${icon(s.icon)}</span><span class="bubble-domain">${esc(domain(s))}</span></span></a>`).join('');
                     resetMotion();
-                    fitLabels();
                 }
-                function impact(body, rect, now) {
-                    if (!rect.el.classList.contains('clocks') || now - body.lastImpact < 700)
+                function deform(b, angle, now, type) {
+                    if (now - b.lastImpact < 160)
                         return;
-                    body.lastImpact = now;
-                    body.el.classList.remove('impact');
-                    rect.el.classList.remove('clock-impact');
-                    void body.el.offsetWidth;
-                    body.el.classList.add('impact');
-                    rect.el.classList.add('clock-impact');
-                    $('siteBubbles').dataset.collisions = String(Number($('siteBubbles').dataset.collisions || 0) + 1);
-                    setTimeout( () => {
-                        body.el.classList.remove('impact');
-                        rect.el.classList.remove('clock-impact');
+                    b.lastImpact = now;
+                    b.el.dataset.impacts = String(Number(b.el.dataset.impacts || 0) + 1);
+                    b.el.dataset.impactType = type;
+                    if (mediaMotion.matches)
+                        return;
+                    b.deformation?.cancel();
+                    const transform = (x, y) => `rotate(${angle}rad) scale(${x},${y}) rotate(${-angle}rad)`;
+                    const animation = b.shell.animate([{
+                        transform: transform(.78, 1.15),
+                        borderRadius: '43% 57% 46% 54%'
+                    }, {
+                        transform: transform(1.1, .91),
+                        borderRadius: '53% 47% 55% 45%',
+                        offset: .42
+                    }, {
+                        transform: transform(.97, 1.025),
+                        borderRadius: '49% 51% 48% 52%',
+                        offset: .73
+                    }, {
+                        transform: 'none',
+                        borderRadius: '50%'
+                    }], {
+                        duration: 680,
+                        easing: 'cubic-bezier(.2,.7,.25,1)'
+                    });
+                    b.deformation = animation;
+                    animation.onfinish = () => {
+                        if (b.deformation === animation)
+                            b.deformation = null;
                     }
-                    , 650);
+                    ;
                 }
                 function constrain(b, now) {
-                    const {width: w, height: h, obstacles} = bounds;
+                    const {width: w, height: h} = bounds;
                     if (b.x < b.radius) {
                         b.x = b.radius;
                         b.vx = Math.abs(b.vx);
+                        deform(b, 0, now, 'wall');
                     } else if (b.x > w - b.radius) {
                         b.x = w - b.radius;
                         b.vx = -Math.abs(b.vx);
+                        deform(b, 0, now, 'wall');
                     }
                     if (b.y < b.radius) {
                         b.y = b.radius;
                         b.vy = Math.abs(b.vy);
+                        deform(b, Math.PI / 2, now, 'wall');
                     } else if (b.y > h - b.radius) {
                         b.y = h - b.radius;
                         b.vy = -Math.abs(b.vy);
+                        deform(b, Math.PI / 2, now, 'wall');
                     }
-                    for (const rect of obstacles)
-                        if (D.bounceCircleRect(b, rect))
-                            impact(b, rect, now);
+                    for (const o of bounds.obstacles) {
+                        const x = b.x
+                          , y = b.y;
+                        if (D.bounceCircleRect(b, o)) {
+                            const isClock = o.el.classList.contains('clocks');
+                            deform(b, Math.atan2(b.y - y, b.x - x), now, isClock ? 'clock' : 'wall');
+                            if (isClock && now - (o.lastFlash || 0) > 500) {
+                                o.lastFlash = now;
+                                o.el.classList.remove('clock-impact');
+                                void o.el.offsetWidth;
+                                o.el.classList.add('clock-impact');
+                                $('siteBubbles').dataset.collisions = String(Number($('siteBubbles').dataset.collisions || 0) + 1);
+                                setTimeout( () => o.el.classList.remove('clock-impact'), 650);
+                            }
+                        }
+                    }
+                    b.x = Math.max(b.radius, Math.min(w - b.radius, b.x));
+                    b.y = Math.max(b.radius, Math.min(h - b.radius, b.y));
                 }
                 function animate(now) {
                     const dt = Math.min((now - lastFrame) / 1000, .045) || 0;
                     lastFrame = now;
-                    if (!document.hidden && settings.motion && !mediaMotion.matches) {
-                        for (const b of bodies)
-                            if (!b.held) {
-                                b.x += b.vx * dt;
-                                b.y += b.vy * dt;
-                                constrain(b, now);
-                            }
-                        for (let i = 0; i < bodies.length; i++)
-                            for (let j = i + 1; j < bodies.length; j++) {
-                                const a = bodies[i]
-                                  , b = bodies[j];
-                                if (a.held || b.held)
-                                    continue;
-                                let dx = b.x - a.x
-                                  , dy = b.y - a.y
-                                  , d = Math.hypot(dx, dy)
-                                  , sum = a.radius + b.radius + 5;
-                                if (d && d < sum) {
-                                    dx /= d;
-                                    dy /= d;
-                                    const overlap = (sum - d) / 2;
-                                    a.x -= dx * overlap;
-                                    a.y -= dy * overlap;
-                                    b.x += dx * overlap;
-                                    b.y += dy * overlap;
-                                    const v = (b.vx - a.vx) * dx + (b.vy - a.vy) * dy;
-                                    if (v < 0) {
-                                        a.vx += v * dx;
-                                        a.vy += v * dy;
-                                        b.vx -= v * dx;
-                                        b.vy -= v * dy;
+                    if (!document.hidden) {
+                        if (settings.motion && !mediaMotion.matches) {
+                            waveTime += dt;
+                            for (const b of bodies)
+                                if (!b.held) {
+                                    b.x += b.vx * dt;
+                                    b.y += b.vy * dt;
+                                    constrain(b, now);
+                                }
+                            for (let i = 0; i < bodies.length; i++)
+                                for (let j = i + 1; j < bodies.length; j++) {
+                                    const a = bodies[i]
+                                      , b = bodies[j];
+                                    if (a.held && b.held)
+                                        continue;
+                                    let dx = b.x - a.x
+                                      , dy = b.y - a.y
+                                      , d = Math.hypot(dx, dy)
+                                      , sum = a.radius + b.radius + 3;
+                                    if (d && d < sum) {
+                                        dx /= d;
+                                        dy /= d;
+                                        const overlap = sum - d;
+                                        if (a.held) {
+                                            b.x += dx * overlap;
+                                            b.y += dy * overlap;
+                                            const v = b.vx * dx + b.vy * dy;
+                                            if (v < 0) {
+                                                b.vx -= 2 * v * dx;
+                                                b.vy -= 2 * v * dy;
+                                            }
+                                        } else if (b.held) {
+                                            a.x -= dx * overlap;
+                                            a.y -= dy * overlap;
+                                            const v = a.vx * dx + a.vy * dy;
+                                            if (v > 0) {
+                                                a.vx -= 2 * v * dx;
+                                                a.vy -= 2 * v * dy;
+                                            }
+                                        } else {
+                                            a.x -= dx * overlap / 2;
+                                            a.y -= dy * overlap / 2;
+                                            b.x += dx * overlap / 2;
+                                            b.y += dy * overlap / 2;
+                                            const v = (b.vx - a.vx) * dx + (b.vy - a.vy) * dy;
+                                            if (v < 0) {
+                                                a.vx += v * dx;
+                                                a.vy += v * dy;
+                                                b.vx -= v * dx;
+                                                b.vy -= v * dy;
+                                            }
+                                        }
+                                        const angle = Math.atan2(dy, dx);
+                                        deform(a, angle, now, 'circle');
+                                        deform(b, angle, now, 'circle');
                                     }
                                 }
+                            for (const b of bodies) {
+                                if (!b.held)
+                                    constrain(b, now);
+                                position(b);
                             }
-                        for (const b of bodies) {
-                            if (!b.held)
-                                constrain(b, now);
-                            position(b);
                         }
+                        if ((settings.motion && !mediaMotion.matches) || waveDirty)
+                            renderWaveFrames(now);
                     }
                     requestAnimationFrame(animate);
                 }
                 let tickerItems = []
                   , tickerIndex = -1
-                  , tickerStarted = false
-                  , tickerAnimation = null;
+                  , tickerStarted = false;
                 function nextMessage() {
                     if (!tickerItems.length)
                         return;
@@ -2570,8 +3311,8 @@
                     ticker.dataset.currentType = item.type;
                     track.innerHTML = `<button class="ticker-item" data-detail="${item.detail}" aria-label="${esc(item.title + ': ' + item.text)}">${icon(item.detail)}<strong>${esc(item.title)}</strong><span>${esc(item.text)}</span></button>`;
                     const start = win.clientWidth + 22
-                      , end = -track.getBoundingClientRect().width - 22;
-                    const animation = track.animate([{
+                      , end = -track.getBoundingClientRect().width - 22
+                      , animation = track.animate([{
                         transform: `translateX(${start}px)`
                     }, {
                         transform: `translateX(${end}px)`
@@ -2580,11 +3321,9 @@
                         easing: 'linear',
                         fill: 'forwards'
                     });
-                    tickerAnimation = animation;
                     animation.onfinish = () => {
                         track.style.transform = `translateX(${end}px)`;
                         animation.cancel();
-                        tickerAnimation = null;
                         setTimeout(nextMessage, 450);
                     }
                     ;
@@ -2614,8 +3353,10 @@
                         else if (!s.tasks.tomorrow.length && !near.length && !s.tasks.undated.length && !s.tasks.overdue.length)
                             add('tasks', 'Aufgaben', `${s.tasks.open.length} offen`);
                     }
-                    if (sources.shifts.updated)
-                        add('shifts', 'Nächster Dienst', s.shift ? `${s.shift.ongoing ? 'Läuft jetzt' : relative(s.shift.date)} · ${s.shift.startTime || ''}–${s.shift.endTime || ''} · ${s.shift.type || 'Dienst'}` : 'Kein Dienst geplant');
+                    if (sources.shifts.updated) {
+                        const v = s.shift;
+                        add('shifts', v?.ongoing ? 'Aktueller Dienst' : 'Nächster Dienst', v ? `${shiftDate(v.date)} · ${v.startTime || '—'}–${v.endTime || '—'} Uhr · ${v.department || 'Abteilung nicht angegeben'} · ${shiftType(v)}` : 'Kein Dienst geplant');
+                    }
                     if (s.budget) {
                         add('balance', 'Restbetrag', money(s.budget.balance), s.budget.balance, 'budget');
                         add('daily', 'Pro Tag verfügbar', money(s.budget.daily), s.budget.daily, 'budget');
@@ -2637,25 +3378,31 @@
                 }
                 function renderSites() {
                     $('siteCount').textContent = String(settings.sites.length);
-                    $('settingsSites').innerHTML = D.rankSites(settings.sites).map(s => `<div class="settings-site"><span class="mini-bubble" style="--bubble:${s.color}">${icon(s.icon)}</span><div class="site-info"><span class="site-name">${esc(s.name)}</span><span class="site-url">${esc(s.url || 'Kein Link')}</span></div><span class="site-visits">${s.visits} Aufrufe</span><button class="round-button" data-edit-site="${esc(s.id)}" aria-label="${esc(s.name)} bearbeiten" title="Bearbeiten">${icon('edit')}</button><button class="round-button" data-delete-site="${esc(s.id)}" aria-label="${esc(s.name)} löschen" title="Löschen">${icon('trash')}</button></div>`).join('') || '<p class="empty">Keine Websites</p>';
+                    $('settingsSites').innerHTML = D.rankSites(settings.sites).map(s => `<div class="settings-site"><span class="mini-bubble" style="--bubble:${s.color}">${icon(s.icon)}</span><div class="site-info"><span class="site-name">${esc(s.name)}</span><span class="site-url">${esc(s.url || 'Keine Internetadresse hinterlegt')}</span></div><span class="site-visits">${s.visits} Aufrufe</span><button class="round-button" data-edit-site="${esc(s.id)}" aria-label="${esc(s.name)} bearbeiten" title="Bearbeiten">${icon('edit')}</button><button class="round-button" data-delete-site="${esc(s.id)}" aria-label="${esc(s.name)} löschen" title="Löschen">${icon('trash')}</button></div>`).join('') || '<p class="empty">Keine Internetseiten gespeichert</p>';
                 }
                 function renderAllSites() {
                     const q = $('siteSearch').value.trim().toLocaleLowerCase('de-DE')
                       , list = D.rankSites(settings.sites).filter(s => (s.name + ' ' + s.url).toLocaleLowerCase('de-DE').includes(q));
-                    $('allSitesGrid').innerHTML = list.map(s => `<a class="all-site" href="${s.url ? esc(s.url) : '#'}" target="_self" data-open-site="${esc(s.id)}"><span class="mini-bubble" style="--bubble:${s.color}">${icon(s.icon)}</span><span class="site-name">${esc(s.name)}</span><span class="site-url">${esc(domain(s) || 'Kein Link')}</span></a>`).join('') || '<p class="empty">Keine Treffer</p>';
+                    $('allSitesGrid').innerHTML = list.map(s => `<a class="all-site" href="${s.url ? esc(s.url) : '#'}" target="_self" data-open-site="${esc(s.id)}"><span class="mini-bubble" style="--bubble:${s.color}">${icon(s.icon)}</span><span class="site-name">${esc(s.name)}</span><span class="site-url">${esc(domain(s) || 'Keine Internetadresse')}</span></a>`).join('') || '<p class="empty full">Keine passenden Internetseiten gefunden</p>';
                 }
                 function renderDeadlines() {
-                    $('taskDeadlines').innerHTML = snapshot().tasks.open.map( (t, i) => `<div class="deadline-row"><label for="due${i}">${esc(t.text)}</label><input type="date" id="due${i}" data-task-due="${esc(t.id)}" value="${esc(t.due)}" aria-label="Frist: ${esc(t.text)}"></div>`).join('') || `<p class="empty">${sources.tasks.status === 'pending' ? 'Wird geladen …' : sources.tasks.status === 'error' ? 'Keine Verbindung' : 'Keine offenen Aufgaben'}</p>`;
+                    const list = snapshot().tasks.open;
+                    $('taskDeadlines').innerHTML = list.map(t => `<article class="deadline-card"><h3>${esc(t.text)}</h3><p>${t.due ? esc(shiftDate(t.due)) : 'Ohne Frist'}</p><button class="secondary-button" data-edit-deadline="${esc(t.id)}">Frist bearbeiten</button></article>`).join('') || `<p class="empty full">${sources.tasks.status === 'pending' ? 'Aufgaben werden geladen …' : sources.tasks.status === 'error' ? 'Die Aufgabenquelle ist derzeit nicht erreichbar.' : 'Keine offenen Aufgaben'}</p>`;
                 }
                 function renderSources() {
-                    $('sourceStatus').innerHTML = Object.values(sources).map(s => `<div class="source-row ${s.status}"><span class="source-name"><i class="status-dot ${s.status}" aria-hidden="true"></i>${s.name}</span><span class="source-state">${s.status === 'ok' ? 'Verbunden · ' + localTime(s.updated) : s.status === 'pending' ? 'Wird geladen …' : 'Keine Verbindung'}</span></div>`).join('');
+                    $('sourceStatus').innerHTML = Object.entries(sources).map( ([id,s]) => `<article class="source-card ${s.status}"><div class="source-card-head"><span>${icon(id)}</span>${s.name}</div><div><p class="source-state"><i class="status-dot" aria-hidden="true"></i>${s.status === 'ok' ? 'Verbunden' : s.status === 'pending' ? 'Verbindung wird hergestellt …' : 'Nicht erreichbar'}</p><time>${s.updated ? 'Zuletzt aktualisiert um ' + localTime(s.updated) + ' Uhr' : 'Noch keine Daten empfangen'}</time>${s.status === 'error' ? `<small>${esc(s.error)}</small>` : ''}</div></article>`).join('');
                 }
-                let refreshing = false;
+                let refreshing = false
+                  , manualRefreshRequested = false;
                 async function refresh(manual=false) {
+                    if (manual)
+                        manualRefreshRequested = true;
                     if (refreshing)
                         return;
                     refreshing = true;
                     $('refreshDataButton').disabled = true;
+                    $('brandRefresh').classList.add('refreshing');
+                    $('brandRefresh').setAttribute('aria-busy', 'true');
                     await Promise.allSettled(Object.entries(sources).map(async ([id,source]) => {
                         const previous = source.status
                           , controller = new AbortController()
@@ -2670,7 +3417,7 @@
                                 referrerPolicy: 'no-referrer'
                             });
                             if (!response.ok)
-                                throw new Error(response.status === 401 || response.status === 403 ? 'Lesezugriff nicht erlaubt.' : `Quelle nicht erreichbar (HTTP ${response.status}).`);
+                                throw new Error(response.status === 401 || response.status === 403 ? 'Lesezugriff nicht erlaubt.' : `Die Datenquelle ist nicht erreichbar (HTTP ${response.status}).`);
                             const value = await response.json();
                             if (value !== null && (typeof value !== 'object' || value.error))
                                 throw new Error('Ungültiges Datenformat.');
@@ -2682,7 +3429,7 @@
                             source.error = '';
                         } catch (error) {
                             source.status = 'error';
-                            source.error = error.name === 'AbortError' ? 'Zeitüberschreitung.' : error instanceof SyntaxError ? 'Ungültige Antwort der Datenquelle.' : error instanceof TypeError ? 'Verbindung fehlgeschlagen.' : error.message;
+                            source.error = error.name === 'AbortError' ? 'Die Antwort hat zu lange gedauert.' : error instanceof SyntaxError ? 'Ungültige Antwort der Datenquelle.' : error instanceof TypeError ? 'Die Verbindung konnte nicht hergestellt werden.' : error.message;
                             if (previous !== 'error')
                                 notify(source.name + ': ' + source.error, 'error');
                         } finally {
@@ -2694,11 +3441,17 @@
                     ));
                     refreshing = false;
                     $('refreshDataButton').disabled = false;
+                    $('brandRefresh').classList.remove('refreshing');
+                    $('brandRefresh').setAttribute('aria-busy', 'false');
+                    $('brandRefresh').dataset.updatedAt = new Date().toISOString();
                     renderDeadlines();
                     if (activeDetail && $('detailDialog').open)
                         renderDetail(activeDetail);
-                    if (manual)
-                        notify(Object.values(sources).every(s => s.status === 'ok') ? 'Daten aktualisiert.' : 'Einige Quellen sind nicht erreichbar.', Object.values(sources).every(s => s.status === 'ok') ? 'success' : 'error');
+                    if (manualRefreshRequested) {
+                        manualRefreshRequested = false;
+                        const success = Object.values(sources).every(s => s.status === 'ok');
+                        notify(success ? 'Alle Daten wurden aktualisiert.' : 'Die Daten wurden teilweise aktualisiert. Einige Datenquellen sind nicht erreichbar.', success ? 'success' : 'warning');
+                    }
                 }
                 function selectTab(name) {
                     document.querySelectorAll('[data-tab]').forEach(b => {
@@ -2713,6 +3466,13 @@
                         renderDeadlines();
                     if (name === 'Data')
                         renderSources();
+                    if (name === 'View')
+                        renderAppearance();
+                }
+                async function closeDialog(id) {
+                    if (id === 'settingsDialog' && draftDirty && !await confirmAction('Änderungen verwerfen?', 'Möchten Sie die ungespeicherten Änderungen am Hintergrund wirklich verwerfen?', false, 'Verwerfen'))
+                        return;
+                    $(id).close();
                 }
                 function closeOthers(except) {
                     document.querySelectorAll('dialog[open]').forEach(d => {
@@ -2723,30 +3483,27 @@
                 }
                 function showSettings(name='Sites') {
                     closeOthers('settingsDialog');
+                    if (!$('settingsDialog').open) {
+                        draft = clone(settings.appearance);
+                        draftDirty = false;
+                        $('settingsDialog').showModal();
+                    }
                     selectTab(name);
                     renderSites();
-                    if (!$('settingsDialog').open)
-                        $('settingsDialog').showModal();
                 }
-                function clearForm() {
-                    $('siteForm').reset();
-                    $('editSiteId').value = '';
-                    $('siteFormTitle').textContent = 'Website hinzufügen';
-                    $('saveSiteButton').textContent = 'Hinzufügen';
-                    $('cancelEditSite').hidden = true;
-                }
-                function editSite(id) {
+                async function editSite(id) {
                     const s = settings.sites.find(x => x.id === id);
                     if (!s)
                         return;
-                    showSettings();
+                    if (!$('settingsDialog').open)
+                        showSettings();
+                    if (!await confirmAction('Internetseite bearbeiten?', `Möchten Sie „${s.name}“ wirklich bearbeiten?`, false, 'Bearbeiten'))
+                        return;
                     $('editSiteId').value = id;
-                    $('siteName').value = s.name;
-                    $('siteUrl').value = s.url;
-                    $('siteFormTitle').textContent = 'Website bearbeiten';
-                    $('saveSiteButton').textContent = 'Speichern';
-                    $('cancelEditSite').hidden = false;
-                    $('siteUrl').focus();
+                    $('editSiteName').value = s.name;
+                    $('editSiteUrl').value = s.url;
+                    $('editSiteDialog').showModal();
+                    $('editSiteName').focus();
                 }
                 function row(title, text, extra='') {
                     return `<div class="detail-row"><strong>${esc(title)}</strong><p class="${extra}">${esc(text)}</p></div>`;
@@ -2759,23 +3516,23 @@
                     $('detailTitle').textContent = source.name;
                     let content = '';
                     if (source.status === 'error')
-                        content += row('Keine Verbindung', source.error + (source.updated ? ' Stand: ' + localTime(source.updated) : ''));
+                        content += row('Datenquelle nicht erreichbar', source.error + (source.updated ? ' Stand: ' + localTime(source.updated) : ''));
                     if (!source.updated)
-                        content += '<p class="empty">' + (source.status === 'pending' ? 'Wird geladen …' : 'Keine Daten verfügbar') + '</p>';
+                        content += '<p class="empty">' + (source.status === 'pending' ? 'Daten werden geladen …' : 'Keine Daten verfügbar') + '</p>';
                     else if (id === 'tasks') {
-                        content += s.tasks.open.map(t => row(t.text, t.due ? `${relative(t.due)} · ${shortDate(t.due)}${t.due < D.dateKey() ? ' · Überfällig' : ''}` : 'Ohne Termin', t.due && t.due < D.dateKey() ? 'overdue' : '')).join('') || '<p class="empty">Keine offenen Aufgaben</p>';
+                        content += s.tasks.open.map(t => row(t.text, t.due ? `${shiftDate(t.due)}${t.due < D.dateKey() ? ' · Überfällig' : ''}` : 'Ohne Frist', t.due && t.due < D.dateKey() ? 'overdue' : '')).join('') || '<p class="empty">Keine offenen Aufgaben</p>';
                         content += '<div class="detail-actions"><button class="secondary-button" data-go-dates>Fristen bearbeiten</button></div>';
                     } else if (id === 'shifts') {
                         const v = s.shift;
-                        content += v ? row(v.type || 'Dienst', `${relative(v.date)} · ${shortDate(v.date)}${v.ongoing ? ' · Läuft jetzt' : ''}`) + row('Zeit', `${v.startTime || '—'}–${v.endTime || '—'}`) + row('Ort', [v.location, v.department].filter(Boolean).join(' · ') || 'Nicht angegeben') : '<p class="empty">Kein Dienst geplant</p>';
+                        content += v ? row(shiftType(v), shiftDate(v.date) + (v.ongoing ? ' · Läuft gerade' : '')) + row('Uhrzeit', `${v.startTime || '—'}–${v.endTime || '—'} Uhr`) + row('Abteilung', v.department || 'Nicht angegeben') + row('Einsatzort', v.location || 'Nicht angegeben') : '<p class="empty">Kein Dienst geplant</p>';
                     } else if (id === 'calendar')
-                        content += s.events.map(e => row(e.title || 'Termin', `${relative(e.date)} · ${shortDate(e.date)} · ${e.startTime || 'Ganztägig'}${e.endTime ? '–' + e.endTime : ''}${e.type ? ' · ' + e.type : ''}${e.desc ? '\n' + e.desc : ''}`)).join('') || `<p class="empty">Keine Termine in den nächsten ${settings.horizon} Tagen</p>`;
+                        content += s.events.map(e => row(e.title || 'Termin', `${shiftDate(e.date)} · ${e.startTime || 'Ganztägig'}${e.endTime ? '–' + e.endTime + ' Uhr' : ''}${e.type ? ' · ' + e.type : ''}${e.desc ? '\n' + e.desc : ''}`)).join('') || `<p class="empty">Keine Termine in den nächsten ${settings.horizon} Tagen</p>`;
                     else if (id === 'budget' && s.budget) {
                         const b = s.budget;
-                        content += `<div class="finance-grid"><div class="finance-box"><span>Restbetrag</span><strong style="color:${D.tickerTone('balance', b.balance).foreground}">${money(b.balance)}</strong></div><div class="finance-box"><span>Pro Tag verfügbar</span><strong style="color:${D.tickerTone('daily', b.daily).foreground}">${money(b.daily)}</strong></div></div>` + row('Reserviert', money(b.reserved)) + row('Nach Reservierungen verfügbar', money(b.available)) + row('Pro Tag nach Reservierungen', money(b.safeDaily));
+                        content += `<div class="finance-grid"><div class="finance-box"><span>Restbetrag</span><strong style="color:${D.tickerTone('balance', b.balance).foreground}">${money(b.balance)}</strong></div><div class="finance-box"><span>Pro Tag verfügbar</span><strong style="color:${D.tickerTone('daily', b.daily).foreground}">${money(b.daily)}</strong></div></div>` + row('Reserviert', money(b.reserved)) + row('Nach Abzug der Reservierungen verfügbar', money(b.available)) + row('Pro Tag nach Abzug der Reservierungen', money(b.safeDaily));
                     }
                     const site = settings.sites.find(x => x.id === id);
-                    content += `<div class="detail-actions">${site ? `<a class="primary-button" href="${site.url ? esc(site.url) : '#'}" target="_self" data-open-site="${esc(id)}">${site.url ? 'Website öffnen' : 'Link hinzufügen'}</a>` : ''}<button class="secondary-button" data-refresh>Aktualisieren</button></div>`;
+                    content += `<div class="detail-actions">${site ? `<a class="primary-button" href="${site.url ? esc(site.url) : '#'}" target="_self" data-open-site="${esc(id)}">${site.url ? 'Internetseite öffnen' : 'Internetadresse ergänzen'}</a>` : ''}<button class="secondary-button" data-refresh>Daten aktualisieren</button></div>`;
                     $('detailBody').innerHTML = content;
                 }
                 document.addEventListener('click', async event => {
@@ -2787,7 +3544,6 @@
                         if (!site.url) {
                             event.preventDefault();
                             editSite(site.id);
-                            notify('Bitte den Link hinterlegen.');
                             return;
                         }
                         site.visits++;
@@ -2804,16 +3560,25 @@
                     if (del) {
                         const id = del.dataset.deleteSite
                           , site = settings.sites.find(s => s.id === id);
-                        if (!site || !await confirmAction('Website löschen?', site.name, true))
+                        if (!site || !await confirmAction('Internetseite löschen?', `Möchten Sie „${site.name}“ wirklich aus Ihrer Liste löschen?`, true))
                             return;
                         settings.sites = settings.sites.filter(s => s.id !== id);
                         save();
                         renderBubbles();
                         renderSites();
                         renderAllSites();
-                        if ($('editSiteId').value === id)
-                            clearForm();
-                        notify('Website gelöscht.', 'success');
+                        notify('Die Internetseite wurde gelöscht.', 'success');
+                        return;
+                    }
+                    const deadline = event.target.closest('[data-edit-deadline]');
+                    if (deadline) {
+                        const task = snapshot().tasks.open.find(t => t.id === deadline.dataset.editDeadline);
+                        if (!task)
+                            return;
+                        $('deadlineTaskId').value = task.id;
+                        $('deadlineTaskName').textContent = task.text;
+                        $('deadlineDate').value = task.due;
+                        $('deadlineDialog').showModal();
                         return;
                     }
                     const detail = event.target.closest('[data-detail]');
@@ -2826,7 +3591,7 @@
                     }
                     const close = event.target.closest('[data-close]');
                     if (close) {
-                        $(close.dataset.close).close();
+                        closeDialog(close.dataset.close);
                         return;
                     }
                     const tab = event.target.closest('[data-tab]');
@@ -2834,16 +3599,16 @@
                         selectTab(tab.dataset.tab);
                         return;
                     }
-                    const theme = event.target.closest('[data-theme-choice]');
-                    if (theme) {
-                        if (theme.dataset.themeChoice === settings.theme)
-                            return;
-                        if (!await confirmAction('Farben ändern?', theme.textContent.trim()))
-                            return;
-                        settings.theme = theme.dataset.themeChoice;
-                        save();
-                        applyPreferences();
-                        notify('Farben gespeichert.', 'success');
+                    const preset = event.target.closest('[data-preset]');
+                    if (preset) {
+                        draft = {
+                            ...draft,
+                            preset: preset.dataset.preset,
+                            colors: [...V.presets[preset.dataset.preset].colors]
+                        };
+                        renderAppearance();
+                        updateAppearanceButtons();
+                        applyAppearance(draft);
                         return;
                     }
                     if (event.target.closest('[data-go-dates]')) {
@@ -2854,54 +3619,93 @@
                         refresh(true);
                 }
                 );
+                function validateSite(name, url, id='') {
+                    if (!name)
+                        throw new Error('Bitte geben Sie einen Namen ein.');
+                    const result = D.safeUrl(url);
+                    if (settings.sites.some(s => s.url === result && s.id !== id))
+                        throw new Error('Diese Internetadresse ist bereits gespeichert.');
+                    return result;
+                }
                 $('siteForm').addEventListener('submit', async event => {
                     event.preventDefault();
                     try {
                         const name = $('siteName').value.trim()
-                          , id = $('editSiteId').value;
-                        if (!name)
-                            throw new Error('Bitte einen Namen eingeben.');
-                        const url = D.safeUrl($('siteUrl').value.trim());
-                        if (settings.sites.some(s => s.url === url && s.id !== id))
-                            throw new Error('Dieser Link wurde bereits hinzugefügt.');
-                        if (!await confirmAction(id ? 'Änderungen speichern?' : 'Website hinzufügen?', name + ' · ' + url))
+                          , url = validateSite(name, $('siteUrl').value.trim());
+                        if (settings.sites.length >= 250)
+                            throw new Error('Es können höchstens 250 Internetseiten gespeichert werden.');
+                        if (!await confirmAction('Internetseite hinzufügen?', `Möchten Sie „${name}“ hinzufügen?\n${url}`, false, 'Hinzufügen'))
                             return;
-                        if (id) {
-                            const site = settings.sites.find(s => s.id === id);
-                            if (!site)
-                                throw new Error('Website nicht gefunden.');
-                            Object.assign(site, {
-                                name: name.slice(0, 80),
-                                url
-                            });
-                        } else {
-                            if (settings.sites.length >= 250)
-                                throw new Error('Maximal 250 Websites.');
-                            const colors = ['#d9d5ee', '#dce8be', '#eadac8', '#cde3dc'];
-                            settings.sites.push({
-                                id: crypto.randomUUID ? crypto.randomUUID() : 'site-' + Date.now(),
-                                name: name.slice(0, 80),
-                                url,
-                                color: colors[settings.sites.length % 4],
-                                icon: 'globe',
-                                visits: 0,
-                                lastUsed: 0,
-                                order: settings.sites.length
-                            });
-                        }
+                        const colors = ['#d8e6fa', '#ded9f5', '#d4e9e4', '#f0dce6', '#f2e3cc', '#d5dcf5'];
+                        settings.sites.push({
+                            id: crypto.randomUUID ? crypto.randomUUID() : 'site-' + Date.now(),
+                            name: name.slice(0, 80),
+                            url,
+                            color: colors[settings.sites.length % 6],
+                            icon: 'globe',
+                            visits: 0,
+                            lastUsed: 0,
+                            order: settings.sites.length
+                        });
                         save();
-                        clearForm();
+                        $('siteForm').reset();
                         renderBubbles();
                         renderSites();
                         renderAllSites();
-                        notify(id ? 'Website gespeichert.' : 'Website hinzugefügt.', 'success');
+                        notify('Die Internetseite wurde hinzugefügt.', 'success');
                     } catch (error) {
                         notify(error.message, 'error');
                     }
                 }
                 );
+                $('editSiteForm').addEventListener('submit', async event => {
+                    event.preventDefault();
+                    try {
+                        const id = $('editSiteId').value
+                          , name = $('editSiteName').value.trim()
+                          , url = validateSite(name, $('editSiteUrl').value.trim(), id);
+                        if (!await confirmAction('Änderungen speichern?', `Möchten Sie die Änderungen an „${name}“ wirklich speichern?`, false, 'Speichern'))
+                            return;
+                        const site = settings.sites.find(s => s.id === id);
+                        if (!site)
+                            throw new Error('Die Internetseite wurde nicht gefunden.');
+                        Object.assign(site, {
+                            name: name.slice(0, 80),
+                            url
+                        });
+                        save();
+                        $('editSiteDialog').close();
+                        renderBubbles();
+                        renderSites();
+                        renderAllSites();
+                        notify('Die Änderungen wurden gespeichert.', 'success');
+                    } catch (error) {
+                        notify(error.message, 'error');
+                    }
+                }
+                );
+                $('deadlineForm').addEventListener('submit', async event => {
+                    event.preventDefault();
+                    const value = $('deadlineDate').value;
+                    if (value && !D.validDate(value)) {
+                        notify('Bitte wählen Sie ein gültiges Datum.', 'error');
+                        return;
+                    }
+                    if (!await confirmAction(value ? 'Frist speichern?' : 'Frist entfernen?', value ? `Möchten Sie den ${shortDate(value)} als Frist speichern?` : 'Möchten Sie die Frist für diese Aufgabe wirklich entfernen?', false, 'Speichern'))
+                        return;
+                    settings.deadlines[$('deadlineTaskId').value] = value;
+                    save();
+                    $('deadlineDialog').close();
+                    renderDeadlines();
+                    updateTicker();
+                    notify('Die Frist wurde gespeichert.', 'success');
+                }
+                );
+                $('brandRefresh').addEventListener('click', () => refresh(true));
+                $('brandRefresh').addEventListener('dragstart', event => event.preventDefault());
+                $('brandRefresh').addEventListener('copy', event => event.preventDefault());
                 $('settingsButton').addEventListener('click', () => showSettings());
-                $('cancelEditSite').addEventListener('click', clearForm);
+                $('refreshDataButton').addEventListener('click', () => refresh(true));
                 $('allSitesButton').addEventListener('click', () => {
                     $('siteSearch').value = '';
                     renderAllSites();
@@ -2910,110 +3714,85 @@
                 );
                 $('siteSearch').addEventListener('input', renderAllSites);
                 $('addFromAll').addEventListener('click', () => {
-                    clearForm();
                     showSettings();
                     $('siteName').focus();
                 }
                 );
+                $('visibleCount').innerHTML = Array.from({
+                    length: 10
+                }, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('');
                 $('visibleCount').addEventListener('change', async event => {
                     const value = Number(event.target.value);
-                    if (!await confirmAction('Anzahl ändern?', `${value} sichtbare Websites`)) {
+                    if (!await confirmAction('Anzahl ändern?', `Möchten Sie bis zu ${value} Internetseiten gleichzeitig anzeigen?`, false, 'Übernehmen')) {
                         event.target.value = settings.visibleCount;
                         return;
                     }
                     settings.visibleCount = value;
                     save();
                     renderBubbles();
-                    notify('Anzeige gespeichert.', 'success');
+                    notify('Die Anzahl der sichtbaren Internetseiten wurde gespeichert.', 'success');
                 }
                 );
                 $('motionToggle').addEventListener('change', async event => {
                     const value = event.target.checked;
-                    if (!await confirmAction('Bewegung ändern?', value ? 'Aktivieren' : 'Deaktivieren')) {
+                    if (!await confirmAction('Bewegung ändern?', value ? 'Möchten Sie den Hintergrund und die Blasen bewegen?' : 'Möchten Sie die Bewegung des Hintergrunds und der Blasen anhalten?', false, 'Übernehmen')) {
                         event.target.checked = settings.motion;
                         return;
                     }
                     settings.motion = value;
                     save();
                     applyPreferences();
-                    notify('Anzeige gespeichert.', 'success');
+                    notify('Die Bewegungseinstellung wurde gespeichert.', 'success');
                 }
                 );
                 $('horizonSelect').addEventListener('change', async event => {
                     const value = Number(event.target.value);
-                    if (!await confirmAction('Vorschau ändern?', `${value} Tage`)) {
+                    if (!await confirmAction('Zeitraum ändern?', `Möchten Sie die nächsten ${value} Tage berücksichtigen?`, false, 'Übernehmen')) {
                         event.target.value = settings.horizon;
                         return;
                     }
                     settings.horizon = value;
                     save();
                     updateTicker();
-                    notify('Vorschau gespeichert.', 'success');
+                    notify('Der Zeitraum wurde gespeichert.', 'success');
                 }
                 );
-                $('taskDeadlines').addEventListener('change', async event => {
-                    const input = event.target;
-                    if (!input.matches('[data-task-due]'))
-                        return;
-                    const value = input.value
-                      , old = input.defaultValue;
-                    if (value && !D.validDate(value)) {
-                        input.value = old;
-                        notify('Ungültiges Datum.', 'error');
-                        return;
+                $('panelView').addEventListener('input', event => {
+                    if (event.target.matches('[data-wave-color]')) {
+                        draft.colors[Number(event.target.dataset.waveColor)] = event.target.value;
+                        draft.preset = 'custom';
+                        updateAppearanceButtons();
+                        applyAppearance(draft);
+                    } else if (event.target.matches('[data-effect]')) {
+                        const key = event.target.dataset.effect;
+                        draft[key] = Number(event.target.value);
+                        const unit = effectFields.find(f => f[0] === key)[4];
+                        $('effectValue-' + key).textContent = draft[key] + unit;
+                        updateAppearanceButtons();
+                        applyAppearance(draft);
                     }
-                    if (!await confirmAction(value ? 'Frist speichern?' : 'Frist entfernen?', value ? shortDate(value) : 'Ohne Termin')) {
-                        input.value = old;
+                }
+                );
+                $('saveAppearance').addEventListener('click', async () => {
+                    if (!draftDirty)
                         return;
-                    }
-                    settings.deadlines[input.dataset.taskDue] = value;
-                    input.defaultValue = value;
+                    if (!await confirmAction('Hintergrund speichern?', 'Möchten Sie diese Farben und Welleneinstellungen dauerhaft übernehmen?', false, 'Übernehmen'))
+                        return;
+                    settings.appearance = V.normalize(draft);
+                    draft = clone(settings.appearance);
                     save();
-                    updateTicker();
-                    notify('Frist gespeichert.', 'success');
+                    updateAppearanceButtons();
+                    applyAppearance(settings.appearance);
+                    notify('Der Hintergrund wurde gespeichert.', 'success');
                 }
                 );
-                $('refreshDataButton').addEventListener('click', () => refresh(true));
-                $('exportSettings').addEventListener('click', async () => {
-                    if (!await confirmAction('Einstellungen exportieren?', 'Websites, Anzeige und Fristen'))
+                $('discardAppearance').addEventListener('click', async () => {
+                    if (!draftDirty || !await confirmAction('Änderungen verwerfen?', 'Möchten Sie die ungespeicherten Änderungen am Hintergrund wirklich verwerfen?', false, 'Verwerfen'))
                         return;
-                    const url = URL.createObjectURL(new Blob([JSON.stringify(settings, null, 2)],{
-                        type: 'application/json'
-                    }))
-                      , a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'shogi-space.json';
-                    a.click();
-                    setTimeout( () => URL.revokeObjectURL(url), 1000);
-                    notify('Export erstellt.', 'success');
-                }
-                );
-                $('importSettings').addEventListener('click', () => $('importFile').click());
-                $('importFile').addEventListener('change', async event => {
-                    const file = event.target.files[0];
-                    if (!file)
-                        return;
-                    try {
-                        if (file.size > 1000000)
-                            throw new Error('Datei zu groß.');
-                        const raw = JSON.parse(await file.text());
-                        if (!raw || raw.version !== 1 || !Array.isArray(raw.sites))
-                            throw new Error('Ungültige Einstellungsdatei.');
-                        if (!await confirmAction('Einstellungen importieren?', 'Die aktuellen Einstellungen werden ersetzt.'))
-                            return;
-                        settings = normalize(raw);
-                        save();
-                        applyPreferences();
-                        renderBubbles();
-                        renderSites();
-                        renderDeadlines();
-                        updateTicker();
-                        notify('Einstellungen importiert.', 'success');
-                    } catch (error) {
-                        notify(error instanceof SyntaxError || error.name === 'NotReadableError' ? 'Die Datei konnte nicht gelesen werden.' : error.message, 'error');
-                    } finally {
-                        event.target.value = '';
-                    }
+                    draft = clone(settings.appearance);
+                    renderAppearance();
+                    applyAppearance(settings.appearance);
+                    notify('Die Hintergrundänderungen wurden verworfen.');
                 }
                 );
                 document.querySelectorAll('dialog').forEach(dialog => {
@@ -3022,12 +3801,24 @@
                             return;
                         const r = dialog.getBoundingClientRect();
                         if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom)
-                            dialog.close();
+                            closeDialog(dialog.id);
+                    }
+                    );
+                    dialog.addEventListener('cancel', event => {
+                        if (dialog.id === 'settingsDialog' && draftDirty) {
+                            event.preventDefault();
+                            closeDialog(dialog.id);
+                        }
                     }
                     );
                     dialog.addEventListener('close', () => {
                         if (dialog.id === 'detailDialog')
                             activeDetail = null;
+                        if (dialog.id === 'settingsDialog') {
+                            draft = clone(settings.appearance);
+                            draftDirty = false;
+                            applyAppearance(settings.appearance);
+                        }
                     }
                     );
                 }
@@ -3051,21 +3842,28 @@
                     tabs[n].focus();
                 }
                 );
-                let gearTimer;
-                function showGear() {
-                    clearTimeout(gearTimer);
-                    $('settingsReveal').classList.add('visible');
-                    gearTimer = setTimeout( () => {
-                        if (!$('settingsReveal').matches(':hover,:focus-within'))
-                            $('settingsReveal').classList.remove('visible');
+                let controlTimer;
+                function revealControls() {
+                    clearTimeout(controlTimer);
+                    for (const id of ['allReveal', 'settingsReveal'])
+                        $(id).classList.add('visible');
+                    controlTimer = setTimeout( () => {
+                        for (const id of ['allReveal', 'settingsReveal'])
+                            if (!$(id).matches(':hover') && !$(id).querySelector(':focus-visible'))
+                                $(id).classList.remove('visible');
                     }
                     , 3000);
                 }
-                document.addEventListener('pointermove', showGear, {
+                document.addEventListener('pointermove', revealControls, {
                     passive: true
                 });
-                $('settingsReveal').addEventListener('pointerleave', showGear);
-                $('settingsReveal').addEventListener('focusout', showGear);
+                document.addEventListener('pointerdown', revealControls, {
+                    passive: true
+                });
+                for (const id of ['allReveal', 'settingsReveal']) {
+                    $(id).addEventListener('pointerleave', revealControls);
+                    $(id).addEventListener('focusout', revealControls);
+                }
                 mediaMotion.addEventListener('change', applyPreferences);
                 window.addEventListener('online', () => refresh());
                 window.addEventListener('offline', () => refresh());
@@ -3081,11 +3879,15 @@
                     if (event.key === STORE)
                         try {
                             settings = normalize(JSON.parse(event.newValue));
+                            draft = clone(settings.appearance);
+                            draftDirty = false;
                             applyPreferences();
                             renderBubbles();
                             renderSites();
                             renderDeadlines();
                             updateTicker();
+                            if ($('settingsDialog').open && !$('panelView').hidden)
+                                renderAppearance();
                         } catch {}
                 }
                 );
@@ -3095,14 +3897,19 @@
                 renderSources();
                 renderDeadlines();
                 updateClocks();
-                showGear();
+                revealControls();
+                sizeCanvas($('waveCanvas'));
                 const resize = new ResizeObserver( () => {
                     resetMotion();
-                    fitLabels();
+                    sizeCanvas($('waveCanvas'));
+                    if (!$('panelView').hidden)
+                        sizeCanvas($('appearancePreview'));
                 }
                 );
                 resize.observe($('main'));
                 resize.observe(document.querySelector('.clocks'));
+                const previewResize = new ResizeObserver( () => sizeCanvas($('appearancePreview')));
+                previewResize.observe($('appearancePreview'));
                 document.fonts.ready.then( () => {
                     resetMotion();
                     fitLabels();
