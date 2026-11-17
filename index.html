@@ -5917,6 +5917,7 @@
                 let iconSearchTimer = null
                   , iconRequest = 0;
                 async function findIcons(more=false) {
+                    clearTimeout(iconSearchTimer);
                     const original = $('iconQuery').value.trim();
                     if (!original)
                         return;
