@@ -3596,18 +3596,6 @@
                 height: 24px
             }
 
-            .clock-row time {
-                letter-spacing: -5px
-            }
-
-            #berlinTime {
-                font-size: clamp(72px,8.5vw,164px)
-            }
-
-            #tbilisiTime {
-                font-size: clamp(58px,6.5vw,121px)
-            }
-
             .clock-date {
                 font-size: clamp(12px,.9vw,16px);
                 margin-left: 48px;
@@ -4000,18 +3988,6 @@
                     gap: 9px
                 }
 
-                .clock-row time {
-                    letter-spacing: -3px
-                }
-
-                #berlinTime {
-                    font-size: clamp(46px,13vw,94px)
-                }
-
-                #tbilisiTime {
-                    font-size: clamp(38px,10vw,74px)
-                }
-
                 .flag,.flag svg {
                     width: 25px;
                     height: 17px
@@ -4191,6 +4167,11 @@
                 background-repeat: no-repeat;
                 background-position: right 11px center;
                 padding-right: 34px!important
+            }
+
+            #siteRail.is-overflow {
+                padding-top: 0;
+                padding-bottom: 0
             }
         </style>
     </head>
@@ -6262,7 +6243,23 @@
                 function setClockText(el, text) {
                     el.textContent = text;
                 }
+                function fitClockSizes() {
+                    const limit = $('siteViewport').getBoundingClientRect().left - 8;
+                    for (const id of ['berlinTime', 'tbilisiTime']) {
+                        const time = $(id);
+                        time.style.removeProperty('font-size');
+                        for (let pass = 0; pass < 2; pass++) {
+                            const rect = time.getBoundingClientRect();
+                            if (rect.right <= limit || limit <= rect.left)
+                                break;
+                            const size = parseFloat(getComputedStyle(time).fontSize);
+                            time.style.fontSize = (size * (limit - rect.left) / rect.width) + 'px';
+                        }
+                    }
+                }
                 function measureSiteRail() {
+                    $('siteRail').classList.toggle('is-overflow', railItems.length > settings.visibleCount);
+                    fitClockSizes();
                     const viewport = $('siteViewport')
                       , height = viewport.clientHeight
                       , previous = railPlan;
