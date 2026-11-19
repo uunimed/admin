@@ -4547,6 +4547,44 @@
             #mailServiceUrl {
                 font: 14px var(--number)
             }
+
+            .mail-service-check {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                margin-top: 16px
+            }
+
+            .mail-service-check>button {
+                flex: none;
+                font-size: 12px
+            }
+
+            .mail-service-check .field-note {
+                margin: 0;
+                user-select: text;
+                -webkit-user-select: text;
+                overflow-wrap: anywhere
+            }
+
+            #mailServiceStatus[data-state=unavailable] {
+                color: #a04d63
+            }
+
+            #mailServiceStatus[data-state=ready] {
+                color: #33876b
+            }
+
+            .mail-service-check>button:disabled {
+                opacity: .4;
+                cursor: default
+            }
+
+            @media(max-width: 760px) {
+                .mail-service-check {
+                    flex-direction:column
+                }
+            }
         </style>
         <!-- DOMPurify: Apache-2.0
 
@@ -5146,6 +5184,10 @@ PDF.js: Apache-2.0
                                     <label for="mailServiceUrl" class="mail-service-label">Verbindungsdienst</label>
                                     <input id="mailServiceUrl" type="url" autocomplete="url" spellcheck="false">
                                     <p class="field-note">Für die automatische Wiederherstellung in neuen Fenstern. Cloudflare Free genügt.</p>
+                                    <div class="mail-service-check">
+                                        <button type="button" class="secondary-button" id="mailServiceCheck">Verbindung prüfen</button>
+                                        <p class="field-note" id="mailServiceStatus" role="status" aria-live="polite"></p>
+                                    </div>
                                     <p class="field-note" id="mailConnectionHint"></p>
                                 </form>
                             </div>
@@ -6387,6 +6429,41 @@ PDF.js: Apache-2.0
                     credential(id) {
                         const value = this.load().accounts[String(id)];
                         return typeof value === 'string' && /^[a-zA-Z0-9_-]{43}$/.test(value) ? value : '';
+                    }
+                    async inspect(origin='') {
+                        const base = serviceUrl(this.settings().serviceUrl);
+                        if (!base)
+                            return {
+                                ready: false,
+                                message: 'Kein Verbindungsdienst eingetragen.'
+                            };
+                        let response, data;
+                        try {
+                            response = await this.fetcher(base + '/health', {
+                                method: 'GET',
+                                credentials: 'omit',
+                                cache: 'no-store',
+                                referrerPolicy: 'no-referrer',
+                                signal: AbortSignal.timeout(8000)
+                            });
+                            data = await response.json();
+                        } catch {
+                            throw new ServiceError('Der Verbindungsdienst ist nicht erreichbar. Direktes Verbinden mit Google ist weiterhin möglich.',0);
+                        }
+                        if (data?.service !== 'shogi-gmail')
+                            throw new ServiceError(data?.error || 'Bitte aktualisieren Sie den Worker-Code des Verbindungsdienstes.',response.status);
+                        if (Array.isArray(data.missing) && data.missing.length)
+                            throw new ServiceError('In Cloudflare fehlen: ' + data.missing.join(', ') + '.',response.status);
+                        if (!response.ok || data.ok !== true)
+                            throw new ServiceError(data.error || 'Der Verbindungsdienst ist noch nicht eingerichtet.',response.status);
+                        if (data.clientId !== this.settings().clientId)
+                            throw new ServiceError('GOOGLE_CLIENT_ID in Cloudflare stimmt nicht mit der Google-Client-ID dieser Seite überein.',409);
+                        if (origin && data.origin !== origin)
+                            throw new ServiceError('ALLOWED_ORIGIN in Cloudflare muss „' + origin + '“ sein.',409);
+                        return {
+                            ready: true,
+                            message: 'Dauerhafte Verbindung ist bereit.'
+                        };
                     }
                     remember(id, key) {
                         if (!/^[a-zA-Z0-9_-]{43}$/.test(key))
@@ -9946,7 +10023,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                           , state = mailState(account.id);
                         let content = '';
                         if (!session)
-                            content = mailRestoring.has(account.id) ? '<p class="mail-empty">Verbindung wird wiederhergestellt …</p>' : `<div class="mail-empty">${state.error ? '<p>' + esc(state.error) + '</p>' : ''}<button class="secondary-button" data-mail-connect="${esc(account.id)}">Erneut verbinden</button></div>`;
+                            content = mailRestoring.has(account.id) ? '<p class="mail-empty">Verbindung wird wiederhergestellt …</p>' : `<div class="mail-empty">${state.error ? '<p>' + esc(state.error) + '</p>' : ''}<button class="secondary-button" data-mail-connect="${esc(account.id)}">${settings.mail.serviceUrl && mailServiceReady() ? 'Dauerhaft verbinden' : 'Mit Google verbinden'}</button>${settings.mail.serviceUrl ? `<button class="secondary-button" data-mail-direct="${esc(account.id)}">Direkt mit Google verbinden</button>` : ''}</div>`;
                         else if (state.loading && !state.messages.length)
                             content = '<p class="mail-empty">Nachrichten werden geladen …</p>';
                         else if (state.error && !state.messages.length)
@@ -9969,6 +10046,8 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     for (const [key,id] of [['color', 'mailColor'], ['headerColor', 'mailHeaderColor'], ['headerTextColor', 'mailHeaderTextColor'], ['transparency', 'mailTransparency'], ['headerTransparency', 'mailHeaderTransparency']])
                         $(id).value = m[key];
                     updateMailRanges();
+                    renderMailServiceStatus();
+                    checkMailService();
                     if (m.clientId && !googleReady && !googleLoading && location.protocol !== 'file:')
                         loadGoogle();
                 }
@@ -10008,8 +10087,8 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     );
                     return googleLoading;
                 }
-                async function connectMail(id='') {
-                    if (settings.mail.serviceUrl)
+                async function connectMail(id='', forceDirect=false) {
+                    if (!forceDirect && settings.mail.serviceUrl && mailServiceReady())
                         return connectPersistentMail(id);
                     if (mailAuthBusy)
                         return;
@@ -10034,71 +10113,74 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     }
                     mailAuthBusy = true;
                     renderMailSettings();
-                    const client = google.accounts.oauth2.initTokenClient({
-                        client_id: settings.mail.clientId,
-                        scope: M.SCOPE,
-                        include_granted_scopes: true,
-                        callback: async response => {
-                            try {
-                                if (response.error)
-                                    throw new Error(response.error === 'access_denied' ? 'Der Google-Zugriff wurde nicht freigegeben.' : 'Die Google-Anmeldung konnte nicht abgeschlossen werden.');
-                                if (!google.accounts.oauth2.hasGrantedAllScopes(response, 'https://www.googleapis.com/auth/gmail.modify'))
-                                    throw new Error('Zum Synchronisieren des Lesestatus ist der Gmail-Zugriff erforderlich.');
-                                const identity = await gmail.identity(response.access_token);
-                                if (!identity.sub || !identity.email)
-                                    throw new Error('Das Google-Konto konnte nicht zugeordnet werden.');
-                                if (existing && identity.sub !== existing.id)
-                                    throw new Error('Bitte wählen Sie das zu diesem Postfach gehörende Google-Konto.');
-                                let account = settings.mail.accounts.find(a => a.id === identity.sub);
-                                const labels = (await gmail.labels(response.access_token)).labels || [];
-                                if (!account) {
-                                    account = {
-                                        id: identity.sub,
-                                        email: identity.email,
-                                        name: identity.name || [identity.given_name, identity.family_name].filter(Boolean).join(' ') || 'Gmail-Konto',
-                                        section: 'CATEGORY_PERSONAL',
-                                        labels: labels.filter(l => l.type === 'user')
-                                    };
-                                    settings.mail.accounts.push(account);
-                                } else
-                                    account.labels = labels.filter(l => l.type === 'user');
-                                mailSessions.set(account.id, {
-                                    token: response.access_token,
-                                    expiresAt: Date.now() + Number(response.expires_in || 3600) * 1000
-                                });
-                                mailStates.delete(account.id);
-                                save();
-                                renderMailPanels();
-                                renderMailSettings();
-                                await refreshMailAccount(account, true);
-                                openMailAccount(account.id);
-                                notify('Das Gmail-Konto wurde verbunden.', 'success');
-                            } catch (error) {
-                                notify(error.message || 'Die Google-Anmeldung ist fehlgeschlagen.', 'error');
-                            } finally {
-                                mailAuthBusy = false;
-                                if ($('settingsDialog').open && !$('panelMail').hidden)
-                                    renderMailSettings();
-                            }
-                        }
-                        ,
-                        error_callback: error => {
-                            mailAuthBusy = false;
-                            renderMailSettings();
-                            notify(error.type === 'popup_closed' ? 'Die Google-Anmeldung wurde geschlossen.' : 'Bitte erlauben Sie das Google-Anmeldefenster.', 'info');
-                        }
-                    });
+                    if (settings.mail.serviceUrl && !forceDirect)
+                        notify('Der Verbindungsdienst ist noch nicht bereit. Google wird direkt für diese Sitzung verbunden.', 'info');
                     try {
+                        const client = google.accounts.oauth2.initTokenClient({
+                            client_id: settings.mail.clientId,
+                            scope: M.SCOPE,
+                            include_granted_scopes: true,
+                            ...(existing ? {
+                                login_hint: existing.email
+                            } : {}),
+                            callback: async response => {
+                                try {
+                                    if (response.error)
+                                        throw new Error(response.error === 'access_denied' ? 'Der Google-Zugriff wurde nicht freigegeben.' : 'Die Google-Anmeldung konnte nicht abgeschlossen werden.');
+                                    if (!google.accounts.oauth2.hasGrantedAllScopes(response, 'https://www.googleapis.com/auth/gmail.modify'))
+                                        throw new Error('Zum Synchronisieren des Lesestatus ist der Gmail-Zugriff erforderlich.');
+                                    const identity = await gmail.identity(response.access_token);
+                                    if (!identity.sub || !identity.email)
+                                        throw new Error('Das Google-Konto konnte nicht zugeordnet werden.');
+                                    if (existing && identity.sub !== existing.id)
+                                        throw new Error('Bitte wählen Sie das zu diesem Postfach gehörende Google-Konto.');
+                                    let account = settings.mail.accounts.find(a => a.id === identity.sub);
+                                    const labels = (await gmail.labels(response.access_token)).labels || [];
+                                    if (!account) {
+                                        account = {
+                                            id: identity.sub,
+                                            email: identity.email,
+                                            name: identity.name || [identity.given_name, identity.family_name].filter(Boolean).join(' ') || 'Gmail-Konto',
+                                            section: 'CATEGORY_PERSONAL',
+                                            labels: labels.filter(l => l.type === 'user')
+                                        };
+                                        settings.mail.accounts.push(account);
+                                    } else
+                                        account.labels = labels.filter(l => l.type === 'user');
+                                    mailSessions.set(account.id, {
+                                        token: response.access_token,
+                                        expiresAt: Date.now() + Number(response.expires_in || 3600) * 1000,
+                                        mode: 'direct'
+                                    });
+                                    mailStates.delete(account.id);
+                                    save();
+                                    renderMailPanels();
+                                    renderMailSettings();
+                                    await refreshMailAccount(account, true);
+                                    openMailAccount(account.id);
+                                    notify('Das Gmail-Konto wurde verbunden.', 'success');
+                                } catch (error) {
+                                    notify(error.message || 'Die Google-Anmeldung ist fehlgeschlagen.', 'error');
+                                } finally {
+                                    mailAuthBusy = false;
+                                    if ($('settingsDialog').open && !$('panelMail').hidden)
+                                        renderMailSettings();
+                                }
+                            }
+                            ,
+                            error_callback: error => {
+                                mailAuthBusy = false;
+                                renderMailSettings();
+                                notify(error.type === 'popup_closed' ? 'Die Google-Anmeldung wurde geschlossen.' : 'Bitte erlauben Sie das Google-Anmeldefenster.', 'info');
+                            }
+                        });
                         client.requestAccessToken(existing ? {
-                            hint: existing.email,
                             prompt: ''
                         } : {
                             prompt: 'select_account'
                         });
                     } catch (error) {
-                        mailAuthBusy = false;
-                        renderMailSettings();
-                        notify(error.message, 'error');
+                        mailAuthFailure(error);
                     }
                 }
                 async function refreshMailAccount(account, force=false) {
@@ -10177,6 +10259,71 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     settings: () => settings.mail
                 })
                   , mailRestoring = new Map();
+                let mailServiceState = {
+                    key: '',
+                    ready: false,
+                    pending: false,
+                    message: '',
+                    promise: null
+                };
+                const mailServiceKey = () => settings.mail.clientId + '|' + settings.mail.serviceUrl;
+                function mailServiceReady() {
+                    return mailServiceState.key === mailServiceKey() && mailServiceState.ready;
+                }
+                function renderMailServiceStatus() {
+                    const status = $('mailServiceStatus');
+                    if (!status)
+                        return;
+                    status.textContent = !settings.mail.serviceUrl ? 'Google kann ohne Verbindungsdienst direkt verbunden werden.' : mailServiceState.pending ? 'Verbindungsdienst wird geprüft …' : mailServiceState.message || 'Verbindungsdienst noch nicht geprüft.';
+                    status.dataset.state = !settings.mail.serviceUrl ? 'direct' : mailServiceReady() ? 'ready' : mailServiceState.pending ? 'pending' : 'unavailable';
+                    $('mailServiceCheck').disabled = !settings.mail.serviceUrl || mailServiceState.pending;
+                }
+                function checkMailService(force=false) {
+                    const key = mailServiceKey();
+                    if (!settings.mail.serviceUrl) {
+                        mailServiceState = {
+                            key,
+                            ready: false,
+                            pending: false,
+                            message: '',
+                            promise: null
+                        };
+                        renderMailServiceStatus();
+                        return Promise.resolve(false);
+                    }
+                    if (mailServiceState.key === key && (mailServiceState.pending || (!force && mailServiceState.checked)))
+                        return mailServiceState.promise || Promise.resolve(mailServiceState.ready);
+                    const state = {
+                        key,
+                        ready: false,
+                        pending: true,
+                        checked: false,
+                        message: '',
+                        promise: null
+                    };
+                    mailServiceState = state;
+                    renderMailServiceStatus();
+                    state.promise = (async () => {
+                        try {
+                            const result = await persistentMail.inspect(location.origin);
+                            state.ready = result.ready;
+                            state.message = result.message;
+                        } catch (error) {
+                            state.ready = false;
+                            state.message = error.message;
+                        } finally {
+                            state.pending = false;
+                            state.checked = true;
+                            if (mailServiceState === state) {
+                                renderMailServiceStatus();
+                                renderMailPanels();
+                            }
+                        }
+                        return state.ready;
+                    }
+                    )();
+                    return state.promise;
+                }
                 async function ensureMailSession(account) {
                     const existing = mailSession(account);
                     if (existing)
@@ -10186,15 +10333,16 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     if (mailRestoring.has(account.id))
                         return mailRestoring.get(account.id);
                     const state = mailState(account.id)
-                      , connectionVersion = settings.mail.clientId + '|' + settings.mail.serviceUrl;
+                      , connectionVersion = mailServiceKey();
                     const task = (async () => {
                         try {
                             const data = await persistentMail.restore(account.id);
-                            if (connectionVersion !== settings.mail.clientId + '|' + settings.mail.serviceUrl || !data || !settings.mail.accounts.some(a => a.id === account.id))
+                            if (connectionVersion !== mailServiceKey() || !data || !settings.mail.accounts.some(a => a.id === account.id))
                                 return null;
                             const session = {
                                 token: data.accessToken,
-                                expiresAt: data.expiresAt
+                                expiresAt: data.expiresAt,
+                                mode: 'persistent'
                             };
                             mailSessions.set(account.id, session);
                             state.error = '';
@@ -10211,6 +10359,12 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     mailRestoring.set(account.id, task);
                     renderMailPanels();
                     return task;
+                }
+                function mailAuthFailure(error) {
+                    mailAuthBusy = false;
+                    notify(error?.message && error.message.startsWith('Bitte ') ? error.message : 'Die Google-Anmeldung konnte nicht gestartet werden. Bitte prüfen Sie die Google-Client-ID und versuchen Sie es erneut.', 'error');
+                    if ($('settingsDialog').open && !$('panelMail').hidden)
+                        renderMailSettings();
                 }
                 async function connectPersistentMail(id='') {
                     if (mailAuthBusy)
@@ -10236,73 +10390,81 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     }
                     mailAuthBusy = true;
                     renderMailSettings();
-                    const client = google.accounts.oauth2.initCodeClient({
-                        client_id: settings.mail.clientId,
-                        scope: M.SCOPE,
-                        ux_mode: 'popup',
-                        include_granted_scopes: true,
-                        ...(existing ? {
-                            hint: existing.email
-                        } : {
-                            select_account: true
-                        }),
-                        callback: async response => {
-                            try {
-                                if (response.error || !response.code)
-                                    throw new Error('Die Google-Verbindung wurde nicht freigegeben.');
-                                const data = await persistentMail.connect(response.code, id)
-                                  , identity = data.identity
-                                  , labels = (await gmail.labels(data.accessToken)).labels || [];
-                                let account = settings.mail.accounts.find(a => a.id === identity.id);
-                                if (!account) {
-                                    account = {
-                                        id: identity.id,
-                                        email: identity.email,
-                                        name: identity.name,
-                                        section: 'CATEGORY_PERSONAL',
-                                        labels: []
-                                    };
-                                    settings.mail.accounts.push(account);
-                                }
-                                account.labels = labels.filter(l => l.type === 'user');
-                                mailSessions.set(account.id, {
-                                    token: data.accessToken,
-                                    expiresAt: data.expiresAt
-                                });
-                                mailStates.delete(account.id);
-                                save();
-                                renderMailPanels();
-                                renderMailSettings();
-                                await refreshMailAccount(account, true);
-                                openMailAccount(account.id);
-                                notify('Die dauerhafte Gmail-Verbindung wurde gespeichert.', 'success');
-                            } catch (error) {
-                                notify(error.message || 'Die Google-Verbindung konnte nicht gespeichert werden.', 'error');
-                            } finally {
-                                mailAuthBusy = false;
-                                if ($('settingsDialog').open && !$('panelMail').hidden)
-                                    renderMailSettings();
-                            }
-                        }
-                        ,
-                        error_callback: error => {
-                            mailAuthBusy = false;
-                            renderMailSettings();
-                            notify(error.type === 'popup_closed' ? 'Die Google-Anmeldung wurde geschlossen.' : 'Bitte erlauben Sie das Google-Anmeldefenster.', 'info');
-                        }
-                    });
                     try {
+                        const client = google.accounts.oauth2.initCodeClient({
+                            client_id: settings.mail.clientId,
+                            scope: M.SCOPE,
+                            ux_mode: 'popup',
+                            include_granted_scopes: true,
+                            ...(existing ? {
+                                login_hint: existing.email
+                            } : {
+                                select_account: true
+                            }),
+                            callback: async response => {
+                                try {
+                                    if (response.error || !response.code)
+                                        throw new Error('Die Google-Verbindung wurde nicht freigegeben.');
+                                    const data = await persistentMail.connect(response.code, id)
+                                      , identity = data.identity
+                                      , labels = (await gmail.labels(data.accessToken)).labels || [];
+                                    let account = settings.mail.accounts.find(a => a.id === identity.id);
+                                    if (!account) {
+                                        account = {
+                                            id: identity.id,
+                                            email: identity.email,
+                                            name: identity.name,
+                                            section: 'CATEGORY_PERSONAL',
+                                            labels: []
+                                        };
+                                        settings.mail.accounts.push(account);
+                                    }
+                                    account.labels = labels.filter(l => l.type === 'user');
+                                    mailSessions.set(account.id, {
+                                        token: data.accessToken,
+                                        expiresAt: data.expiresAt,
+                                        mode: 'persistent'
+                                    });
+                                    mailStates.delete(account.id);
+                                    save();
+                                    renderMailPanels();
+                                    renderMailSettings();
+                                    await refreshMailAccount(account, true);
+                                    openMailAccount(account.id);
+                                    notify('Die dauerhafte Gmail-Verbindung wurde gespeichert.', 'success');
+                                } catch (error) {
+                                    if (existing)
+                                        mailState(existing.id).error = error.message;
+                                    renderMailPanels();
+                                    notify((error.message || 'Die dauerhafte Verbindung konnte nicht gespeichert werden.') + ' Direktes Verbinden mit Google ist weiterhin möglich.', 'error');
+                                } finally {
+                                    mailAuthBusy = false;
+                                    if ($('settingsDialog').open && !$('panelMail').hidden)
+                                        renderMailSettings();
+                                }
+                            }
+                            ,
+                            error_callback: error => {
+                                mailAuthBusy = false;
+                                renderMailSettings();
+                                notify(error.type === 'popup_closed' ? 'Die Google-Anmeldung wurde geschlossen.' : 'Bitte erlauben Sie das Google-Anmeldefenster.', 'info');
+                            }
+                        });
                         client.requestCode();
                     } catch (error) {
-                        mailAuthBusy = false;
-                        renderMailSettings();
-                        notify(error.message, 'error');
+                        mailAuthFailure(error);
                     }
                 }
                 async function clearPersistentConnections() {
-                    for (const account of settings.mail.accounts)
-                        await persistentMail.disconnect(account.id);
+                    const accounts = settings.mail.accounts.filter(account => persistentMail.credential(account.id));
+                    if (!accounts.length)
+                        return false;
+                    if (!mailServiceReady())
+                        return true;
+                    const results = await Promise.allSettled(accounts.map(account => persistentMail.disconnect(account.id)));
+                    return results.some(result => result.status === 'rejected');
                 }
+                $('mailServiceCheck').addEventListener('click', () => checkMailService(true));
                 window.addEventListener('storage', event => {
                     if (event.key !== A.KEY || !settings.mail.serviceUrl)
                         return;
@@ -10636,6 +10798,9 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                         refreshMail(true);
                     }
                     );
+                    if (settings.mail.clientId && location.protocol !== 'file:')
+                        loadGoogle();
+                    checkMailService();
                     refreshMail(true);
                 }
                 $('mailMessageDialog').addEventListener('close', () => {
@@ -10670,13 +10835,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     const changed = clientId !== settings.mail.clientId || serviceUrl !== settings.mail.serviceUrl;
                     if (!await confirmAction('Google-Verbindung speichern?', changed ? 'Möchten Sie diese Verbindungseinstellungen übernehmen? Die Postfächer müssen danach einmal neu verbunden werden.' : 'Möchten Sie diese Verbindungseinstellungen speichern?', false, 'Speichern'))
                         return;
-                    try {
-                        if (changed)
-                            await clearPersistentConnections();
-                    } catch (error) {
-                        notify(error.message, 'error');
-                        return;
-                    }
+                    const cleanupPending = changed ? await clearPersistentConnections() : false;
                     Object.assign(settings.mail, {
                         clientId,
                         serviceUrl
@@ -10688,7 +10847,10 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     save();
                     renderMailPanels();
                     renderMailSettings();
+                    checkMailService(true);
                     notify('Die Google-Verbindung wurde gespeichert.', 'success');
+                    if (cleanupPending)
+                        notify('Der bisherige Dienst war nicht erreichbar. Seine gespeicherten Freigaben wurden dort nicht gelöscht.', 'info');
                 }
                 );
                 $('mailAddAccount').addEventListener('click', () => connectMail());
@@ -10745,7 +10907,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                 }
                 );
                 document.addEventListener('click', async event => {
-                    const target = event.target.closest('[data-mail-settings],[data-mail-connect],[data-mail-edit],[data-mail-remove],[data-mail-message],[data-mail-page],[data-mail-refresh],[data-mail-read-retry],[data-mail-go-sites]');
+                    const target = event.target.closest('[data-mail-settings],[data-mail-direct],[data-mail-connect],[data-mail-edit],[data-mail-remove],[data-mail-message],[data-mail-page],[data-mail-refresh],[data-mail-read-retry],[data-mail-go-sites]');
                     if (!target)
                         return;
                     if (target.hasAttribute('data-mail-settings')) {
@@ -10754,6 +10916,10 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     }
                     if (target.hasAttribute('data-mail-go-sites')) {
                         showSettings('Sites');
+                        return;
+                    }
+                    if (target.hasAttribute('data-mail-direct')) {
+                        connectMail(target.dataset.mailDirect, true);
                         return;
                     }
                     if (target.hasAttribute('data-mail-connect')) {
