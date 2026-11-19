@@ -3238,6 +3238,960 @@
                     font-size: 10px
                 }
             }
+
+            :root {
+                --mail-width: 46vw;
+                --site-width: 22vw
+            }
+
+            #mailPanels {
+                position: absolute;
+                inset: 0 0 0 auto;
+                width: var(--mail-width);
+                height: 100%;
+                z-index: 4;
+                display: flex;
+                flex-direction: column;
+                background: var(--mail-background,rgba(7,24,46,.66));
+                backdrop-filter: blur(var(--mail-blur,6px));
+                border-left: 1px solid #a3c5ee24;
+                color: #eaf3ff;
+                overflow: hidden
+            }
+
+            .mail-account {
+                flex: 0 0 50%;
+                min-height: 0;
+                height: 50%;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden
+            }
+
+            .mail-account:first-child {
+                border-bottom: 1px solid #a3c5ee65
+            }
+
+            .mail-account-header {
+                height: 49px;
+                flex: none;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 15px;
+                padding: 0 65px 0 19px;
+                background: var(--mail-header-background,rgba(22,57,95,.85));
+                color: var(--mail-header-text,#f0f6ff);
+                border-bottom: 1px solid #a3c5ee16
+            }
+
+            .mail-account-header>strong {
+                font-size: 17px;
+                font-weight: 800;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                min-width: 0
+            }
+
+            .mail-account-header>span {
+                font-size: 12px;
+                opacity: .75;
+                white-space: nowrap
+            }
+
+            .mail-list {
+                overflow: auto;
+                min-height: 0;
+                flex: 1;
+                overscroll-behavior: contain;
+                scrollbar-width: thin;
+                scrollbar-color: #8da6c44d transparent
+            }
+
+            .mail-row {
+                display: grid;
+                width: 100%;
+                grid-template-columns: minmax(75px,.8fr) minmax(0,1.85fr) 79px;
+                gap: 13px;
+                align-items: start;
+                min-height: 66px;
+                padding: 12px 15px 11px 18px;
+                border-bottom: 1px solid #a3c5ee16;
+                text-align: left;
+                color: inherit;
+                background: #ffffff03;
+                transition: background .2s
+            }
+
+            .mail-row:hover {
+                background: #ffffff0a
+            }
+
+            .mail-sender {
+                display: block;
+                font-size: 14px;
+                font-weight: 750;
+                line-height: 1.6;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap
+            }
+
+            .mail-summary {
+                display: block;
+                min-width: 0;
+                line-height: 1.5
+            }
+
+            .mail-subject {
+                display: block;
+                font-size: 14px;
+                font-weight: 550;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap
+            }
+
+            .mail-snippet {
+                display: block;
+                font-size: 12px;
+                line-height: 1.6;
+                color: #adc1d9;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                margin-top: 2px;
+                padding-right: 43px
+            }
+
+            .mail-details-label {
+                float: right;
+                font-size: 11px;
+                margin-top: -19px;
+                color: #9dbce1;
+                font-style: normal
+            }
+
+            .mail-date {
+                display: block;
+                text-align: right;
+                white-space: nowrap;
+                font-size: 12px;
+                font-family: var(--number);
+                color: #b3c9e2;
+                line-height: 1.9
+            }
+
+            .mail-row.unread {
+                animation: mail-unread-pulse 2.4s ease-in-out infinite;
+                background: #a63c532b
+            }
+
+            .mail-row.unread .mail-sender,.mail-row.unread .mail-subject {
+                font-weight: 800;
+                color: #ffe3e8
+            }
+
+            .mail-pagination {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex: none;
+                min-height: 34px;
+                padding: 5px 16px 5px 18px;
+                border-top: 1px solid #a3c5ee1a;
+                font-size: 12px;
+                color: #b4c8e2;
+                background: #0613261a
+            }
+
+            .mail-account:last-child .mail-pagination {
+                padding-right: 65px
+            }
+
+            .mail-pagination>span {
+                min-width: 0;
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap
+            }
+
+            .mail-pagination button {
+                padding: 3px;
+                color: #c8dcf5;
+                font-size: 12px
+            }
+
+            .mail-pagination button:disabled {
+                opacity: .3;
+                cursor: default
+            }
+
+            .mail-empty {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex: 1;
+                min-height: 100%;
+                flex-direction: column;
+                padding: 20px;
+                gap: 15px;
+                text-align: center;
+                color: #a9bfd9;
+                font-size: 14px;
+                line-height: 1.8
+            }
+
+            .mail-empty .secondary-button {
+                color: #d8e8fb;
+                background: #81b2ed14;
+                border-color: #83add73b;
+                font-size: 14px
+            }
+
+            .mail-empty p {
+                max-width: 390px
+            }
+
+            .mail-empty svg {
+                width: 18px;
+                height: 18px
+            }
+
+            .empty-account .mail-account-header {
+                opacity: .8
+            }
+
+            @keyframes mail-unread-pulse {
+                0%,100% {
+                    background-color: #a63c5320
+                }
+
+                50% {
+                    background-color: #d64a6550
+                }
+            }
+
+            #siteRail {
+                position: absolute;
+                right: var(--mail-width);
+                top: 0;
+                bottom: 0;
+                width: var(--site-width);
+                z-index: 3;
+                padding: 12px 14px
+            }
+
+            #siteViewport {
+                position: relative;
+                height: 100%;
+                width: 100%;
+                overflow: hidden;
+                isolation: isolate
+            }
+
+            #siteTrack {
+                position: relative;
+                width: 100%;
+                height: 100%
+            }
+
+            .site-card {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: var(--site-card-height,180px);
+                border: 1px solid #bbd6f43d;
+                border-radius: 12px;
+                background: linear-gradient(140deg,#c4ddff16,#0a183747);
+                backdrop-filter: blur(8px);
+                color: #eaf3ff;
+                box-shadow: inset 0 1px 0 #ffffff0c;
+                will-change: transform;
+                contain: layout paint
+            }
+
+            .site-card:hover {
+                border-color: #c6e0ff80;
+                background: linear-gradient(140deg,#d2e6ff23,#10234972)
+            }
+
+            .site-card-name {
+                position: absolute;
+                left: 13px;
+                right: 51px;
+                top: 12px;
+                font-size: clamp(14px,calc(var(--site-card-height)*.115),22px);
+                font-weight: 650;
+                line-height: 1.25;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden
+            }
+
+            .site-card-url {
+                position: absolute;
+                left: 13px;
+                right: 42px;
+                bottom: 12px;
+                font: 12px/1.4 var(--number);
+                color: #a5bfdc;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis
+            }
+
+            .site-card-symbol {
+                position: absolute;
+                top: 12px;
+                right: 12px;
+                color: var(--site-color,#d8e6fa)
+            }
+
+            .site-card-symbol svg {
+                width: clamp(20px,calc(var(--site-card-height)*.18),37px);
+                height: clamp(20px,calc(var(--site-card-height)*.18),37px)
+            }
+
+            .site-card-frequency {
+                position: absolute;
+                right: 13px;
+                bottom: 11px;
+                font: 600 14px/1.4 var(--number);
+                color: #b4cde7
+            }
+
+            .manual-scroll {
+                overflow-y: auto!important;
+                scrollbar-width: thin;
+                scrollbar-color: #92b2d84d transparent
+            }
+
+            .site-rail-empty {
+                font-size: 14px;
+                line-height: 1.8;
+                color: #c3d9f3;
+                border: 1px dashed #b9d6fa4d;
+                border-radius: 12px;
+                width: 100%;
+                min-height: 130px;
+                padding: 15px
+            }
+
+            .clocks {
+                width: 30vw;
+                max-width: 30vw;
+                left: 5px
+            }
+
+            .clock-row {
+                gap: 13px
+            }
+
+            .flag,.flag svg {
+                width: 35px;
+                height: 24px
+            }
+
+            .clock-row time {
+                letter-spacing: -5px
+            }
+
+            #berlinTime {
+                font-size: clamp(72px,8.5vw,164px)
+            }
+
+            #tbilisiTime {
+                font-size: clamp(58px,6.5vw,121px)
+            }
+
+            .clock-date {
+                font-size: clamp(12px,.9vw,16px);
+                margin-left: 48px;
+                white-space: normal
+            }
+
+            .clock-block+.clock-block {
+                margin-top: 38px
+            }
+
+            .mail-settings-layout {
+                display: grid;
+                grid-template-columns: minmax(0,1.4fr) minmax(290px,1fr);
+                gap: 24px;
+                align-items: start
+            }
+
+            .mail-settings-main {
+                display: flex;
+                flex-direction: column;
+                gap: 23px
+            }
+
+            .mail-settings-layout h2 {
+                font-size: 18px
+            }
+
+            .mail-settings-layout label {
+                font-size: 14px;
+                color: #587498
+            }
+
+            .mail-client-row {
+                display: flex;
+                gap: 12px
+            }
+
+            .mail-client-row input {
+                font: 14px var(--number)!important
+            }
+
+            .mail-settings-layout .field-note {
+                font-size: 13px;
+                color: #6c85a4
+            }
+
+            .mail-style-form {
+                display: flex;
+                flex-direction: column;
+                gap: 25px
+            }
+
+            .mail-style-form h2 {
+                margin: 0
+            }
+
+            .mail-color-controls {
+                display: grid;
+                grid-template-columns: repeat(3,minmax(0,1fr));
+                gap: 15px
+            }
+
+            .mail-color-controls label {
+                font-size: 12px;
+                line-height: 1.7;
+                margin: 0
+            }
+
+            .mail-color-controls input[type=color] {
+                display: block;
+                width: 100%;
+                height: 42px;
+                padding: 3px;
+                background: white;
+                border: 1px solid #d1deef;
+                border-radius: 7px;
+                margin-top: 10px
+            }
+
+            .mail-style-form .range-label {
+                font-size: 14px
+            }
+
+            .mail-style-form .range-label output {
+                font-size: 12px
+            }
+
+            .mail-style-form .primary-button {
+                align-self: flex-end;
+                font-size: 14px
+            }
+
+            .mail-settings-account {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
+                border-bottom: 1px solid #b3c7e52e;
+                padding: 20px 0
+            }
+
+            .mail-settings-account>div:first-child {
+                min-width: 0
+            }
+
+            .mail-settings-account strong {
+                display: block;
+                font-size: 16px;
+                font-weight: 750;
+                color: #315780;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden
+            }
+
+            .mail-settings-account span {
+                display: block;
+                font-size: 13px;
+                color: #6e88aa;
+                margin-top: 7px;
+                overflow-wrap: anywhere
+            }
+
+            .mail-settings-account small {
+                display: block;
+                font-size: 13px;
+                color: #8ba1bf;
+                margin-top: 7px
+            }
+
+            .mail-account-actions {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                flex-wrap: wrap;
+                justify-content: flex-end
+            }
+
+            .mail-account-actions .round-button {
+                width: 32px;
+                height: 32px;
+                background: #e9f0fa;
+                color: #7897bf;
+                border: 0;
+                backdrop-filter: none
+            }
+
+            .mail-account-actions .round-button svg {
+                width: 16px;
+                height: 16px
+            }
+
+            .mail-account-actions [data-mail-remove] {
+                background: #fae9ef;
+                color: #b7788e
+            }
+
+            .mail-settings-empty {
+                font-size: 14px;
+                color: #839cba;
+                padding: 15px 0 24px
+            }
+
+            .google-connect {
+                margin-top: 23px;
+                font-size: 14px
+            }
+
+            .mail-settings-layout .secondary-button {
+                font-size: 13px
+            }
+
+            .mail-client-row .primary-button {
+                font-size: 14px
+            }
+
+            .mail-message-body {
+                max-width: none;
+                width: 100%;
+                padding: 35px 5vw
+            }
+
+            .mail-message-meta {
+                display: flex;
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 9px;
+                border-bottom: 1px solid #b3c9e634;
+                padding-bottom: 24px;
+                color: #8299b4;
+                font-size: 14px;
+                overflow-wrap: anywhere
+            }
+
+            .mail-message-meta strong {
+                font-size: 19px;
+                font-weight: 800;
+                color: #335c8a
+            }
+
+            .mail-body-text {
+                font-size: 16px;
+                line-height: 1.85;
+                color: #3d5d83;
+                white-space: pre-wrap;
+                overflow-wrap: anywhere;
+                padding: 28px 0
+            }
+
+            .mail-attachments {
+                border-top: 1px solid #b3c9e634;
+                padding-top: 25px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                font-size: 14px;
+                color: #6f8bab
+            }
+
+            .mail-loading {
+                padding: 25px;
+                text-align: center;
+                font-size: 16px;
+                color: #7794b8
+            }
+
+            .mail-guide {
+                max-width: 1100px;
+                font-size: 16px;
+                line-height: 1.9;
+                color: #53759f
+            }
+
+            .mail-guide ol {
+                padding-left: 25px
+            }
+
+            .mail-guide li {
+                padding-left: 8px;
+                margin-bottom: 22px
+            }
+
+            .mail-guide p {
+                margin-top: 22px
+            }
+
+            .mail-guide a {
+                color: #286db7;
+                text-decoration: underline;
+                text-underline-offset: 3px
+            }
+
+            .mail-guide code {
+                font: 14px/1.7 var(--number);
+                background: #e8f0fb;
+                padding: 3px 6px;
+                border-radius: 5px;
+                overflow-wrap: anywhere
+            }
+
+            #mailAccountForm label:not(:first-of-type) {
+                margin-top: 22px
+            }
+
+            #mailAccountForm label {
+                font-size: 14px
+            }
+
+            #mailAccountForm input,#mailAccountForm select {
+                font-size: 14px
+            }
+
+            #panelMail .panel-title button {
+                font-size: 14px
+            }
+
+            @media(max-width: 1100px) {
+                .mail-account-header {
+                    padding-left:15px;
+                    height: 46px
+                }
+
+                .mail-account-header>strong {
+                    font-size: 16px
+                }
+
+                .mail-account-header>span {
+                    font-size: 11px
+                }
+
+                .mail-row {
+                    grid-template-columns: minmax(66px,.75fr) minmax(0,1.5fr) 70px;
+                    gap: 9px;
+                    padding: 11px 12px
+                }
+
+                .mail-date {
+                    font-size: 11px
+                }
+
+                .mail-settings-layout {
+                    grid-template-columns: 1fr
+                }
+
+                .mail-style-form {
+                    max-width: none
+                }
+
+                .mail-color-controls label {
+                    font-size: 14px
+                }
+
+                .site-card-name {
+                    left: 10px;
+                    top: 10px
+                }
+
+                .site-card-url {
+                    left: 10px;
+                    bottom: 10px
+                }
+
+                .site-card-symbol {
+                    right: 10px;
+                    top: 10px
+                }
+
+                .site-card-frequency {
+                    bottom: 9px;
+                    right: 10px
+                }
+
+                .clocks {
+                    width: 30vw;
+                    max-width: 30vw
+                }
+
+                .flag,.flag svg {
+                    width: 28px;
+                    height: 20px
+                }
+
+                .clock-row {
+                    gap: 10px
+                }
+
+                .clock-date {
+                    margin-left: 38px;
+                    font-size: 12px
+                }
+
+                #siteRail {
+                    padding: 10px
+                }
+
+                .mail-color-controls {
+                    max-width: 700px
+                }
+            }
+
+            @media(max-width: 760px) {
+                body {
+                    overflow:auto
+                }
+
+                #main {
+                    position: relative;
+                    inset: auto;
+                    display: grid;
+                    grid-template-columns: minmax(0,1fr) minmax(132px,38vw);
+                    grid-template-rows: 70dvh calc(100dvh - var(--ticker-height));
+                    height: auto;
+                    min-height: 100dvh;
+                    padding-bottom: var(--ticker-height)
+                }
+
+                .clocks {
+                    position: relative;
+                    left: 4px;
+                    top: auto;
+                    transform: none;
+                    width: calc(100% - 8px);
+                    max-width: calc(100% - 8px);
+                    align-self: center;
+                    grid-column: 1;
+                    grid-row: 1
+                }
+
+                .clock-row {
+                    gap: 9px
+                }
+
+                .clock-row time {
+                    letter-spacing: -3px
+                }
+
+                #berlinTime {
+                    font-size: clamp(46px,13vw,94px)
+                }
+
+                #tbilisiTime {
+                    font-size: clamp(38px,10vw,74px)
+                }
+
+                .flag,.flag svg {
+                    width: 25px;
+                    height: 17px
+                }
+
+                .clock-date {
+                    font-size: 12px;
+                    margin-left: 34px;
+                    line-height: 1.7;
+                    margin-top: 9px
+                }
+
+                .clock-block+.clock-block {
+                    margin-top: 35px
+                }
+
+                #siteRail {
+                    position: relative;
+                    inset: auto;
+                    width: auto;
+                    padding: 45px 9px 10px;
+                    grid-column: 2;
+                    grid-row: 1;
+                    height: 100%
+                }
+
+                .site-card {
+                    border-radius: 10px
+                }
+
+                .site-card-name {
+                    top: 8px;
+                    left: 9px;
+                    right: 34px;
+                    font-size: clamp(14px,calc(var(--site-card-height)*.115),19px)
+                }
+
+                .site-card-url {
+                    left: 9px;
+                    right: 28px;
+                    bottom: 8px;
+                    font-size: 12px
+                }
+
+                .site-card-symbol {
+                    right: 8px;
+                    top: 8px
+                }
+
+                .site-card-symbol svg {
+                    width: clamp(17px,calc(var(--site-card-height)*.16),30px);
+                    height: clamp(17px,calc(var(--site-card-height)*.16),30px)
+                }
+
+                .site-card-frequency {
+                    right: 9px;
+                    bottom: 8px;
+                    font-size: 12px
+                }
+
+                #mailPanels {
+                    position: relative;
+                    inset: auto;
+                    width: 100%;
+                    height: 100%;
+                    grid-column: 1/-1;
+                    grid-row: 2;
+                    border-left: 0;
+                    border-top: 1px solid #a3c5ee24
+                }
+
+                .mail-account-header {
+                    height: 48px;
+                    padding-left: 17px
+                }
+
+                .mail-account-header>span {
+                    font-size: 12px
+                }
+
+                .mail-row {
+                    grid-template-columns: minmax(74px,.8fr) minmax(0,1.65fr) 75px;
+                    gap: 11px;
+                    padding: 12px 14px
+                }
+
+                .mail-sender,.mail-subject {
+                    font-size: 14px
+                }
+
+                .mail-date {
+                    font-size: 12px
+                }
+
+                .mail-pagination {
+                    font-size: 12px
+                }
+
+                .mail-settings-layout {
+                    gap: 20px
+                }
+
+                .mail-client-row {
+                    flex-direction: column
+                }
+
+                .mail-client-row .primary-button {
+                    align-self: flex-start
+                }
+
+                .mail-settings-account {
+                    align-items: flex-start;
+                    gap: 12px;
+                    flex-direction: column
+                }
+
+                .mail-account-actions {
+                    justify-content: flex-start
+                }
+
+                .mail-style-form {
+                    padding: 22px 18px
+                }
+
+                .mail-color-controls {
+                    gap: 13px
+                }
+
+                .mail-color-controls label {
+                    font-size: 12px
+                }
+
+                .mail-guide {
+                    font-size: 15px
+                }
+
+                .mail-message-body {
+                    padding: 25px 23px
+                }
+
+                .mail-message-meta {
+                    font-size: 13px
+                }
+
+                .mail-body-text {
+                    font-size: 16px
+                }
+
+                .mail-guide code {
+                    font-size: 13px
+                }
+            }
+
+            @media(prefers-reduced-motion:reduce) {
+                .mail-row.unread {
+                    animation: none;
+                    background: #a63c5340
+                }
+            }
+
+            .mail-account-header>strong,.mail-sender {
+                font-family: var(--number);
+                font-weight: 800
+            }
+
+            .site-card-name,.site-card-symbol {
+                top: clamp(6px,calc(var(--site-card-height)*.055),12px)
+            }
+
+            .site-card-url,.site-card-frequency {
+                bottom: clamp(6px,calc(var(--site-card-height)*.055),12px)
+            }
+
+            select {
+                appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%236b89ac' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 11px center;
+                padding-right: 34px!important
+            }
         </style>
     </head>
     <body>
@@ -3270,7 +4224,12 @@
                     <p class="clock-date" id="tbilisiDate"></p>
                 </div>
             </section>
-            <div id="siteBubbles" aria-label="Internetseiten"></div>
+            <nav id="siteRail" aria-label="Internetseiten">
+                <div id="siteViewport">
+                    <div id="siteTrack"></div>
+                </div>
+            </nav>
+            <aside id="mailPanels" aria-label="E-Mail-Postfächer"></aside>
         </main>
         <section class="ticker" aria-label="Informationen">
             <div id="tickerWeatherEffects" aria-hidden="true"></div>
@@ -3291,6 +4250,7 @@
                 <button role="tab" id="tabInfo" aria-controls="panelInfo" aria-selected="false" tabindex="-1" data-tab="Info">Informationsübersicht</button>
                 <button role="tab" id="tabView" aria-controls="panelView" aria-selected="false" tabindex="-1" data-tab="View">Gestaltung</button>
                 <button role="tab" id="tabData" aria-controls="panelData" aria-selected="false" tabindex="-1" data-tab="Data">Datenquellen</button>
+                <button role="tab" id="tabMail" aria-controls="panelMail" aria-selected="false" tabindex="-1" data-tab="Mail">E-Mail</button>
             </div>
             <div class="settings-body">
                 <section id="panelSites" role="tabpanel" aria-labelledby="tabSites">
@@ -3378,7 +4338,7 @@
                                     <select id="visibleCount"></select>
                                 </div>
                                 <div class="setting-row">
-                                    <label for="motionToggle">Hintergrund und Blasen bewegen</label>
+                                    <label for="motionToggle">Hintergrund bewegen</label>
                                     <input type="checkbox" class="switch" id="motionToggle">
                                 </div>
                                 <div class="setting-row">
@@ -3429,6 +4389,122 @@
                     <div id="sourceStatus" class="source-grid"></div>
                     <div id="iconCredits" class="service-credit"></div>
                 </section>
+                <section id="panelMail" role="tabpanel" aria-labelledby="tabMail" hidden>
+                    <div class="panel-title">
+                        <h2>E-Mail</h2>
+                        <button class="secondary-button" id="mailSetupHelp">Google-Verbindung einrichten</button>
+                    </div>
+                    <div class="mail-settings-layout">
+                        <div class="mail-settings-main">
+                            <div class="control-card mail-connection-card">
+                                <h2>Gmail-Verbindung</h2>
+                                <form id="mailClientForm" novalidate>
+                                    <label for="mailClientId">Google-Client-ID</label>
+                                    <div class="mail-client-row">
+                                        <input id="mailClientId" autocomplete="off" spellcheck="false">
+                                        <button class="primary-button" type="submit">Speichern</button>
+                                    </div>
+                                    <p class="field-note" id="mailConnectionHint"></p>
+                                </form>
+                            </div>
+                            <div class="control-card">
+                                <div class="list-heading">
+                                    <h2>Meine Postfächer</h2>
+                                    <span id="mailAccountCount"></span>
+                                </div>
+                                <div id="mailAccountList"></div>
+                                <button class="google-connect secondary-button" id="mailAddAccount">
+                                    <span data-icon="mail"></span>Gmail-Konto hinzufügen
+                                </button>
+                                <p class="field-note">Bis zu zwei Konten. Pro Konto wird genau ein Bereich angezeigt.</p>
+                            </div>
+                        </div>
+                        <form id="mailAppearanceForm" class="control-card mail-style-form">
+                            <h2>Darstellung der Postfächer</h2>
+                            <div class="mail-color-controls">
+                                <label>
+                                    Hintergrundfarbe<input id="mailColor" type="color">
+                                </label>
+                                <label>
+                                    Kopfzeile<input id="mailHeaderColor" type="color">
+                                </label>
+                                <label>
+                                    Text der Kopfzeile<input id="mailHeaderTextColor" type="color">
+                                </label>
+                            </div>
+                            <label class="range-control">
+                                <span class="range-label">
+                                    Transparenz des Hintergrunds<output id="mailTransparencyValue"></output>
+                                </span>
+                                <input id="mailTransparency" type="range" min="0" max="100" step="1">
+                            </label>
+                            <label class="range-control">
+                                <span class="range-label">
+                                    Transparenz der Kopfzeile<output id="mailHeaderTransparencyValue"></output>
+                                </span>
+                                <input id="mailHeaderTransparency" type="range" min="0" max="100" step="1">
+                            </label>
+                            <p class="field-note">0 %: deckend. 100 %: vollständig durchsichtig.</p>
+                            <button class="primary-button" type="submit">Darstellung speichern</button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </dialog>
+        <dialog id="mailAccountDialog" class="edit-dialog" aria-labelledby="mailAccountTitle">
+            <div class="dialog-header">
+                <h2 id="mailAccountTitle">Postfach bearbeiten</h2>
+                <button class="round-button" data-close="mailAccountDialog" aria-label="Schließen" data-icon="x"></button>
+            </div>
+            <form id="mailAccountForm" class="dialog-body" novalidate>
+                <input id="mailAccountId" type="hidden">
+                <label for="mailOwnerName">Angezeigter Name</label>
+                <input id="mailOwnerName" maxlength="100" required>
+                <label for="mailAccountAddress">Google-Konto</label>
+                <input id="mailAccountAddress" type="email" readonly>
+                <label for="mailSection">Angezeigter Bereich</label>
+                <select id="mailSection"></select>
+                <div class="form-actions">
+                    <button type="button" class="secondary-button" data-close="mailAccountDialog">Abbrechen</button>
+                    <button class="primary-button" type="submit">Speichern</button>
+                </div>
+            </form>
+        </dialog>
+        <dialog id="mailMessageDialog" class="full-dialog mail-message-dialog" aria-labelledby="mailMessageTitle">
+            <div class="dialog-header">
+                <h2 id="mailMessageTitle">Nachricht</h2>
+                <button class="round-button" data-close="mailMessageDialog" aria-label="Schließen" data-icon="x"></button>
+            </div>
+            <div id="mailMessageBody" class="dialog-body mail-message-body"></div>
+        </dialog>
+        <dialog id="mailGuideDialog" class="full-dialog" aria-labelledby="mailGuideTitle">
+            <div class="dialog-header">
+                <h2 id="mailGuideTitle">Google-Verbindung einrichten</h2>
+                <button class="round-button" data-close="mailGuideDialog" aria-label="Schließen" data-icon="x"></button>
+            </div>
+            <div class="dialog-body mail-guide">
+                <ol>
+                    <li>
+                        In der <a href="https://console.cloud.google.com/" target="_self">Google Cloud Console</a> ein Projekt für Shogi Space erstellen.
+                    </li>
+                    <li>
+                        Die <a href="https://console.cloud.google.com/apis/library/gmail.googleapis.com" target="_self">Gmail API</a> aktivieren.
+                    </li>
+                    <li>Unter „Google Auth Platform“ die App konfigurieren. Bei Verwendung im Testmodus beide Gmail-Konten als Testnutzer hinzufügen.</li>
+                    <li>
+                        Eine OAuth-Client-ID vom Typ „Webanwendung“ erstellen. Als autorisierten JavaScript-Ursprung die Adresse ohne Pfad eintragen: <code id="mailOriginExample">https://uunimed.github.io</code>.
+                    </li>
+                    <li>Die Client-ID unter „E-Mail“ einfügen und speichern. Anschließend jedes Gmail-Konto einzeln verbinden und einen Bereich auswählen.</li>
+                </ol>
+                <p>
+                    Für GitHub Pages ist der Ursprung gewöhnlich <code>https://uunimed.github.io</code>, ohne <code>/admin/</code>. Bei einer eigenen Domain muss deren Ursprung verwendet werden.
+                </p>
+                <p>Die Verbindung benötigt Zugriff auf das Lesen von E-Mails und das Ändern des Lesestatus. Nachrichten und Zugangstoken werden nicht in den Seiteneinstellungen gespeichert.</p>
+                <p>Google-Zugriffstoken sind zeitlich begrenzt. Nach Ablauf oder erneutem Öffnen der Seite kann „Erneut verbinden“ erforderlich sein.</p>
+                <p>Die Verbindung funktioniert über HTTPS oder einen lokalen Webserver. Eine direkt geöffnete HTML-Datei kann keine Google-Anmeldung verwenden.</p>
+                <p>
+                    <a href="https://developers.google.com/identity/oauth2/web/guides/get-google-api-clientid" target="_self">Google-Anleitung</a>
+                </p>
             </div>
         </dialog>
         <dialog id="allSitesDialog" class="all-dialog full-dialog" aria-labelledby="allSitesTitle">
@@ -4150,75 +5226,320 @@
 
             (function(global) {
                 'use strict';
-                function maskFromPixels(width, height, alpha, left=0, top=0, step=1) {
-                    const inside = (x, y) => x >= 0 && y >= 0 && x < width && y < height && alpha[y * width + x] > 96
-                      , edges = [];
-                    for (let y = 0; y < height; y++)
-                        for (let x = 0; x < width; x++)
-                            if (inside(x, y) && (!inside(x - 1, y) || !inside(x + 1, y) || !inside(x, y - 1) || !inside(x, y + 1)))
-                                edges.push({
-                                    x: (x + .5) * step,
-                                    y: (y + .5) * step
-                                });
+                const D = typeof module !== 'undefined' && module.exports ? require('./data.cjs') : global.ShogiData;
+                const PAGE_SIZE = 20
+                  , SCOPE = 'openid email profile https://www.googleapis.com/auth/gmail.modify';
+                const categories = [['CATEGORY_PERSONAL', 'Allgemein'], ['CATEGORY_PROMOTIONS', 'Werbung'], ['CATEGORY_UPDATES', 'Benachrichtigungen'], ['CATEGORY_FORUMS', 'Foren'], ['CATEGORY_SOCIAL', 'Soziale Netzwerke']];
+                function defaults() {
                     return {
-                        width,
-                        height,
-                        alpha,
-                        left,
-                        top,
-                        step,
-                        edges
+                        clientId: '',
+                        transparency: 34,
+                        color: '#07182e',
+                        headerTransparency: 15,
+                        headerColor: '#16395f',
+                        headerTextColor: '#f0f6ff',
+                        accounts: []
                     };
                 }
-                function bounceCircleMask(body, mask) {
-                    if (!mask.edges.length || body.x + body.radius < mask.left || body.y + body.radius < mask.top || body.x - body.radius > mask.left + mask.width * mask.step || body.y - body.radius > mask.top + mask.height * mask.step)
-                        return false;
-                    const x = body.x - mask.left
-                      , y = body.y - mask.top;
-                    let nearest = null
-                      , best = Infinity;
-                    for (const point of mask.edges) {
-                        const d = (x - point.x) ** 2 + (y - point.y) ** 2;
-                        if (d < best) {
-                            best = d;
-                            nearest = point;
+                function normalize(raw) {
+                    const out = defaults();
+                    if (!raw || typeof raw !== 'object')
+                        return out;
+                    out.clientId = String(raw.clientId || '').trim();
+                    if (!validClientId(out.clientId))
+                        out.clientId = '';
+                    for (const key of ['transparency', 'headerTransparency'])
+                        if (Number.isFinite(Number(raw[key])))
+                            out[key] = Math.max(0, Math.min(100, Number(raw[key])));
+                    for (const key of ['color', 'headerColor', 'headerTextColor'])
+                        if (/^#[0-9a-f]{6}$/i.test(raw[key]))
+                            out[key] = raw[key];
+                    const seen = new Set();
+                    out.accounts = (Array.isArray(raw.accounts) ? raw.accounts : []).filter(a => a && a.id && a.email && !seen.has(String(a.id)) && seen.add(String(a.id))).slice(0, 2).map(a => ({
+                        id: String(a.id).slice(0, 200),
+                        email: String(a.email).slice(0, 254),
+                        name: String(a.name || 'Gmail-Konto').slice(0, 100),
+                        section: String(a.section || 'CATEGORY_PERSONAL'),
+                        labels: (Array.isArray(a.labels) ? a.labels : []).filter(l => l && l.id && l.name && l.type === 'user').map(l => ({
+                            id: String(l.id),
+                            name: String(l.name),
+                            type: 'user'
+                        }))
+                    }));
+                    return out;
+                }
+                function validClientId(value) {
+                    return /^\d+-[a-z0-9-]+\.apps\.googleusercontent\.com$/i.test(String(value || '').trim());
+                }
+                function sections(labels=[]) {
+                    return [...categories.map( ([id,name]) => ({
+                        id,
+                        name
+                    })), ...labels.filter(l => l.type === 'user' && !categories.some( ([id]) => id === l.id)).map(l => ({
+                        id: l.id,
+                        name: l.name
+                    }))];
+                }
+                function sectionName(id, labels=[]) {
+                    return sections(labels).find(s => s.id === id)?.name || 'Bereich nicht verfügbar';
+                }
+                function listQuery(section, pageToken='') {
+                    const q = new URLSearchParams({
+                        maxResults: PAGE_SIZE,
+                        includeSpamTrash: 'false'
+                    });
+                    if (section === 'CATEGORY_PERSONAL')
+                        q.set('q', 'in:inbox category:primary');
+                    else {
+                        if (categories.some( ([id]) => id === section))
+                            q.append('labelIds', 'INBOX');
+                        q.append('labelIds', section);
+                    }
+                    if (pageToken)
+                        q.set('pageToken', pageToken);
+                    return q;
+                }
+                function decodeHeader(value) {
+                    return String(value || '').replace(/(\?=)\s+(=\?)/g, '$1$2').replace(/=\?([^?]+)\?([bq])\?([^?]*)\?=/gi, (original, charset, type, data) => {
+                        try {
+                            const binary = type.toLowerCase() === 'b' ? atob(data) : data.replace(/_/g, ' ').replace(/=([0-9a-f]{2})/gi, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
+                            return new TextDecoder(charset).decode(Uint8Array.from(binary, c => c.charCodeAt(0)));
+                        } catch {
+                            return original;
                         }
                     }
-                    const ix = Math.floor(x / mask.step)
-                      , iy = Math.floor(y / mask.step)
-                      , inside = ix >= 0 && iy >= 0 && ix < mask.width && iy < mask.height && mask.alpha[iy * mask.width + ix] > 96
-                      , distance = Math.sqrt(best);
-                    if (!inside && distance >= body.radius)
-                        return false;
-                    let nx = distance ? (x - nearest.x) / distance : 1
-                      , ny = distance ? (y - nearest.y) / distance : 0;
-                    if (inside) {
-                        nx = -nx;
-                        ny = -ny;
+                    );
+                }
+                function header(message, name) {
+                    return decodeHeader(message?.payload?.headers?.find(h => String(h.name).toLowerCase() === name.toLowerCase())?.value || '');
+                }
+                function sender(value) {
+                    const text = String(value || '').trim()
+                      , match = text.match(/^\s*(.*?)\s*<[^>]+>\s*$/);
+                    return (match?.[1]?.replace(/^"|"$/g, '').trim() || text.replace(/[<>]/g, '') || 'Unbekannter Absender');
+                }
+                function summary(message) {
+                    const raw = Number(message.internalDate)
+                      , parsed = Date.parse(header(message, 'Date'))
+                      , at = Number.isFinite(raw) && raw > 0 ? raw : Number.isFinite(parsed) ? parsed : 0;
+                    return {
+                        id: String(message.id),
+                        threadId: String(message.threadId || message.id),
+                        sender: sender(header(message, 'From')),
+                        from: header(message, 'From'),
+                        subject: header(message, 'Subject') || 'Ohne Betreff',
+                        snippet: String(message.snippet || ''),
+                        at,
+                        unread: (message.labelIds || []).includes('UNREAD')
+                    };
+                }
+                function relativeDate(at, now=new Date()) {
+                    if (!Number.isFinite(at) || at <= 0)
+                        return 'Datum unbekannt';
+                    const key = D.dateKey(new Date(at))
+                      , today = D.dateKey(now);
+                    if (key === today)
+                        return 'Heute';
+                    if (key === D.addDays(today, -1))
+                        return 'Gestern';
+                    if (key === D.addDays(today, -2))
+                        return 'Vorgestern';
+                    return new Intl.DateTimeFormat('de-DE',{
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        timeZone: 'Europe/Berlin'
+                    }).format(new Date(at));
+                }
+                function decode(value) {
+                    try {
+                        const binary = atob(String(value || '').replace(/-/g, '+').replace(/_/g, '/'));
+                        return new TextDecoder().decode(Uint8Array.from(binary, c => c.charCodeAt(0)));
+                    } catch {
+                        return '';
                     }
-                    const overlap = inside ? distance + body.radius + .5 : body.radius - distance + .5;
-                    body.x += nx * overlap;
-                    body.y += ny * overlap;
-                    const speed = body.vx * nx + body.vy * ny;
-                    if (speed < 0) {
-                        body.vx -= 2 * speed * nx;
-                        body.vy -= 2 * speed * ny;
+                }
+                function bodies(payload) {
+                    const plain = []
+                      , html = []
+                      , attachments = [];
+                    function visit(part) {
+                        if (!part)
+                            return;
+                        if (part.filename) {
+                            attachments.push({
+                                name: String(part.filename),
+                                size: Number(part.body?.size) || 0
+                            });
+                            return;
+                        }
+                        if (part.mimeType === 'text/plain' || part.mimeType === 'text/html') {
+                            const entry = {
+                                text: decode(part.body?.data),
+                                attachmentId: part.body?.attachmentId || ''
+                            };
+                            (part.mimeType === 'text/plain' ? plain : html).push(entry);
+                        }
+                        for (const child of part.parts || [])
+                            visit(child);
                     }
-                    return true;
+                    visit(payload);
+                    return {
+                        parts: plain.length ? plain : html,
+                        isHtml: !plain.length && html.length > 0,
+                        attachments
+                    };
+                }
+                async function mapLimit(list, limit, worker) {
+                    const result = new Array(list.length);
+                    let index = 0;
+                    await Promise.all(Array.from({
+                        length: Math.min(limit, list.length)
+                    }, async () => {
+                        while (index < list.length) {
+                            const i = index++;
+                            result[i] = await worker(list[i], i);
+                        }
+                    }
+                    ));
+                    return result;
+                }
+                class GmailError extends Error {
+                    constructor(message, status) {
+                        super(message);
+                        this.name = 'GmailError';
+                        this.status = status;
+                    }
+                }
+                class Gmail {
+                    constructor(fetcher) {
+                        this.fetcher = fetcher || ( (...args) => fetch(...args));
+                    }
+                    async request(token, path, options={}) {
+                        return this.fetchJson('https://gmail.googleapis.com/gmail/v1/users/me/' + path, token, options);
+                    }
+                    async fetchJson(url, token, options={}) {
+                        const controller = new AbortController()
+                          , timer = setTimeout( () => controller.abort(), 15000);
+                        try {
+                            const response = await this.fetcher(url, {
+                                method: options.method || 'GET',
+                                headers: {
+                                    Authorization: 'Bearer ' + token,
+                                    ...(options.body ? {
+                                        'Content-Type': 'application/json'
+                                    } : {})
+                                },
+                                ...(options.body ? {
+                                    body: JSON.stringify(options.body)
+                                } : {}),
+                                signal: controller.signal,
+                                credentials: 'omit',
+                                cache: 'no-store',
+                                referrerPolicy: 'no-referrer'
+                            });
+                            if (!response.ok)
+                                throw new GmailError(response.status === 401 ? 'Bitte verbinden Sie dieses Google-Konto erneut.' : response.status === 403 ? 'Google erlaubt den Zugriff nicht. Prüfen Sie die Gmail-API und die freigegebenen Berechtigungen.' : response.status === 429 ? 'Google begrenzt die Anfragen. Bitte warten Sie einen Moment.' : `Gmail ist derzeit nicht erreichbar (HTTP ${response.status}).`,response.status);
+                            return await response.json();
+                        } catch (error) {
+                            if (error.name === 'AbortError')
+                                throw new GmailError('Gmail hat nicht rechtzeitig geantwortet.',0);
+                            if (error instanceof TypeError)
+                                throw new GmailError('Die Verbindung zu Gmail konnte nicht hergestellt werden.',0);
+                            throw error;
+                        } finally {
+                            clearTimeout(timer);
+                        }
+                    }
+                    identity(token) {
+                        return this.fetchJson('https://openidconnect.googleapis.com/v1/userinfo', token);
+                    }
+                    labels(token) {
+                        return this.request(token, 'labels');
+                    }
+                    async listPage(token, section, pageToken='') {
+                        const list = await this.request(token, 'messages?' + listQuery(section, pageToken));
+                        const items = await mapLimit((list.messages || []).slice(0, PAGE_SIZE), 5, item => this.request(token, 'messages/' + encodeURIComponent(item.id) + '?format=metadata&metadataHeaders=From&metadataHeaders=Subject&metadataHeaders=Date'));
+                        return {
+                            messages: items.map(summary).sort( (a, b) => b.at - a.at),
+                            nextPageToken: list.nextPageToken || ''
+                        };
+                    }
+                    full(token, id) {
+                        return this.request(token, 'messages/' + encodeURIComponent(id) + '?format=full');
+                    }
+                    attachment(token, id, attachmentId) {
+                        return this.request(token, 'messages/' + encodeURIComponent(id) + '/attachments/' + encodeURIComponent(attachmentId));
+                    }
+                    markRead(token, id) {
+                        return this.request(token, 'messages/' + encodeURIComponent(id) + '/modify', {
+                            method: 'POST',
+                            body: {
+                                removeLabelIds: ['UNREAD']
+                            }
+                        });
+                    }
                 }
                 const api = {
-                    maskFromPixels,
-                    bounceCircleMask
+                    PAGE_SIZE,
+                    SCOPE,
+                    categories,
+                    defaults,
+                    normalize,
+                    validClientId,
+                    sections,
+                    sectionName,
+                    listQuery,
+                    decodeHeader,
+                    header,
+                    sender,
+                    summary,
+                    relativeDate,
+                    decode,
+                    bodies,
+                    mapLimit,
+                    Gmail,
+                    GmailError
                 };
                 if (typeof module !== 'undefined' && module.exports)
                     module.exports = api;
                 else
-                    global.ShogiGeometry = api;
+                    global.ShogiMail = api;
+            }
+            )(typeof globalThis !== 'undefined' ? globalThis : this);
+
+            (function(global) {
+                'use strict';
+                function layout(count, capacity, height, gap=10) {
+                    capacity = Math.max(1, Math.min(10, Math.floor(Number(capacity) || 3)));
+                    const cardHeight = Math.max(1, (height - Math.max(0, capacity - 1) * gap) / capacity);
+                    return {
+                        capacity,
+                        cardHeight,
+                        gap,
+                        overflow: count > capacity,
+                        cycle: count * (cardHeight + gap)
+                    };
+                }
+                function position(index, phase, plan) {
+                    if (!plan.overflow)
+                        return index * (plan.cardHeight + plan.gap);
+                    return ((index * (plan.cardHeight + plan.gap) + phase + plan.cardHeight) % plan.cycle + plan.cycle) % plan.cycle - plan.cardHeight;
+                }
+                const api = {
+                    layout,
+                    position
+                };
+                if (typeof module !== 'undefined' && module.exports)
+                    module.exports = api;
+                else
+                    global.ShogiRail = api;
             }
             )(typeof globalThis !== 'undefined' ? globalThis : this);
         </script>
         <script>
             window.ShogiIcons = {
+                mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/>',
                 logo: "<path d=\"M18 6c-1.3-1.6-3.1-2.5-5.7-2.5C8.8 3.5 6 5.3 6 8c0 2.5 2.1 3.5 6 4s6 1.5 6 4.2c0 2.8-2.7 4.8-6.4 4.8-2.7 0-4.8-.9-6.2-2.7\" stroke-width=\"2.2\"/><path d=\"M21 2v4m-2-2h4\" stroke-width=\"1.2\"/>",
                 separator: '<circle cx="12" cy="12" r="8" fill="currentColor" stroke="none"/>',
                 feed: '<path d="M4 6h16M4 12h11M4 18h14"/><circle cx="20" cy="12" r="1" fill="currentColor" stroke="none"/>',
@@ -4352,7 +5673,8 @@
                 const D = window.ShogiData
                   , F = window.ShogiFeed
                   , V = window.ShogiVisual
-                  , G = window.ShogiGeometry
+                  , M = window.ShogiMail
+                  , R = window.ShogiRail
                   , S = window.ShogiSvg
                   , icons = window.ShogiIcons
                   , $ = id => document.getElementById(id);
@@ -4389,7 +5711,7 @@
                 const STORE = 'shogi-space-v1'
                   , mediaMotion = matchMedia('(prefers-reduced-motion: reduce)');
                 const defaults = () => ({
-                    version: 2,
+                    version: 3,
                     sites: builtin.map( (s, i) => ({
                         ...s,
                         url: '',
@@ -4408,6 +5730,7 @@
                     visibleCount: 3,
                     motion: !mediaMotion.matches,
                     horizon: 14,
+                    mail: M.defaults(),
                     appearance: V.normalize(),
                     weather: {
                         name: 'Chemnitz',
@@ -4440,6 +5763,7 @@
                     out.horizon = [7, 14, 30].includes(Number(raw.horizon)) ? Number(raw.horizon) : 14;
                     out.motion = typeof raw.motion === 'boolean' ? raw.motion : out.motion;
                     out.appearance = V.normalize(raw.appearance);
+                    out.mail = M.normalize(raw.mail);
                     if (Array.isArray(raw.sites)) {
                         const seen = new Set();
                         out.sites = raw.sites.slice(0, 250).filter(s => s && typeof s === 'object' && !['shifts', 'budget', 'calendar'].includes(s.id)).map( (s, i) => {
@@ -4713,7 +6037,6 @@
                         lastMinute = minute;
                         setClockText($('berlinTime'), `${b.hour}:${b.minute}`);
                         setClockText($('tbilisiTime'), `${t.hour}:${t.minute}`);
-                        requestAnimationFrame(measure);
                         $('berlinTime').dateTime = now.toISOString();
                         $('tbilisiTime').dateTime = now.toISOString();
                         $('berlinDate').textContent = fullDate(now, 'Europe/Berlin');
@@ -4931,311 +6254,67 @@
                         paintWaves($('appearancePreview'), waveTime, appearance);
                     waveDirty = false;
                 }
-                let bodies = []
-                  , bounds = {
-                    width: 0,
-                    height: 0,
-                    obstacles: []
-                }
+
+                let railItems = []
+                  , railPlan = null
+                  , railPhase = 0
                   , lastFrame = 0;
-                let clockMasks = [];
                 function setClockText(el, text) {
-                    el.replaceChildren(document.createTextNode(text));
-                    const baseline = document.createElement('span');
-                    baseline.className = 'clock-baseline';
-                    baseline.setAttribute('aria-hidden', 'true');
-                    el.append(baseline);
+                    el.textContent = text;
                 }
-                function clockMask(el, origin) {
-                    const rect = el.getBoundingClientRect()
-                      , style = getComputedStyle(el)
-                      , baseline = el.querySelector('.clock-baseline');
-                    if (!baseline || rect.width < 1)
-                        return null;
-                    const step = 2
-                      , canvas = document.createElement('canvas');
-                    canvas.width = Math.ceil(rect.width / step);
-                    canvas.height = Math.ceil(rect.height / step);
-                    const ctx = canvas.getContext('2d', {
-                        willReadFrequently: true
-                    });
-                    ctx.scale(1 / step, 1 / step);
-                    ctx.font = style.fontStyle + ' ' + style.fontWeight + ' ' + style.fontSize + ' ' + style.fontFamily;
-                    ctx.textBaseline = 'alphabetic';
-                    ctx.fillStyle = '#fff';
-                    const text = el.textContent
-                      , y = baseline.getBoundingClientRect().top - rect.top;
-                    if ('letterSpacing' in ctx) {
-                        ctx.letterSpacing = style.letterSpacing;
-                        ctx.fillText(text, 0, y);
-                    } else {
-                        let x = 0;
-                        for (const char of text) {
-                            ctx.fillText(char, x, y);
-                            x += ctx.measureText(char).width + (parseFloat(style.letterSpacing) || 0);
-                        }
-                    }
-                    const rgba = ctx.getImageData(0, 0, canvas.width, canvas.height).data
-                      , alpha = new Uint8Array(canvas.width * canvas.height);
-                    for (let i = 0; i < alpha.length; i++)
-                        alpha[i] = rgba[i * 4 + 3];
-                    const mask = G.maskFromPixels(canvas.width, canvas.height, alpha, rect.left - origin.left, rect.top - origin.top, step);
-                    el.dataset.collisionShape = 'glyph';
-                    el.dataset.collisionPixels = String(mask.edges.length);
-                    return mask;
+                function measureSiteRail() {
+                    const viewport = $('siteViewport')
+                      , height = viewport.clientHeight
+                      , previous = railPlan;
+                    railPlan = R.layout(railItems.length, settings.visibleCount, height, innerWidth < 760 ? 7 : 10);
+                    if (previous?.cycle && railPlan.cycle)
+                        railPhase = railPhase / previous.cycle * railPlan.cycle;
+                    $('siteTrack').style.setProperty('--site-card-height', railPlan.cardHeight + 'px');
+                    viewport.classList.toggle('manual-scroll', railPlan.overflow && mediaMotion.matches);
+                    $('siteTrack').style.height = (railPlan.overflow && mediaMotion.matches ? railPlan.cycle : height) + 'px';
+                    positionSiteCards();
                 }
-                function measure() {
-                    const r = $('siteBubbles').getBoundingClientRect();
-                    bounds = {
-                        width: r.width,
-                        height: r.height,
-                        obstacles: [...document.querySelectorAll('.brand,.all-reveal,.settings-reveal')].map(el => {
-                            const b = el.getBoundingClientRect();
-                            return {
-                                left: b.left - r.left - 2,
-                                right: b.right - r.left + 2,
-                                top: b.top - r.top - 2,
-                                bottom: b.bottom - r.top + 2,
-                                el
-                            };
-                        }
-                        )
-                    };
-                    clockMasks = [$('berlinTime'), $('tbilisiTime')].map(el => clockMask(el, r)).filter(Boolean);
-                }
-                function position(b) {
-                    b.el.style.transform = `translate3d(${b.x - b.radius}px,${b.y - b.radius}px,0)`;
-                }
-                function clearOfObstacles(x, y, radius) {
-                    return bounds.obstacles.every(o => Math.hypot(x - Math.max(o.left, Math.min(x, o.right)), y - Math.max(o.top, Math.min(y, o.bottom))) >= radius + 4) && clockMasks.every(mask => !G.bounceCircleMask({
-                        x,
-                        y,
-                        radius,
-                        vx: 0,
-                        vy: 0
-                    }, mask));
-                }
-                function resetMotion() {
-                    measure();
-                    const {width: w, height: h} = bounds;
-                    if (!w || !h)
+                function positionSiteCards() {
+                    if (!railPlan)
                         return;
-                    const elements = [...$('siteBubbles').querySelectorAll('.site-bubble')]
-                      , count = elements.length;
-                    const clock = document.querySelector('.clocks').getBoundingClientRect()
-                      , clockArea = clock.width * clock.height
-                      , available = Math.max(w * h * .4, w * h - clockArea);
-                    const base = w < 560 ? 112 : w < 900 ? 134 : 151
-                      , normal = Math.max(65, Math.min(base, Math.sqrt(available / Math.max(1, count) / 1.9 / Math.PI) * 2) * Math.min(1, Math.sqrt(6 / Math.max(1, count))));
-                    bodies = [];
-                    elements.forEach( (el, i) => {
-                        const size = Math.min(Math.min(w, h) * .35, normal * (i === 0 ? 1.16 : 1));
-                        el.style.setProperty('--bubble-size', size + 'px');
-                        const radius = size / 2;
-                        let best = null
-                          , bestScore = -Infinity;
-                        for (let sample = 1; sample <= 420; sample++) {
-                            const x = radius + (w - 2 * radius) * V.halton(sample + i * 97, 2)
-                              , y = radius + (h - 2 * radius) * V.halton(sample + i * 97, 3);
-                            if (!clearOfObstacles(x, y, radius))
-                                continue;
-                            const score = bodies.length ? Math.min(...bodies.map(b => Math.hypot(x - b.x, y - b.y) - b.radius - radius)) : Math.abs(x - w * .7) * -.15 + 40;
-                            if (score > bestScore) {
-                                best = {
-                                    x,
-                                    y
-                                };
-                                bestScore = score;
-                            }
-                            if (score > 12)
-                                break;
-                        }
-                        if (!best)
-                            best = {
-                                x: w * .8,
-                                y: Math.max(radius, Math.min(h - radius, h * .2))
-                            };
-                        const angle = (i * 2.399 + 2.55)
-                          , speed = 24 + (i % 4) * 3;
-                        const b = {
-                            el,
-                            shell: el.querySelector('.bubble-shell'),
-                            radius,
-                            x: best.x,
-                            y: best.y,
-                            vx: Math.cos(angle) * speed,
-                            vy: Math.sin(angle) * speed,
-                            held: false,
-                            lastImpact: -1000,
-                            deformation: null
-                        };
-                        for (const o of bounds.obstacles)
-                            D.bounceCircleRect(b, o);
-                        for (const mask of clockMasks)
-                            G.bounceCircleMask(b, mask);
-                        b.x = Math.max(radius, Math.min(w - radius, b.x));
-                        b.y = Math.max(radius, Math.min(h - radius, b.y));
-                        el.onpointerenter = () => b.held = true;
-                        el.onpointerleave = () => b.held = false;
-                        el.onfocus = () => b.held = true;
-                        el.onblur = () => b.held = false;
-                        bodies.push(b);
-                        position(b);
+                    const manual = railPlan.overflow && mediaMotion.matches;
+                    railItems.forEach( (el, i) => {
+                        el.style.transform = `translate3d(0,${manual ? i * (railPlan.cardHeight + railPlan.gap) : R.position(i, railPhase, railPlan)}px,0)`;
                     }
                     );
-                    fitLabels();
+                    $('siteRail').dataset.moving = String(railPlan.overflow && !mediaMotion.matches);
                 }
-                function fitLabels() {
-                    document.querySelectorAll('.bubble-label text').forEach(text => {
-                        text.style.fontSize = '22px';
-                        const width = text.getComputedTextLength();
-                        if (width > 188)
-                            text.style.fontSize = `${Math.max(5, 22 * 188 / width)}px`;
-                    }
-                    );
+                function renderSiteRail() {
+                    const list = D.rankSites(settings.sites);
+                    $('siteTrack').innerHTML = list.map(site => `<a class="site-card" href="${site.url ? esc(site.url) : '#'}" target="_self" data-open-site="${esc(site.id)}" style="--site-color:${site.color}" aria-label="${esc(site.name)}"><strong class="site-card-name">${esc(site.name)}</strong><span class="site-card-url" title="${esc(site.url)}">${esc(site.url || 'Adresse ergänzen')}</span><span class="site-card-symbol">${siteIcon(site)}</span><span class="site-card-frequency" aria-label="${site.visits} Aufrufe">${site.visits}</span></a>`).join('') || '<button class="site-rail-empty" data-mail-go-sites>Internetseite hinzufügen</button>';
+                    railItems = [...$('siteTrack').querySelectorAll('.site-card')];
+                    railPhase = 0;
+                    measureSiteRail();
                 }
-                function renderBubbles() {
-                    $('siteBubbles').innerHTML = D.rankSites(settings.sites).slice(0, settings.visibleCount).map( (s, i) => `<a class="site-bubble${i === 0 ? ' lead' : ''}" href="${s.url ? esc(s.url) : '#'}" target="_self" data-open-site="${esc(s.id)}" style="--bubble:${s.color}" aria-label="${esc(s.name)}"><span class="bubble-shell"><svg class="bubble-label" viewBox="0 0 180 180" aria-hidden="true"><defs><path id="siteArc${i}" d="M 23 94 A 67 67 0 0 1 157 94"/></defs><text><textPath href="#siteArc${i}" text-anchor="middle" startOffset="50%">${esc(s.name)}</textPath></text></svg><span class="bubble-icon">${siteIcon(s)}</span><span class="bubble-domain">${esc(domain(s))}</span></span></a>`).join('');
-                    resetMotion();
-                }
-                function deform(b, angle, now, type) {
-                    if (now - b.lastImpact < 400)
+                function animateSiteRail(dt) {
+                    if (!railPlan?.overflow || mediaMotion.matches)
                         return;
-                    b.lastImpact = now;
-                    b.el.dataset.impacts = String(Number(b.el.dataset.impacts || 0) + 1);
-                    b.el.dataset.impactType = type;
-                    if (mediaMotion.matches)
+                    if ($('siteViewport').matches(':focus-within') && railItems.some(el => el.matches(':focus-visible')))
                         return;
-                    b.deformation?.cancel();
-                    const transform = (x, y) => `rotate(${angle}rad) scale(${x},${y}) rotate(${-angle}rad)`;
-                    const animation = b.shell.animate([{
-                        transform: 'none',
-                        borderRadius: '50%'
-                    }, {
-                        transform: transform(.945, 1.035),
-                        borderRadius: '48% 52% 49% 51%',
-                        offset: .22
-                    }, {
-                        transform: transform(1.018, .988),
-                        borderRadius: '51% 49% 51% 49%',
-                        offset: .62
-                    }, {
-                        transform: 'none',
-                        borderRadius: '50%'
-                    }], {
-                        duration: 880,
-                        easing: 'cubic-bezier(.25,.7,.3,1)'
-                    });
-                    b.deformation = animation;
-                    animation.onfinish = () => {
-                        if (b.deformation === animation)
-                            b.deformation = null;
-                    }
-                    ;
+                    railPhase = (railPhase + dt * 23) % railPlan.cycle;
+                    positionSiteCards();
                 }
-                function constrain(b, now) {
-                    const {width: w, height: h} = bounds;
-                    if (b.x < b.radius) {
-                        b.x = b.radius;
-                        b.vx = Math.abs(b.vx);
-                        deform(b, 0, now, 'wall');
-                    } else if (b.x > w - b.radius) {
-                        b.x = w - b.radius;
-                        b.vx = -Math.abs(b.vx);
-                        deform(b, 0, now, 'wall');
+                $('siteViewport').addEventListener('focusin', event => {
+                    const index = railItems.indexOf(event.target);
+                    if (index >= 0 && event.target.matches(':focus-visible') && railPlan?.overflow) {
+                        railPhase = ((railPlan.cycle - index * (railPlan.cardHeight + railPlan.gap)) % railPlan.cycle);
+                        positionSiteCards();
                     }
-                    if (b.y < b.radius) {
-                        b.y = b.radius;
-                        b.vy = Math.abs(b.vy);
-                        deform(b, Math.PI / 2, now, 'wall');
-                    } else if (b.y > h - b.radius) {
-                        b.y = h - b.radius;
-                        b.vy = -Math.abs(b.vy);
-                        deform(b, Math.PI / 2, now, 'wall');
-                    }
-                    for (const o of bounds.obstacles) {
-                        const x = b.x
-                          , y = b.y;
-                        if (D.bounceCircleRect(b, o))
-                            deform(b, Math.atan2(b.y - y, b.x - x), now, 'wall');
-                    }
-                    for (const mask of clockMasks) {
-                        const x = b.x
-                          , y = b.y;
-                        if (G.bounceCircleMask(b, mask)) {
-                            deform(b, Math.atan2(b.y - y, b.x - x), now, 'clock');
-                            $('siteBubbles').dataset.collisions = String(Number($('siteBubbles').dataset.collisions || 0) + 1);
-                        }
-                    }
-                    b.x = Math.max(b.radius, Math.min(w - b.radius, b.x));
-                    b.y = Math.max(b.radius, Math.min(h - b.radius, b.y));
                 }
+                );
+                mediaMotion.addEventListener('change', measureSiteRail);
                 function animate(now) {
-                    const dt = Math.min((now - lastFrame) / 1000, .045) || 0;
+                    const dt = Math.min((now - lastFrame) / 1000, .05) || 0;
                     lastFrame = now;
                     if (!document.hidden) {
-                        if (settings.motion && !mediaMotion.matches) {
+                        if (settings.motion && !mediaMotion.matches)
                             waveTime += dt;
-                            for (const b of bodies)
-                                if (!b.held) {
-                                    b.x += b.vx * dt;
-                                    b.y += b.vy * dt;
-                                    constrain(b, now);
-                                }
-                            for (let i = 0; i < bodies.length; i++)
-                                for (let j = i + 1; j < bodies.length; j++) {
-                                    const a = bodies[i]
-                                      , b = bodies[j];
-                                    if (a.held && b.held)
-                                        continue;
-                                    let dx = b.x - a.x
-                                      , dy = b.y - a.y
-                                      , d = Math.hypot(dx, dy)
-                                      , sum = a.radius + b.radius + 3;
-                                    if (d && d < sum) {
-                                        dx /= d;
-                                        dy /= d;
-                                        const overlap = Math.min(sum - d, 5);
-                                        if (a.held) {
-                                            b.x += dx * overlap;
-                                            b.y += dy * overlap;
-                                            const v = b.vx * dx + b.vy * dy;
-                                            if (v < 0) {
-                                                b.vx -= 2 * v * dx;
-                                                b.vy -= 2 * v * dy;
-                                            }
-                                        } else if (b.held) {
-                                            a.x -= dx * overlap;
-                                            a.y -= dy * overlap;
-                                            const v = a.vx * dx + a.vy * dy;
-                                            if (v > 0) {
-                                                a.vx -= 2 * v * dx;
-                                                a.vy -= 2 * v * dy;
-                                            }
-                                        } else {
-                                            a.x -= dx * overlap / 2;
-                                            a.y -= dy * overlap / 2;
-                                            b.x += dx * overlap / 2;
-                                            b.y += dy * overlap / 2;
-                                            const v = (b.vx - a.vx) * dx + (b.vy - a.vy) * dy;
-                                            if (v < 0) {
-                                                a.vx += v * dx;
-                                                a.vy += v * dy;
-                                                b.vx -= v * dx;
-                                                b.vy -= v * dy;
-                                            }
-                                        }
-                                        const angle = Math.atan2(dy, dx);
-                                        deform(a, angle, now, 'circle');
-                                        deform(b, angle, now, 'circle');
-                                    }
-                                }
-                            for (const b of bodies) {
-                                if (!b.held)
-                                    constrain(b, now);
-                                position(b);
-                            }
-                        }
+                        animateSiteRail(dt);
                         if ((settings.motion && !mediaMotion.matches) || waveDirty)
                             renderWaveFrames(now);
                     }
@@ -5806,7 +6885,7 @@
                             renderSources();
                         }
                     }
-                    ), refreshWeather(manual), refreshCustomFeeds()]);
+                    ), refreshWeather(manual), refreshCustomFeeds(), refreshMail(manual)]);
                     refreshing = false;
                     $('refreshDataButton').disabled = false;
                     $('brandRefresh').classList.remove('refreshing');
@@ -5816,7 +6895,7 @@
                     renderSources();
                     if (manualRefreshRequested) {
                         manualRefreshRequested = false;
-                        const success = [...Object.values(sources), weatherSource, ...customSources.values()].every(source => source.status === 'ok');
+                        const success = [...Object.values(sources), weatherSource, ...customSources.values()].every(source => source.status === 'ok') && settings.mail.accounts.every(account => mailSession(account) && !mailState(account.id).error);
                         notify(success ? 'Alle Daten wurden aktualisiert.' : 'Die Daten wurden teilweise aktualisiert. Einige Datenquellen sind nicht erreichbar.', success ? 'success' : 'warning');
                     }
                 }
@@ -5884,6 +6963,7 @@
                     $('customSvgPreview').innerHTML = siteIcon(formSymbols[target]);
                     $('iconQuery').value = '';
                     $('iconResults').innerHTML = Object.keys(icons).filter(key => !['logo', 'separator', 'flag-germany', 'flag-georgia'].includes(key)).map(key => `<button class="icon-option" data-local-icon="${key}" aria-label="${{
+                        "mail": "E-Mail",
                         "feed": "Informationsfluss",
                         "sun": "Sonne",
                         "cloud": "Wolke",
@@ -6153,6 +7233,527 @@
                     $('noteHeading').focus();
                 }
 
+                const gmail = new M.Gmail()
+                  , mailSessions = new Map()
+                  , mailStates = new Map();
+                let googleReady = false
+                  , googleLoading = null
+                  , mailAuthBusy = false
+                  , mailMessageSequence = 0
+                  , mailRefreshAt = 0;
+                function mailState(id) {
+                    if (!mailStates.has(id))
+                        mailStates.set(id, {
+                            messages: [],
+                            page: 0,
+                            tokens: [''],
+                            next: '',
+                            loading: false,
+                            error: '',
+                            updated: 0,
+                            revision: 0,
+                            readEpoch: 0,
+                            readChanges: new Map()
+                        });
+                    return mailStates.get(id);
+                }
+                function mailSession(account) {
+                    const session = mailSessions.get(account.id);
+                    if (session && session.expiresAt > Date.now() + 10000)
+                        return session;
+                    if (session) {
+                        mailSessions.delete(account.id);
+                        mailStates.delete(account.id);
+                    }
+                    return null;
+                }
+                function mailStyle() {
+                    const m = settings.mail
+                      , alpha = 1 - m.transparency / 100
+                      , header = 1 - m.headerTransparency / 100;
+                    const rgb = hex(m.color)
+                      , h = hex(m.headerColor)
+                      , root = $('mailPanels');
+                    root.style.setProperty('--mail-background', `rgba(${rgb.join(',')},${alpha})`);
+                    root.style.setProperty('--mail-blur', (alpha * 10) + 'px');
+                    root.style.setProperty('--mail-header-background', `rgba(${h.join(',')},${header})`);
+                    root.style.setProperty('--mail-header-text', m.headerTextColor);
+                }
+                function renderMailPanels() {
+                    const scrollPositions = [...$('mailPanels').querySelectorAll('.mail-list')].map(el => el.scrollTop);
+                    mailStyle();
+                    $('mailPanels').innerHTML = Array.from({
+                        length: 2
+                    }, (_, slot) => {
+                        const account = settings.mail.accounts[slot];
+                        if (!account)
+                            return `<section class="mail-account empty-account"><header class="mail-account-header"><strong>Postfach ${slot + 1}</strong></header><div class="mail-empty"><button class="secondary-button" data-mail-settings>${icon('mail')}Gmail verbinden</button></div></section>`;
+                        const session = mailSession(account)
+                          , state = mailState(account.id);
+                        let content = '';
+                        if (!session)
+                            content = `<div class="mail-empty"><button class="secondary-button" data-mail-connect="${esc(account.id)}">Erneut verbinden</button></div>`;
+                        else if (state.loading && !state.messages.length)
+                            content = '<p class="mail-empty">Nachrichten werden geladen …</p>';
+                        else if (state.error && !state.messages.length)
+                            content = `<div class="mail-empty"><p>${esc(state.error)}</p><button class="secondary-button" data-mail-refresh="${esc(account.id)}">Erneut versuchen</button></div>`;
+                        else
+                            content = state.messages.map(message => `<button class="mail-row${message.unread ? ' unread' : ''}" data-mail-message="${esc(message.id)}" data-mail-account="${esc(account.id)}" aria-label="${esc(message.sender + ': ' + message.subject + (message.unread ? ', ungelesen' : ''))}"><strong class="mail-sender" title="${esc(message.from)}">${esc(message.sender)}</strong><span class="mail-summary"><span class="mail-subject">${esc(message.subject)}</span><span class="mail-snippet">${esc(message.snippet)}</span><span class="mail-details-label">Details</span></span><time class="mail-date"${message.at ? ` datetime="${new Date(message.at).toISOString()}"` : ''}>${M.relativeDate(message.at)}</time></button>`).join('') || '<p class="mail-empty">Keine Nachrichten in diesem Bereich</p>';
+                        return `<section class="mail-account" data-mail-slot="${slot}"><header class="mail-account-header"><strong title="${esc(account.name)}">${esc(account.name)}</strong><span>${esc(M.sectionName(account.section, account.labels))}</span></header><div class="mail-list">${content}</div><footer class="mail-pagination"><span>${state.error ? esc(state.error) : state.loading ? 'Wird aktualisiert …' : `Seite ${state.page + 1}`}</span><button data-mail-page="previous" data-mail-account="${esc(account.id)}"${!session || state.loading || state.page === 0 ? ' disabled' : ''}>Zurück</button><button data-mail-page="next" data-mail-account="${esc(account.id)}"${!session || state.loading || !state.next ? ' disabled' : ''}>Weiter</button></footer></section>`;
+                    }
+                    ).join('');
+                    [...$('mailPanels').querySelectorAll('.mail-list')].forEach( (el, i) => el.scrollTop = scrollPositions[i] || 0);
+                }
+                function renderMailSettings() {
+                    const m = settings.mail;
+                    $('mailClientId').value = m.clientId;
+                    $('mailAccountCount').textContent = m.accounts.length + ' / 2';
+                    $('mailConnectionHint').textContent = location.protocol === 'file:' ? 'Bitte öffnen Sie die Seite über Ihre HTTPS-Adresse.' : !m.clientId ? 'Eine Google-Client-ID ist zum Verbinden erforderlich.' : googleReady ? 'Google-Verbindung ist vorbereitet.' : googleLoading ? 'Google-Anmeldung wird vorbereitet …' : 'Google-Anmeldung wird geladen …';
+                    $('mailAddAccount').disabled = !m.clientId || !googleReady || mailAuthBusy || m.accounts.length >= 2;
+                    $('mailAccountList').innerHTML = m.accounts.map(account => `<article class="mail-settings-account"><div><strong>${esc(account.name)}</strong><span>${esc(account.email)}</span><small>${esc(M.sectionName(account.section, account.labels))}</small></div><div class="mail-account-actions"><button class="secondary-button" data-mail-connect="${esc(account.id)}"${!googleReady || mailAuthBusy ? ' disabled' : ''}>${mailSession(account) ? 'Erneut verbinden' : 'Verbinden'}</button><button class="round-button" data-mail-edit="${esc(account.id)}" title="Bearbeiten" aria-label="Postfach bearbeiten">${icon('edit')}</button><button class="round-button" data-mail-remove="${esc(account.id)}" title="Entfernen" aria-label="Postfach entfernen">${icon('trash')}</button></div></article>`).join('') || '<p class="mail-settings-empty">Noch kein Gmail-Konto verbunden</p>';
+                    for (const [key,id] of [['color', 'mailColor'], ['headerColor', 'mailHeaderColor'], ['headerTextColor', 'mailHeaderTextColor'], ['transparency', 'mailTransparency'], ['headerTransparency', 'mailHeaderTransparency']])
+                        $(id).value = m[key];
+                    updateMailRanges();
+                    if (m.clientId && !googleReady && !googleLoading && location.protocol !== 'file:')
+                        loadGoogle();
+                }
+                function updateMailRanges() {
+                    $('mailTransparencyValue').textContent = $('mailTransparency').value + ' %';
+                    $('mailHeaderTransparencyValue').textContent = $('mailHeaderTransparency').value + ' %';
+                }
+                function loadGoogle() {
+                    if (googleReady)
+                        return Promise.resolve();
+                    if (googleLoading)
+                        return googleLoading;
+                    googleLoading = new Promise( (resolve, reject) => {
+                        const script = document.createElement('script');
+                        script.src = 'https://accounts.google.com/gsi/client';
+                        script.async = true;
+                        script.onload = () => {
+                            googleReady = !!window.google?.accounts?.oauth2;
+                            googleReady ? resolve() : reject(new Error('Die Google-Anmeldung konnte nicht geladen werden.'));
+                        }
+                        ;
+                        script.onerror = () => {
+                            script.remove();
+                            reject(new Error('Die Google-Anmeldung konnte nicht geladen werden.'));
+                        }
+                        ;
+                        document.head.append(script);
+                    }
+                    ).catch(error => {
+                        notify(error.message, 'error');
+                    }
+                    ).finally( () => {
+                        googleLoading = null;
+                        if ($('settingsDialog').open && !$('panelMail').hidden && googleReady)
+                            renderMailSettings();
+                    }
+                    );
+                    return googleLoading;
+                }
+                async function connectMail(id='') {
+                    if (mailAuthBusy)
+                        return;
+                    if (!settings.mail.clientId) {
+                        showSettings('Mail');
+                        $('mailClientId').focus();
+                        return;
+                    }
+                    if (location.protocol === 'file:') {
+                        notify('Bitte öffnen Sie die Seite über HTTPS, um Gmail zu verbinden.', 'info');
+                        return;
+                    }
+                    if (!googleReady) {
+                        loadGoogle();
+                        notify('Die Google-Anmeldung wird vorbereitet. Bitte versuchen Sie es gleich erneut.');
+                        return;
+                    }
+                    const existing = settings.mail.accounts.find(a => a.id === id);
+                    if (!existing && settings.mail.accounts.length >= 2) {
+                        notify('Es können höchstens zwei Gmail-Konten angezeigt werden.', 'error');
+                        return;
+                    }
+                    mailAuthBusy = true;
+                    renderMailSettings();
+                    const client = google.accounts.oauth2.initTokenClient({
+                        client_id: settings.mail.clientId,
+                        scope: M.SCOPE,
+                        include_granted_scopes: true,
+                        callback: async response => {
+                            try {
+                                if (response.error)
+                                    throw new Error(response.error === 'access_denied' ? 'Der Google-Zugriff wurde nicht freigegeben.' : 'Die Google-Anmeldung konnte nicht abgeschlossen werden.');
+                                if (!google.accounts.oauth2.hasGrantedAllScopes(response, 'https://www.googleapis.com/auth/gmail.modify'))
+                                    throw new Error('Zum Synchronisieren des Lesestatus ist der Gmail-Zugriff erforderlich.');
+                                const identity = await gmail.identity(response.access_token);
+                                if (!identity.sub || !identity.email)
+                                    throw new Error('Das Google-Konto konnte nicht zugeordnet werden.');
+                                if (existing && identity.sub !== existing.id)
+                                    throw new Error('Bitte wählen Sie das zu diesem Postfach gehörende Google-Konto.');
+                                let account = settings.mail.accounts.find(a => a.id === identity.sub);
+                                const labels = (await gmail.labels(response.access_token)).labels || [];
+                                if (!account) {
+                                    account = {
+                                        id: identity.sub,
+                                        email: identity.email,
+                                        name: identity.name || [identity.given_name, identity.family_name].filter(Boolean).join(' ') || 'Gmail-Konto',
+                                        section: 'CATEGORY_PERSONAL',
+                                        labels: labels.filter(l => l.type === 'user')
+                                    };
+                                    settings.mail.accounts.push(account);
+                                } else
+                                    account.labels = labels.filter(l => l.type === 'user');
+                                mailSessions.set(account.id, {
+                                    token: response.access_token,
+                                    expiresAt: Date.now() + Number(response.expires_in || 3600) * 1000
+                                });
+                                mailStates.delete(account.id);
+                                save();
+                                renderMailPanels();
+                                renderMailSettings();
+                                await refreshMailAccount(account, true);
+                                openMailAccount(account.id);
+                                notify('Das Gmail-Konto wurde verbunden.', 'success');
+                            } catch (error) {
+                                notify(error.message || 'Die Google-Anmeldung ist fehlgeschlagen.', 'error');
+                            } finally {
+                                mailAuthBusy = false;
+                                if ($('settingsDialog').open && !$('panelMail').hidden)
+                                    renderMailSettings();
+                            }
+                        }
+                        ,
+                        error_callback: error => {
+                            mailAuthBusy = false;
+                            renderMailSettings();
+                            notify(error.type === 'popup_closed' ? 'Die Google-Anmeldung wurde geschlossen.' : 'Bitte erlauben Sie das Google-Anmeldefenster.', 'info');
+                        }
+                    });
+                    try {
+                        client.requestAccessToken(existing ? {
+                            hint: existing.email,
+                            prompt: ''
+                        } : {
+                            prompt: 'select_account'
+                        });
+                    } catch (error) {
+                        mailAuthBusy = false;
+                        renderMailSettings();
+                        notify(error.message, 'error');
+                    }
+                }
+                async function refreshMailAccount(account, force=false) {
+                    const session = mailSession(account)
+                      , state = mailState(account.id);
+                    if (!session || state.loading)
+                        return;
+                    if (!force && Date.now() - state.updated < 15000)
+                        return;
+                    const revision = state.revision
+                      , readEpoch = state.readEpoch
+                      , section = account.section
+                      , pageToken = state.tokens[state.page] || '';
+                    state.loading = true;
+                    state.error = '';
+                    renderMailPanels();
+                    try {
+                        const result = await gmail.listPage(session.token, section, pageToken);
+                        if (!settings.mail.accounts.some(a => a.id === account.id) || state.revision !== revision || !mailSession(account))
+                            return;
+                        state.messages = result.messages.map(message => {
+                            if ((state.readChanges.get(message.id) || 0) > readEpoch)
+                                message.unread = false;
+                            return message;
+                        }
+                        );
+                        state.next = result.nextPageToken;
+                        state.updated = Date.now();
+                    } catch (error) {
+                        if (error.status === 401) {
+                            mailSessions.delete(account.id);
+                            state.messages = [];
+                        }
+                        state.error = error.message || 'Die Nachrichten konnten nicht geladen werden.';
+                    } finally {
+                        state.loading = false;
+                        renderMailPanels();
+                    }
+                }
+                async function refreshMail(force=false) {
+                    if (!force && Date.now() - mailRefreshAt < 15000)
+                        return;
+                    mailRefreshAt = Date.now();
+                    await Promise.allSettled(settings.mail.accounts.map(account => refreshMailAccount(account, force)));
+                }
+                function openMailAccount(id) {
+                    const account = settings.mail.accounts.find(a => a.id === id);
+                    if (!account)
+                        return;
+                    $('mailAccountId').value = id;
+                    $('mailOwnerName').value = account.name;
+                    $('mailAccountAddress').value = account.email;
+                    $('mailSection').innerHTML = M.sections(account.labels).map(section => `<option value="${esc(section.id)}">${esc(section.name)}</option>`).join('');
+                    $('mailSection').value = account.section;
+                    $('mailAccountDialog').showModal();
+                }
+                function htmlMailText(html) {
+                    const text = String(html || '').replace(/<(script|style|head)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '').replace(/<\s*br\b[^>]*>/gi, '\n').replace(/<\/(?:p|div|tr|li|h[1-6])\s*>/gi, '\n').replace(/<[^>]*>/g, '');
+                    const decoder = document.createElement('textarea');
+                    decoder.innerHTML = text.replace(/</g, '&lt;');
+                    return decoder.value.replace(/\n[ \t]+/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+                }
+                async function markMailRead(account, message, state) {
+                    const session = mailSession(account);
+                    if (!session)
+                        throw new Error('Bitte verbinden Sie dieses Google-Konto erneut.');
+                    await gmail.markRead(session.token, message.id);
+                    state.readEpoch++;
+                    state.readChanges.set(message.id, state.readEpoch);
+                    for (const item of state.messages)
+                        if (item.id === message.id)
+                            item.unread = false;
+                    renderMailPanels();
+                }
+                async function openMailMessage(accountId, messageId) {
+                    const account = settings.mail.accounts.find(a => a.id === accountId)
+                      , state = mailState(accountId);
+                    if (!account)
+                        return;
+                    const session = mailSession(account);
+                    if (!session) {
+                        connectMail(accountId);
+                        return;
+                    }
+                    const message = state.messages.find(m => m.id === messageId);
+                    if (!message)
+                        return;
+                    const sequence = ++mailMessageSequence;
+                    $('mailMessageTitle').textContent = message.subject;
+                    $('mailMessageBody').innerHTML = '<p class="mail-loading">Nachricht wird geladen …</p>';
+                    $('mailMessageDialog').showModal();
+                    try {
+                        const full = await gmail.full(session.token, messageId)
+                          , body = M.bodies(full.payload);
+                        const texts = await M.mapLimit(body.parts, 3, async item => item.text || (item.attachmentId ? M.decode((await gmail.attachment(session.token, messageId, item.attachmentId)).data) : ''));
+                        if (sequence !== mailMessageSequence || !$('mailMessageDialog').open)
+                            return;
+                        const text = body.isHtml ? htmlMailText(texts.join('\n')) : texts.join('\n').trim();
+                        $('mailMessageBody').innerHTML = `<div class="mail-message-meta"><strong>${esc(message.sender)}</strong><span>${esc(message.from)}</span><time>${message.at ? esc(new Intl.DateTimeFormat('de-DE',{
+                            dateStyle: 'full',
+                            timeStyle: 'short',
+                            timeZone: 'Europe/Berlin'
+                        }).format(new Date(message.at))) : 'Datum unbekannt'}</time></div><div class="mail-body-text">${esc(text || message.snippet || 'Diese Nachricht enthält keinen darstellbaren Text.')}</div>${body.attachments.length ? `<div class="mail-attachments"><strong>Anhänge</strong>${body.attachments.map(a => `<span>${esc(a.name)}</span>`).join('')}</div>` : ''}<p id="mailReadStatus" class="field-note"></p>`;
+                        if (message.unread)
+                            try {
+                                await markMailRead(account, message, state);
+                            } catch (error) {
+                                if (sequence === mailMessageSequence && $('mailReadStatus'))
+                                    $('mailReadStatus').innerHTML = `${esc(error.message)} <button class="secondary-button" data-mail-read-retry="${esc(messageId)}" data-mail-account="${esc(accountId)}">Lesestatus erneut speichern</button>`;
+                                notify('Die Nachricht wurde geöffnet. Der Lesestatus konnte noch nicht mit Gmail synchronisiert werden.', 'warning');
+                            }
+                    } catch (error) {
+                        if (sequence === mailMessageSequence)
+                            $('mailMessageBody').innerHTML = `<p class="mail-loading">${esc(error.message || 'Die Nachricht konnte nicht geladen werden.')}</p>`;
+                    }
+                }
+                function syncMailSettings(clientChanged=false) {
+                    if (clientChanged)
+                        mailSessions.clear();
+                    mailStates.clear();
+                    for (const id of mailSessions.keys())
+                        if (!settings.mail.accounts.some(a => a.id === id)) {
+                            mailSessions.delete(id);
+                            mailStates.delete(id);
+                        }
+                    renderMailPanels();
+                    if ($('settingsDialog').open && !$('panelMail').hidden)
+                        renderMailSettings();
+                    refreshMail(true);
+                }
+                function initializeMail() {
+                    renderMailPanels();
+                    $('mailClientId').value = settings.mail.clientId;
+                    for (const id of ['mailTransparency', 'mailHeaderTransparency'])
+                        $(id).addEventListener('input', updateMailRanges);
+                    setInterval( () => {
+                        if (!document.hidden)
+                            refreshMail();
+                    }
+                    , 20000);
+                    document.addEventListener('visibilitychange', () => {
+                        if (!document.hidden)
+                            refreshMail(true);
+                    }
+                    );
+                    window.addEventListener('focus', () => refreshMail());
+                    window.addEventListener('pagehide', () => {
+                        mailSessions.clear();
+                        mailStates.clear();
+                    }
+                    );
+                    window.addEventListener('pageshow', renderMailPanels);
+                }
+                $('mailMessageDialog').addEventListener('close', () => {
+                    mailMessageSequence++;
+                    $('mailMessageBody').innerHTML = '';
+                }
+                );
+                $('mailSetupHelp').addEventListener('click', () => {
+                    $('mailOriginExample').textContent = location.protocol === 'https:' ? location.origin : 'https://uunimed.github.io';
+                    $('mailGuideDialog').showModal();
+                }
+                );
+                $('mailClientForm').addEventListener('submit', async event => {
+                    event.preventDefault();
+                    const clientId = $('mailClientId').value.trim();
+                    if (clientId && !M.validClientId(clientId)) {
+                        notify('Bitte geben Sie eine gültige Google-Client-ID ein.', 'error');
+                        return;
+                    }
+                    if (!await confirmAction('Google-Verbindung speichern?', 'Möchten Sie diese Client-ID für Ihre Gmail-Verbindung verwenden? Bestehende Sitzungen werden getrennt.', false, 'Speichern'))
+                        return;
+                    settings.mail.clientId = clientId;
+                    mailSessions.clear();
+                    mailStates.clear();
+                    save();
+                    renderMailPanels();
+                    renderMailSettings();
+                    notify('Die Google-Verbindung wurde gespeichert.', 'success');
+                }
+                );
+                $('mailAddAccount').addEventListener('click', () => connectMail());
+                $('mailAccountForm').addEventListener('submit', async event => {
+                    event.preventDefault();
+                    const account = settings.mail.accounts.find(a => a.id === $('mailAccountId').value)
+                      , name = $('mailOwnerName').value.trim()
+                      , section = $('mailSection').value;
+                    if (!account)
+                        return;
+                    if (!name || name.includes('@')) {
+                        notify('Bitte geben Sie den Namen der Person ein.', 'error');
+                        return;
+                    }
+                    if (!M.sections(account.labels).some(s => s.id === section)) {
+                        notify('Bitte wählen Sie einen Bereich.', 'error');
+                        return;
+                    }
+                    if (!await confirmAction('Postfach speichern?', `Möchten Sie für „${name}“ den Bereich „${M.sectionName(section, account.labels)}“ anzeigen?`, false, 'Speichern'))
+                        return;
+                    const changed = account.section !== section;
+                    Object.assign(account, {
+                        name,
+                        section
+                    });
+                    if (changed) {
+                        const old = mailStates.get(account.id);
+                        if (old)
+                            old.revision++;
+                        mailStates.delete(account.id);
+                    }
+                    save();
+                    $('mailAccountDialog').close();
+                    renderMailPanels();
+                    renderMailSettings();
+                    refreshMailAccount(account, true);
+                    notify('Die Postfacheinstellungen wurden gespeichert.', 'success');
+                }
+                );
+                $('mailAppearanceForm').addEventListener('submit', async event => {
+                    event.preventDefault();
+                    if (!await confirmAction('Darstellung speichern?', 'Möchten Sie diese Farben und Transparenzeinstellungen für die Postfächer übernehmen?', false, 'Speichern'))
+                        return;
+                    Object.assign(settings.mail, {
+                        color: $('mailColor').value,
+                        headerColor: $('mailHeaderColor').value,
+                        headerTextColor: $('mailHeaderTextColor').value,
+                        transparency: Number($('mailTransparency').value),
+                        headerTransparency: Number($('mailHeaderTransparency').value)
+                    });
+                    save();
+                    renderMailPanels();
+                    notify('Die Darstellung der Postfächer wurde gespeichert.', 'success');
+                }
+                );
+                document.addEventListener('click', async event => {
+                    const target = event.target.closest('[data-mail-settings],[data-mail-connect],[data-mail-edit],[data-mail-remove],[data-mail-message],[data-mail-page],[data-mail-refresh],[data-mail-read-retry],[data-mail-go-sites]');
+                    if (!target)
+                        return;
+                    if (target.hasAttribute('data-mail-settings')) {
+                        showSettings('Mail');
+                        return;
+                    }
+                    if (target.hasAttribute('data-mail-go-sites')) {
+                        showSettings('Sites');
+                        return;
+                    }
+                    if (target.hasAttribute('data-mail-connect')) {
+                        connectMail(target.dataset.mailConnect);
+                        return;
+                    }
+                    if (target.hasAttribute('data-mail-edit')) {
+                        const account = settings.mail.accounts.find(a => a.id === target.dataset.mailEdit);
+                        if (account && await confirmAction('Postfach bearbeiten?', `Möchten Sie das Postfach von „${account.name}“ bearbeiten?`, false, 'Bearbeiten'))
+                            openMailAccount(account.id);
+                        return;
+                    }
+                    if (target.hasAttribute('data-mail-remove')) {
+                        const account = settings.mail.accounts.find(a => a.id === target.dataset.mailRemove);
+                        if (!account || !await confirmAction('Postfach entfernen?', `Möchten Sie das Postfach von „${account.name}“ aus Shogi Space entfernen?`, true))
+                            return;
+                        settings.mail.accounts = settings.mail.accounts.filter(a => a.id !== account.id);
+                        mailSessions.delete(account.id);
+                        const old = mailStates.get(account.id);
+                        if (old)
+                            old.revision++;
+                        mailStates.delete(account.id);
+                        save();
+                        renderMailPanels();
+                        renderMailSettings();
+                        notify('Das Postfach wurde entfernt.', 'success');
+                        return;
+                    }
+                    if (target.hasAttribute('data-mail-message')) {
+                        openMailMessage(target.dataset.mailAccount, target.dataset.mailMessage);
+                        return;
+                    }
+                    const account = settings.mail.accounts.find(a => a.id === target.dataset.mailAccount || a.id === target.dataset.mailRefresh);
+                    if (!account)
+                        return;
+                    const state = mailState(account.id);
+                    if (target.hasAttribute('data-mail-page')) {
+                        if (state.loading)
+                            return;
+                        if (target.dataset.mailPage === 'next' && state.next) {
+                            state.tokens[state.page + 1] = state.next;
+                            state.page++;
+                        } else if (target.dataset.mailPage === 'previous' && state.page > 0)
+                            state.page--;
+                        else
+                            return;
+                        state.messages = [];
+                        state.next = '';
+                        await refreshMailAccount(account, true);
+                        return;
+                    }
+                    if (target.hasAttribute('data-mail-read-retry')) {
+                        const message = state.messages.find(m => m.id === target.dataset.mailReadRetry);
+                        if (message)
+                            try {
+                                await markMailRead(account, message, state);
+                                if ($('mailReadStatus'))
+                                    $('mailReadStatus').textContent = 'Der Lesestatus wurde synchronisiert.';
+                            } catch (error) {
+                                notify(error.message, 'error');
+                            }
+                        return;
+                    }
+                    if (target.hasAttribute('data-mail-refresh'))
+                        refreshMailAccount(account, true);
+                }
+                );
+
                 function selectTab(name) {
                     document.querySelectorAll('[data-tab]').forEach(button => {
                         const active = button.dataset.tab === name;
@@ -6160,7 +7761,7 @@
                         button.tabIndex = active ? 0 : -1;
                     }
                     );
-                    for (const n of ['Sites', 'Info', 'View', 'Data'])
+                    for (const n of ['Sites', 'Info', 'View', 'Data', 'Mail'])
                         $('panel' + n).hidden = n !== name;
                     if (name === 'Info')
                         renderInformation();
@@ -6170,6 +7771,8 @@
                     }
                     if (name === 'View')
                         renderAppearance();
+                    if (name === 'Mail')
+                        renderMailSettings();
                 }
                 async function closeDialog(id) {
                     if (id === 'confirmDialog') {
@@ -6220,7 +7823,7 @@
                 }
                 function changedSites() {
                     save();
-                    renderBubbles();
+                    renderSiteRail();
                     renderSites();
                     renderAllSites();
                     updateTicker();
@@ -6488,13 +8091,13 @@
                     }
                     settings.visibleCount = value;
                     save();
-                    renderBubbles();
+                    renderSiteRail();
                     notify('Die Anzahl der sichtbaren Internetseiten wurde gespeichert.', 'success');
                 }
                 );
                 $('motionToggle').addEventListener('change', async event => {
                     const value = event.target.checked;
-                    if (!await confirmAction('Bewegung ändern?', value ? 'Möchten Sie den Hintergrund und die Blasen bewegen?' : 'Möchten Sie die Bewegung des Hintergrunds und der Blasen anhalten?', false, 'Übernehmen')) {
+                    if (!await confirmAction('Bewegung ändern?', value ? 'Möchten Sie den Hintergrund und die Internetseiten bewegen?' : 'Möchten Sie die Bewegung des Hintergrunds anhalten?', false, 'Übernehmen')) {
                         event.target.checked = settings.motion;
                         return;
                     }
@@ -6648,6 +8251,8 @@
                     if (event.key !== STORE)
                         return;
                     try {
+                        const previousMail = JSON.stringify(settings.mail)
+                          , previousMailClient = settings.mail.clientId;
                         const oldCity = JSON.stringify(settings.weather);
                         settings = normalize(JSON.parse(event.newValue));
                         draft = clone(settings.appearance);
@@ -6659,11 +8264,13 @@
                         }
                         $('weatherCity').value = settings.weather.name;
                         applyPreferences();
-                        renderBubbles();
+                        renderSiteRail();
                         renderSites();
                         renderAllSites();
                         updateTicker();
                         refreshCustomFeeds();
+                        if (previousMail !== JSON.stringify(settings.mail))
+                            syncMailSettings(previousMailClient !== settings.mail.clientId);
                         if ($('settingsDialog').open && !$('panelView').hidden)
                             renderAppearance();
                     } catch {}
@@ -6676,8 +8283,9 @@
                 }
                 );
                 window.addEventListener('pageshow', () => startTaskStream());
+                initializeMail();
                 applyPreferences();
-                renderBubbles();
+                renderSiteRail();
                 renderSites();
                 renderSources();
                 renderSymbolPreviews();
@@ -6688,7 +8296,7 @@
                 revealControls();
                 sizeCanvas($('waveCanvas'));
                 const resize = new ResizeObserver( () => {
-                    resetMotion();
+                    measureSiteRail();
                     sizeCanvas($('waveCanvas'));
                     if (!$('panelView').hidden)
                         sizeCanvas($('appearancePreview'));
@@ -6699,8 +8307,7 @@
                 const previewResize = new ResizeObserver( () => sizeCanvas($('appearancePreview')));
                 previewResize.observe($('appearancePreview'));
                 document.fonts.ready.then( () => {
-                    resetMotion();
-                    fitLabels();
+                    measureSiteRail();
                 }
                 );
                 requestAnimationFrame(animate);
