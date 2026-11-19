@@ -4481,6 +4481,72 @@
                 outline: 2px solid #427dcb;
                 background: #427dcb15
             }
+
+            .mail-message-dialog {
+                background: #eef3fa
+            }
+
+            .mail-rich-content,.mail-content-frame {
+                background: transparent;
+                border-radius: 0
+            }
+
+            .mail-attachment-heading {
+                display: flex;
+                align-items: center;
+                gap: 18px;
+                min-width: 0
+            }
+
+            .mail-attachment-heading h2 {
+                min-width: 0;
+                overflow-wrap: anywhere
+            }
+
+            .mail-return-button {
+                white-space: nowrap;
+                min-height: 36px;
+                font-size: 13px;
+                flex: none
+            }
+
+            .mail-message-dialog .dialog-header {
+                background: #eef3fa
+            }
+
+            .mail-content-frame {
+                color-scheme: light
+            }
+
+            @media(max-width: 760px) {
+                .mail-attachment-heading {
+                    align-items:flex-start;
+                    flex-direction: column;
+                    gap: 9px
+                }
+
+                .mail-return-button {
+                    min-height: 30px;
+                    padding: 6px 9px;
+                    font-size: 12px
+                }
+
+                .mail-attachment-heading h2 {
+                    font-size: 16px
+                }
+
+                .mail-attachment-heading+.mail-dialog-actions {
+                    align-self: flex-start
+                }
+            }
+
+            .mail-service-label {
+                margin-top: 24px
+            }
+
+            #mailServiceUrl {
+                font: 14px var(--number)
+            }
         </style>
         <!-- DOMPurify: Apache-2.0
 
@@ -5077,6 +5143,9 @@ PDF.js: Apache-2.0
                                         <input id="mailClientId" autocomplete="off" spellcheck="false">
                                         <button class="primary-button" type="submit">Speichern</button>
                                     </div>
+                                    <label for="mailServiceUrl" class="mail-service-label">Verbindungsdienst</label>
+                                    <input id="mailServiceUrl" type="url" autocomplete="url" spellcheck="false">
+                                    <p class="field-note">Für die automatische Wiederherstellung in neuen Fenstern. Cloudflare Free genügt.</p>
                                     <p class="field-note" id="mailConnectionHint"></p>
                                 </form>
                             </div>
@@ -5146,7 +5215,7 @@ PDF.js: Apache-2.0
             <div class="dialog-header">
                 <h2 id="mailMessageTitle">Nachricht</h2>
                 <div class="mail-dialog-actions">
-                    <a id="mailOpenGmail" class="round-button" target="_self" rel="noreferrer" title="Diese Nachricht in Gmail öffnen" aria-label="Diese Nachricht in Gmail öffnen" data-icon="gmail" hidden></a>
+                    <a id="mailOpenGmail" class="round-button" target="_top" rel="noreferrer" title="Diese Nachricht in Gmail öffnen" aria-label="Diese Nachricht in Gmail öffnen" data-icon="gmail" hidden></a>
                     <button class="round-button" data-close="mailMessageDialog" aria-label="Schließen" data-icon="x"></button>
                 </div>
             </div>
@@ -5175,7 +5244,7 @@ PDF.js: Apache-2.0
                     Für GitHub Pages ist der Ursprung gewöhnlich <code>https://uunimed.github.io</code>, ohne <code>/admin/</code>. Bei einer eigenen Domain muss deren Ursprung verwendet werden.
                 </p>
                 <p>Die Verbindung benötigt Zugriff auf das Lesen von E-Mails und das Ändern des Lesestatus. Nachrichten und Zugangstoken werden nicht in den Seiteneinstellungen gespeichert.</p>
-                <p>Google-Zugriffstoken sind zeitlich begrenzt. Nach Ablauf oder erneutem Öffnen der Seite kann „Erneut verbinden“ erforderlich sein.</p>
+                <p>Mit eingerichtetem Verbindungsdienst werden die Postfächer in neuen Fenstern automatisch wiederhergestellt. Ohne Verbindungsdienst bleibt die Verbindung zeitlich begrenzt. Im Google-Testmodus kann nach sieben Tagen eine erneute Freigabe erforderlich sein.</p>
                 <p>Die Verbindung funktioniert über HTTPS oder einen lokalen Webserver. Eine direkt geöffnete HTML-Datei kann keine Google-Anmeldung verwenden.</p>
                 <p>
                     <a href="https://developers.google.com/identity/oauth2/web/guides/get-google-api-clientid" target="_self">Google-Anleitung</a>
@@ -5184,10 +5253,13 @@ PDF.js: Apache-2.0
         </dialog>
         <dialog id="mailAttachmentDialog" class="full-dialog mail-message-dialog" aria-labelledby="mailAttachmentTitle">
             <div class="dialog-header">
-                <h2 id="mailAttachmentTitle">Anhang</h2>
+                <div class="mail-attachment-heading">
+                    <button type="button" class="secondary-button mail-return-button" data-close="mailAttachmentDialog" aria-label="Zurück zur Nachricht">Zurück zur Nachricht</button>
+                    <h2 id="mailAttachmentTitle">Anhang</h2>
+                </div>
                 <div class="mail-dialog-actions">
                     <a id="mailAttachmentDownload" class="round-button" title="Herunterladen" aria-label="Anhang herunterladen" data-icon="download" hidden></a>
-                    <a id="mailAttachmentGmail" class="round-button" target="_self" rel="noreferrer" title="Diese Nachricht in Gmail öffnen" aria-label="Diese Nachricht in Gmail öffnen" data-icon="gmail"></a>
+                    <a id="mailAttachmentGmail" class="round-button" target="_top" rel="noreferrer" title="Diese Nachricht in Gmail öffnen" aria-label="Diese Nachricht in Gmail öffnen" data-icon="gmail"></a>
                     <button class="round-button" data-close="mailAttachmentDialog" aria-label="Schließen" data-icon="x"></button>
                 </div>
             </div>
@@ -5919,6 +5991,7 @@ PDF.js: Apache-2.0
                 function defaults() {
                     return {
                         clientId: '',
+                        serviceUrl: '',
                         transparency: 34,
                         color: '#07182e',
                         headerTransparency: 15,
@@ -5934,6 +6007,11 @@ PDF.js: Apache-2.0
                     out.clientId = String(raw.clientId || '').trim();
                     if (!validClientId(out.clientId))
                         out.clientId = '';
+                    try {
+                        const url = new URL(String(raw.serviceUrl || ''));
+                        if (!url.username && !url.password && !url.search && !url.hash && url.pathname === '/' && (url.protocol === 'https:' || (url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname))))
+                            out.serviceUrl = url.origin;
+                    } catch {}
                     for (const key of ['transparency', 'headerTransparency'])
                         if (Number.isFinite(Number(raw[key])))
                             out[key] = Math.max(0, Math.min(100, Number(raw[key])));
@@ -6266,6 +6344,159 @@ PDF.js: Apache-2.0
                     module.exports = api;
                 else
                     global.ShogiMail = api;
+            }
+            )(typeof globalThis !== 'undefined' ? globalThis : this);
+
+            (function(global) {
+                'use strict';
+                const KEY = 'shogi-gmail-connections-v1';
+                function serviceUrl(value) {
+                    if (!String(value || '').trim())
+                        return '';
+                    const url = new URL(String(value).trim());
+                    if (url.username || url.password || url.search || url.hash || (url.pathname && url.pathname !== '/') || (url.protocol !== 'https:' && !(url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname))))
+                        throw new Error('Bitte geben Sie die HTTPS-Adresse des Verbindungsdienstes ohne Pfad ein.');
+                    return url.origin;
+                }
+                class ServiceError extends Error {
+                    constructor(message, status=0) {
+                        super(message);
+                        this.status = status;
+                    }
+                }
+                class Client {
+                    constructor({storage, settings, fetcher= (...args) => fetch(...args)}) {
+                        this.storage = storage;
+                        this.settings = settings;
+                        this.fetcher = fetcher;
+                    }
+                    load() {
+                        const config = this.settings();
+                        try {
+                            const data = JSON.parse(this.storage?.getItem(KEY) || 'null');
+                            if (data?.version === 1 && data.clientId === config.clientId && data.serviceUrl === config.serviceUrl && data.accounts && typeof data.accounts === 'object')
+                                return data;
+                        } catch {}
+                        return {
+                            version: 1,
+                            clientId: config.clientId,
+                            serviceUrl: config.serviceUrl,
+                            accounts: {}
+                        };
+                    }
+                    credential(id) {
+                        const value = this.load().accounts[String(id)];
+                        return typeof value === 'string' && /^[a-zA-Z0-9_-]{43}$/.test(value) ? value : '';
+                    }
+                    remember(id, key) {
+                        if (!/^[a-zA-Z0-9_-]{43}$/.test(key))
+                            throw new ServiceError('Der Verbindungsdienst hat eine ungültige Verbindung zurückgegeben.');
+                        const data = this.load();
+                        data.accounts[String(id)] = key;
+                        try {
+                            if (!this.storage)
+                                throw new Error();
+                            this.storage.setItem(KEY, JSON.stringify(data));
+                        } catch {
+                            throw new ServiceError('Der Browser kann die Verbindung nicht speichern. Bitte erlauben Sie das Speichern von Websitedaten.');
+                        }
+                    }
+                    forget(id) {
+                        const data = this.load();
+                        delete data.accounts[String(id)];
+                        try {
+                            this.storage?.setItem(KEY, JSON.stringify(data));
+                        } catch {}
+                    }
+                    async request(path, {session='', method='POST', body}={}) {
+                        let response;
+                        try {
+                            response = await this.fetcher(serviceUrl(this.settings().serviceUrl) + path, {
+                                method,
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-Requested-With': 'ShogiSpace',
+                                    ...(session ? {
+                                        Authorization: 'Bearer ' + session
+                                    } : {})
+                                },
+                                ...(body ? {
+                                    body: JSON.stringify(body)
+                                } : {}),
+                                credentials: 'omit',
+                                cache: 'no-store',
+                                referrerPolicy: 'no-referrer',
+                                signal: AbortSignal.timeout(20000)
+                            });
+                        } catch {
+                            throw new ServiceError('Der Verbindungsdienst ist derzeit nicht erreichbar. Die gespeicherte Verbindung bleibt erhalten.',0);
+                        }
+                        let data;
+                        try {
+                            data = await response.json();
+                        } catch {
+                            throw new ServiceError('Der Verbindungsdienst hat nicht geantwortet.',response.status);
+                        }
+                        if (!response.ok)
+                            throw new ServiceError(data.error || 'Die Google-Verbindung konnte nicht erneuert werden.',response.status);
+                        return data;
+                    }
+                    validate(data, id='') {
+                        if (!data?.identity?.id || !data.identity.email || !data.accessToken || !Number.isFinite(data.expiresAt) || (id && data.identity.id !== id))
+                            throw new ServiceError('Die Verbindung konnte keinem passenden Postfach zugeordnet werden.',401);
+                        return data;
+                    }
+                    async connect(code, expectedId='') {
+                        const data = this.validate(await this.request('/connect', {
+                            session: this.credential(expectedId),
+                            body: {
+                                code,
+                                clientId: this.settings().clientId,
+                                expectedAccountId: expectedId
+                            }
+                        }), expectedId);
+                        this.remember(data.identity.id, data.sessionKey);
+                        return data;
+                    }
+                    async restore(id) {
+                        const session = this.credential(id);
+                        if (!session)
+                            return null;
+                        try {
+                            return this.validate(await this.request('/session', {
+                                session
+                            }), id);
+                        } catch (error) {
+                            if (error.status === 401)
+                                this.forget(id);
+                            throw error;
+                        }
+                    }
+                    async disconnect(id) {
+                        const session = this.credential(id);
+                        if (session)
+                            try {
+                                await this.request('/session', {
+                                    method: 'DELETE',
+                                    session
+                                });
+                            } catch (error) {
+                                if (error.status !== 401)
+                                    throw error;
+                            }
+                        this.forget(id);
+                    }
+                }
+                const api = {
+                    KEY,
+                    Client,
+                    ServiceError,
+                    serviceUrl
+                };
+                if (typeof module !== 'undefined' && module.exports)
+                    module.exports = api;
+                else
+                    global.ShogiMailAuth = api;
             }
             )(typeof globalThis !== 'undefined' ? globalThis : this);
 
@@ -7735,6 +7966,24 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     const template = document.createElement('template');
                     template.innerHTML = clean;
                     let remoteImages = 0;
+                    const containers = 'main,article,section,div,table,thead,tbody,tfoot,tr,td,th';
+                    for (const element of template.content.querySelectorAll(containers)) {
+                        element.removeAttribute('bgcolor');
+                        element.style.removeProperty('background');
+                        element.style.removeProperty('background-image');
+                        element.style.setProperty('background-color', 'transparent', 'important');
+                        const width = parseFloat(element.getAttribute('width') || element.style.width || '')
+                          , limit = parseFloat(element.style.maxWidth || '');
+                        if (['MAIN', 'ARTICLE', 'SECTION', 'DIV', 'TABLE'].includes(element.tagName) && ((width >= 280) || (limit >= 280) || !element.parentElement)) {
+                            element.setAttribute('data-mail-layout', '');
+                            element.removeAttribute('width');
+                            element.style.setProperty('width', '100%', 'important');
+                            element.style.setProperty('max-width', '100%', 'important');
+                            element.style.setProperty('min-width', '0', 'important');
+                            element.style.setProperty('margin-left', '0', 'important');
+                            element.style.setProperty('margin-right', '0', 'important');
+                        }
+                    }
                     for (const anchor of template.content.querySelectorAll('a')) {
                         const href = safeHref(anchor.getAttribute('href'));
                         if (href) {
@@ -7791,12 +8040,32 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     frame.setAttribute('referrerpolicy', 'no-referrer');
                     frame.style.height = '150px';
                     const policy = "default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src blob: data:" + (options.external ? ' https:' : '') + "; font-src 'none'; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'";
-                    frame.srcdoc = '<!doctype html><html><head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="' + escape(policy) + '"><meta name="referrer" content="no-referrer"><style>html,body{margin:0!important;padding:0!important;min-height:0!important;height:auto!important}html{overflow:auto}body{font:16px/1.65 Arial,Helvetica,sans-serif;color:#202124;background:#fff;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{max-width:100%}pre{white-space:pre-wrap;overflow-wrap:anywhere}a{color:#1769c2}.blocked-mail-image{display:none!important}body>table{margin-left:0!important;margin-right:0!important}</style></head><body>' + prepared.html + '</body></html>';
+                    frame.srcdoc = '<!doctype html><html style="background:transparent!important;width:100%!important;max-width:none!important"><head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="' + escape(policy) + '"><meta name="referrer" content="no-referrer"><style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0!important;padding:0!important;min-height:0!important;height:auto!important;width:100%!important;max-width:none!important;background:transparent!important}html{overflow:auto}body{font:16px/1.65 Arial,Helvetica,sans-serif;color:#202124;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{max-width:100%}pre{white-space:pre-wrap;overflow-wrap:anywhere}a{color:#1769c2}.blocked-mail-image{display:none!important}body>table{margin-left:0!important;margin-right:0!important}</style></head><body style="background:transparent!important;width:100%!important;max-width:none!important;color:#202124!important">' + prepared.html + '</body></html>';
                     let observer;
                     frame.addEventListener('load', () => {
                         const doc = frame.contentDocument;
                         if (!doc)
                             return;
+                        for (const root of [doc.documentElement, doc.body])
+                            root.style.setProperty('min-width', '0', 'important');
+                        const blocks = [...doc.querySelectorAll('main,article,section,div,table')].filter(el => {
+                            const css = doc.defaultView.getComputedStyle(el);
+                            return parseFloat(css.width) >= 280 || parseFloat(css.maxWidth) >= 280;
+                        }
+                        );
+                        for (const el of blocks) {
+                            el.style.setProperty('width', '100%', 'important');
+                            el.style.setProperty('max-width', '100%', 'important');
+                            el.style.setProperty('min-width', '0', 'important');
+                            el.style.setProperty('margin-left', '0', 'important');
+                            el.style.setProperty('margin-right', '0', 'important');
+                        }
+                        for (const el of doc.body.querySelectorAll('*')) {
+                            const css = doc.defaultView.getComputedStyle(el)
+                              , color = css.color.match(/[\d.]+/g)?.map(Number);
+                            if (color && color[0] > 220 && color[1] > 220 && color[2] > 220 && (css.backgroundColor === 'transparent' || css.backgroundColor === 'rgba(0, 0, 0, 0)'))
+                                el.style.setProperty('color', '#202124', 'important');
+                        }
                         const resize = () => {
                             if (!frame.isConnected)
                                 return;
@@ -9649,7 +9918,6 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                         return session;
                     if (session) {
                         mailSessions.delete(account.id);
-                        mailStates.delete(account.id);
                     }
                     return null;
                 }
@@ -9678,7 +9946,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                           , state = mailState(account.id);
                         let content = '';
                         if (!session)
-                            content = `<div class="mail-empty"><button class="secondary-button" data-mail-connect="${esc(account.id)}">Erneut verbinden</button></div>`;
+                            content = mailRestoring.has(account.id) ? '<p class="mail-empty">Verbindung wird wiederhergestellt …</p>' : `<div class="mail-empty">${state.error ? '<p>' + esc(state.error) + '</p>' : ''}<button class="secondary-button" data-mail-connect="${esc(account.id)}">Erneut verbinden</button></div>`;
                         else if (state.loading && !state.messages.length)
                             content = '<p class="mail-empty">Nachrichten werden geladen …</p>';
                         else if (state.error && !state.messages.length)
@@ -9693,6 +9961,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                 function renderMailSettings() {
                     const m = settings.mail;
                     $('mailClientId').value = m.clientId;
+                    $('mailServiceUrl').value = m.serviceUrl;
                     $('mailAccountCount').textContent = m.accounts.length + ' / 2';
                     $('mailConnectionHint').textContent = location.protocol === 'file:' ? 'Bitte öffnen Sie die Seite über Ihre HTTPS-Adresse.' : !m.clientId ? 'Eine Google-Client-ID ist zum Verbinden erforderlich.' : googleReady ? 'Google-Verbindung ist vorbereitet.' : googleLoading ? 'Google-Anmeldung wird vorbereitet …' : 'Google-Anmeldung wird geladen …';
                     $('mailAddAccount').disabled = !m.clientId || !googleReady || mailAuthBusy || m.accounts.length >= 2;
@@ -9740,6 +10009,8 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     return googleLoading;
                 }
                 async function connectMail(id='') {
+                    if (settings.mail.serviceUrl)
+                        return connectPersistentMail(id);
                     if (mailAuthBusy)
                         return;
                     if (!settings.mail.clientId) {
@@ -9831,7 +10102,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     }
                 }
                 async function refreshMailAccount(account, force=false) {
-                    const session = mailSession(account)
+                    const session = await ensureMailSession(account)
                       , state = mailState(account.id);
                     if (!session || state.loading)
                         return;
@@ -9885,7 +10156,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     $('mailAccountDialog').showModal();
                 }
                 async function markMailRead(account, message, state) {
-                    const session = mailSession(account);
+                    const session = await ensureMailSession(account);
                     if (!session)
                         throw new Error('Bitte verbinden Sie dieses Google-Konto erneut.');
                     await gmail.markRead(session.token, message.id);
@@ -9896,6 +10167,152 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                             item.unread = false;
                     renderMailPanels();
                 }
+                const A = window.ShogiMailAuth;
+                let mailAuthStorage;
+                try {
+                    mailAuthStorage = localStorage;
+                } catch {}
+                const persistentMail = new A.Client({
+                    storage: mailAuthStorage,
+                    settings: () => settings.mail
+                })
+                  , mailRestoring = new Map();
+                async function ensureMailSession(account) {
+                    const existing = mailSession(account);
+                    if (existing)
+                        return existing;
+                    if (!settings.mail.serviceUrl || !persistentMail.credential(account.id))
+                        return null;
+                    if (mailRestoring.has(account.id))
+                        return mailRestoring.get(account.id);
+                    const state = mailState(account.id)
+                      , connectionVersion = settings.mail.clientId + '|' + settings.mail.serviceUrl;
+                    const task = (async () => {
+                        try {
+                            const data = await persistentMail.restore(account.id);
+                            if (connectionVersion !== settings.mail.clientId + '|' + settings.mail.serviceUrl || !data || !settings.mail.accounts.some(a => a.id === account.id))
+                                return null;
+                            const session = {
+                                token: data.accessToken,
+                                expiresAt: data.expiresAt
+                            };
+                            mailSessions.set(account.id, session);
+                            state.error = '';
+                            return session;
+                        } catch (error) {
+                            state.error = error.message;
+                            return null;
+                        } finally {
+                            mailRestoring.delete(account.id);
+                            renderMailPanels();
+                        }
+                    }
+                    )();
+                    mailRestoring.set(account.id, task);
+                    renderMailPanels();
+                    return task;
+                }
+                async function connectPersistentMail(id='') {
+                    if (mailAuthBusy)
+                        return;
+                    if (!settings.mail.clientId) {
+                        showSettings('Mail');
+                        $('mailClientId').focus();
+                        return;
+                    }
+                    if (location.protocol === 'file:') {
+                        notify('Bitte öffnen Sie die Seite über HTTPS, um Gmail zu verbinden.', 'info');
+                        return;
+                    }
+                    if (!googleReady) {
+                        loadGoogle();
+                        notify('Die Google-Anmeldung wird vorbereitet. Bitte versuchen Sie es gleich erneut.');
+                        return;
+                    }
+                    const existing = settings.mail.accounts.find(a => a.id === id);
+                    if (!existing && settings.mail.accounts.length >= 2) {
+                        notify('Es können höchstens zwei Gmail-Konten angezeigt werden.', 'error');
+                        return;
+                    }
+                    mailAuthBusy = true;
+                    renderMailSettings();
+                    const client = google.accounts.oauth2.initCodeClient({
+                        client_id: settings.mail.clientId,
+                        scope: M.SCOPE,
+                        ux_mode: 'popup',
+                        include_granted_scopes: true,
+                        ...(existing ? {
+                            hint: existing.email
+                        } : {
+                            select_account: true
+                        }),
+                        callback: async response => {
+                            try {
+                                if (response.error || !response.code)
+                                    throw new Error('Die Google-Verbindung wurde nicht freigegeben.');
+                                const data = await persistentMail.connect(response.code, id)
+                                  , identity = data.identity
+                                  , labels = (await gmail.labels(data.accessToken)).labels || [];
+                                let account = settings.mail.accounts.find(a => a.id === identity.id);
+                                if (!account) {
+                                    account = {
+                                        id: identity.id,
+                                        email: identity.email,
+                                        name: identity.name,
+                                        section: 'CATEGORY_PERSONAL',
+                                        labels: []
+                                    };
+                                    settings.mail.accounts.push(account);
+                                }
+                                account.labels = labels.filter(l => l.type === 'user');
+                                mailSessions.set(account.id, {
+                                    token: data.accessToken,
+                                    expiresAt: data.expiresAt
+                                });
+                                mailStates.delete(account.id);
+                                save();
+                                renderMailPanels();
+                                renderMailSettings();
+                                await refreshMailAccount(account, true);
+                                openMailAccount(account.id);
+                                notify('Die dauerhafte Gmail-Verbindung wurde gespeichert.', 'success');
+                            } catch (error) {
+                                notify(error.message || 'Die Google-Verbindung konnte nicht gespeichert werden.', 'error');
+                            } finally {
+                                mailAuthBusy = false;
+                                if ($('settingsDialog').open && !$('panelMail').hidden)
+                                    renderMailSettings();
+                            }
+                        }
+                        ,
+                        error_callback: error => {
+                            mailAuthBusy = false;
+                            renderMailSettings();
+                            notify(error.type === 'popup_closed' ? 'Die Google-Anmeldung wurde geschlossen.' : 'Bitte erlauben Sie das Google-Anmeldefenster.', 'info');
+                        }
+                    });
+                    try {
+                        client.requestCode();
+                    } catch (error) {
+                        mailAuthBusy = false;
+                        renderMailSettings();
+                        notify(error.message, 'error');
+                    }
+                }
+                async function clearPersistentConnections() {
+                    for (const account of settings.mail.accounts)
+                        await persistentMail.disconnect(account.id);
+                }
+                window.addEventListener('storage', event => {
+                    if (event.key !== A.KEY || !settings.mail.serviceUrl)
+                        return;
+                    for (const account of settings.mail.accounts)
+                        if (!persistentMail.credential(account.id))
+                            mailSessions.delete(account.id);
+                    refreshMail(true);
+                }
+                );
+
                 const MR = window.ShogiMailRenderer;
                 let mailView = null
                   , attachmentSequence = 0
@@ -9954,7 +10371,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     if (attachment.promise)
                         return attachment.promise;
                     attachment.promise = (async () => {
-                        const session = mailSession(view.account);
+                        const session = await ensureMailSession(view.account);
                         if (!session)
                             throw new Error('Bitte verbinden Sie dieses Google-Konto erneut.');
                         const raw = attachment.data || (attachment.attachmentId ? (await gmail.attachment(session.token, view.message.id, attachment.attachmentId)).data : '');
@@ -10023,7 +10440,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                       , state = mailState(accountId);
                     if (!account)
                         return;
-                    const session = mailSession(account);
+                    const session = await ensureMailSession(account);
                     if (!session) {
                         connectMail(accountId);
                         return;
@@ -10214,7 +10631,12 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                         mailStates.clear();
                     }
                     );
-                    window.addEventListener('pageshow', renderMailPanels);
+                    window.addEventListener('pageshow', () => {
+                        renderMailPanels();
+                        refreshMail(true);
+                    }
+                    );
+                    refreshMail(true);
                 }
                 $('mailMessageDialog').addEventListener('close', () => {
                     mailMessageSequence++;
@@ -10230,15 +10652,39 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                 $('mailClientForm').addEventListener('submit', async event => {
                     event.preventDefault();
                     const clientId = $('mailClientId').value.trim();
+                    let serviceUrl;
+                    try {
+                        serviceUrl = A.serviceUrl($('mailServiceUrl').value);
+                    } catch (error) {
+                        notify(error.message, 'error');
+                        return;
+                    }
                     if (clientId && !M.validClientId(clientId)) {
                         notify('Bitte geben Sie eine gültige Google-Client-ID ein.', 'error');
                         return;
                     }
-                    if (!await confirmAction('Google-Verbindung speichern?', 'Möchten Sie diese Client-ID für Ihre Gmail-Verbindung verwenden? Bestehende Sitzungen werden getrennt.', false, 'Speichern'))
+                    if (serviceUrl && !clientId) {
+                        notify('Bitte geben Sie auch Ihre Google-Client-ID ein.', 'error');
                         return;
-                    settings.mail.clientId = clientId;
-                    mailSessions.clear();
-                    mailStates.clear();
+                    }
+                    const changed = clientId !== settings.mail.clientId || serviceUrl !== settings.mail.serviceUrl;
+                    if (!await confirmAction('Google-Verbindung speichern?', changed ? 'Möchten Sie diese Verbindungseinstellungen übernehmen? Die Postfächer müssen danach einmal neu verbunden werden.' : 'Möchten Sie diese Verbindungseinstellungen speichern?', false, 'Speichern'))
+                        return;
+                    try {
+                        if (changed)
+                            await clearPersistentConnections();
+                    } catch (error) {
+                        notify(error.message, 'error');
+                        return;
+                    }
+                    Object.assign(settings.mail, {
+                        clientId,
+                        serviceUrl
+                    });
+                    if (changed) {
+                        mailSessions.clear();
+                        mailStates.clear();
+                    }
                     save();
                     renderMailPanels();
                     renderMailSettings();
@@ -10324,6 +10770,12 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                         const account = settings.mail.accounts.find(a => a.id === target.dataset.mailRemove);
                         if (!account || !await confirmAction('Postfach entfernen?', `Möchten Sie das Postfach von „${account.name}“ aus Shogi Space entfernen?`, true))
                             return;
+                        try {
+                            await persistentMail.disconnect(account.id);
+                        } catch (error) {
+                            notify(error.message, 'error');
+                            return;
+                        }
                         settings.mail.accounts = settings.mail.accounts.filter(a => a.id !== account.id);
                         mailSessions.delete(account.id);
                         const old = mailStates.get(account.id);
@@ -10874,7 +11326,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                         return;
                     try {
                         const previousMail = JSON.stringify(settings.mail)
-                          , previousMailClient = settings.mail.clientId;
+                          , previousMailClient = settings.mail.clientId + '|' + settings.mail.serviceUrl;
                         const oldCity = JSON.stringify(settings.weather);
                         settings = normalize(JSON.parse(event.newValue));
                         draft = clone(settings.appearance);
@@ -10892,7 +11344,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                         updateTicker();
                         refreshCustomFeeds();
                         if (previousMail !== JSON.stringify(settings.mail))
-                            syncMailSettings(previousMailClient !== settings.mail.clientId);
+                            syncMailSettings(previousMailClient !== (settings.mail.clientId + '|' + settings.mail.serviceUrl));
                         if ($('settingsDialog').open && !$('panelView').hidden)
                             renderAppearance();
                     } catch {}
