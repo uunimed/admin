@@ -4585,6 +4585,508 @@
                     flex-direction:column
                 }
             }
+
+            #siteRail {
+                --rail-gutter: 14px;
+                padding-inline:var(--rail-gutter)}
+
+            #siteViewport {
+                transition: opacity .65s cubic-bezier(.22,.7,.3,1),transform .65s cubic-bezier(.22,.7,.3,1);
+                opacity: 1;
+                transform: translateY(0)
+            }
+
+            #siteRail.show-calendar #siteViewport {
+                opacity: 0;
+                transform: translateY(-16px);
+                pointer-events: none
+            }
+
+            .rail-calendar {
+                position: absolute;
+                top: .1cm;
+                bottom: .1cm;
+                left: var(--rail-gutter);
+                right: var(--rail-gutter);
+                display: flex;
+                flex-direction: column;
+                min-height: 0;
+                border: 1px solid #bbd6f43d;
+                border-radius: 12px;
+                background: linear-gradient(140deg,#c4ddff16,#0a183747);
+                backdrop-filter: blur(8px);
+                box-shadow: inset 0 1px 0 #ffffff0c;
+                color: #eaf3ff;
+                opacity: 0;
+                transform: translateY(18px);
+                visibility: hidden;
+                pointer-events: none;
+                transition: opacity .65s cubic-bezier(.22,.7,.3,1),transform .65s cubic-bezier(.22,.7,.3,1),visibility 0s .65s;
+                overflow: hidden
+            }
+
+            #siteRail.show-calendar .rail-calendar {
+                opacity: 1;
+                transform: translateY(0);
+                visibility: visible;
+                pointer-events: auto;
+                transition-delay: 0s
+            }
+
+            .rail-calendar-header {
+                display: flex;
+                flex-direction: column;
+                gap: 11px;
+                padding: 14px 11px 10px;
+                border-bottom: 1px solid #bbd6f426;
+                flex: none
+            }
+
+            .rail-calendar-heading {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 7px
+            }
+
+            .rail-calendar-heading h2 {
+                font: 700 14px/1.4 var(--number);
+                margin: 0
+            }
+
+            .rail-calendar-heading>span {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                font: 10px/1.5 var(--number);
+                color: #adc4e0;
+                white-space: nowrap
+            }
+
+            .calendar-scope-separator {
+                display: flex;
+                align-items: center
+            }
+
+            .calendar-scope-separator svg {
+                width: 4px;
+                height: 4px;
+                fill: currentColor;
+                stroke: none
+            }
+
+            .rail-calendar-tools {
+                display: flex;
+                align-items: center;
+                gap: 5px
+            }
+
+            .calendar-tool {
+                display: grid;
+                place-items: center;
+                width: 25px;
+                height: 25px;
+                min-width: 25px;
+                border-radius: 6px;
+                color: #c6ddf6;
+                background: #c4ddff0b
+            }
+
+            .calendar-tool:hover {
+                background: #c4ddff22
+            }
+
+            .calendar-tool svg {
+                width: 16px;
+                height: 16px
+            }
+
+            .calendar-tool:disabled {
+                opacity: .25;
+                cursor: default
+            }
+
+            #railCalendarYear {
+                flex: 1;
+                text-align: center;
+                font: 700 15px/1.5 var(--number);
+                font-variant-numeric: tabular-nums
+            }
+
+            #calendarToday {
+                margin-left: auto
+            }
+
+            .rail-calendar-scroll {
+                overflow-y: auto;
+                overflow-x: hidden;
+                flex: 1;
+                min-height: 0;
+                padding: 10px 8px;
+                scrollbar-width: thin;
+                scrollbar-color: #a4c4eb60 transparent;
+                overscroll-behavior: contain;
+                scroll-behavior: auto;
+                outline-offset: -3px
+            }
+
+            .calendar-month {
+                padding: 10px 5px 9px;
+                border: 1px solid transparent;
+                border-radius: 9px;
+                margin-bottom: 13px
+            }
+
+            .calendar-month.is-current {
+                background: #81b7ff13;
+                border-color: #9dc8ff43
+            }
+
+            .calendar-month h3 {
+                font: 700 14px/1.5 var(--number);
+                margin: 0 0 10px 4px;
+                letter-spacing: .01em
+            }
+
+            .calendar-month.is-current h3 {
+                color: #c6e4ff
+            }
+
+            .calendar-month table {
+                table-layout: fixed;
+                border-collapse: separate;
+                border-spacing: 2px 3px;
+                width: 100%;
+                font-family: var(--number)
+            }
+
+            .calendar-month th {
+                font-size: 10px;
+                line-height: 1.5;
+                font-weight: 500;
+                color: #91abc9;
+                height: 20px;
+                text-align: center
+            }
+
+            .calendar-month td {
+                padding: 0;
+                height: 30px;
+                text-align: center;
+                vertical-align: middle
+            }
+
+            .calendar-day {
+                display: grid;
+                place-items: center;
+                position: relative;
+                height: 30px;
+                width: 100%;
+                border: 1px solid transparent;
+                border-radius: 6px;
+                font: 500 13px/1 var(--number);
+                font-variant-numeric: tabular-nums;
+                color: #d3e3f6;
+                background: #d6e9ff04
+            }
+
+            .calendar-day.is-weekend {
+                color: #95afcc;
+                background: #d6e9ff02
+            }
+
+            .calendar-day.is-holiday {
+                color: #ffe5eb;
+                border-color: #f28d9b8c;
+                background: #c83c5c55;
+                font-weight: 750;
+                cursor: pointer
+            }
+
+            .calendar-day.is-holiday:hover {
+                background: #df4f707d;
+                border-color: #ffc2cc
+            }
+
+            .calendar-day.is-regional {
+                border-style: dashed
+            }
+
+            .calendar-day.is-today {
+                color: #fff;
+                border: 1px solid #badfff;
+                background: #8abfff38;
+                font-weight: 850;
+                animation: calendar-today-pulse 2.2s ease-in-out infinite
+            }
+
+            .calendar-day.is-holiday.is-today {
+                background: #c83c5c70
+            }
+
+            .calendar-region-mark {
+                position: absolute;
+                right: 1px;
+                top: 1px;
+                line-height: 0
+            }
+
+            .calendar-region-mark svg {
+                width: 6px;
+                height: 6px
+            }
+
+            .calendar-month caption {
+                caption-side: top
+            }
+
+            .holiday-dialog {
+                width: min(760px,calc(100vw - 1cm));
+                max-height: calc(100dvh - 1cm);
+                background: #eef3fa
+            }
+
+            .holiday-dialog .dialog-header {
+                flex: none
+            }
+
+            .holiday-dialog .dialog-header h2 {
+                color: #254663;
+                font: 750 23px/1.4 var(--number)
+            }
+
+            .holiday-body {
+                color: #486581;
+                font: 15px/1.85 var(--number)
+            }
+
+            .holiday-date {
+                display: block;
+                font: 750 19px/1.6 var(--number);
+                color: #365774
+            }
+
+            .holiday-badge {
+                display: inline-flex;
+                margin-top: 12px;
+                padding: 5px 10px;
+                font-size: 12px;
+                border: 1px solid #d58a9b73;
+                border-radius: 7px;
+                color: #a23f5a;
+                background: #d55d7c0d
+            }
+
+            .holiday-detail {
+                margin-top: 24px
+            }
+
+            .holiday-detail h3 {
+                font: 700 14px/1.7 var(--number);
+                margin: 0 0 8px;
+                color: #31526e
+            }
+
+            .holiday-detail p {
+                margin: 0;
+                overflow-wrap: anywhere
+            }
+
+            .holiday-note {
+                padding: 13px 16px;
+                background: #dbe6f17d;
+                border-radius: 9px;
+                margin-top: 19px;
+                font-size: 14px
+            }
+
+            .holiday-regions {
+                margin-top: 17px
+            }
+
+            .holiday-regions summary {
+                font: 650 14px/1.7 var(--number);
+                color: #496d90
+            }
+
+            .holiday-regions ul {
+                columns: 2;
+                column-gap: 28px;
+                padding-left: 20px;
+                font-size: 13px;
+                line-height: 1.9;
+                margin-top: 10px
+            }
+
+            .holiday-regions p {
+                font-size: 13px;
+                line-height: 1.8;
+                color: #6d849c;
+                margin-top: 10px
+            }
+
+            .holiday-sources {
+                border-top: 1px solid #b8cde14d;
+                margin-top: 25px;
+                padding-top: 17px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                font-size: 13px
+            }
+
+            .holiday-sources a {
+                color: #3f75a6;
+                text-decoration: underline;
+                text-underline-offset: 3px
+            }
+
+            .holiday-sources small {
+                font-size: 12px;
+                color: #7890a8;
+                margin-top: 5px
+            }
+
+            @keyframes calendar-today-pulse {
+                0%,100% {
+                    box-shadow: 0 0 0 1px #92c4ff20,0 0 5px #92c4ff20
+                }
+
+                50% {
+                    box-shadow: 0 0 0 2px #bce3ff9c,0 0 12px #92c4ff73
+                }
+            }
+
+            @media(max-width: 1100px) {
+                #siteRail {
+                    --rail-gutter:10px
+                }
+
+                .rail-calendar-heading {
+                    align-items: flex-start;
+                    flex-direction: column;
+                    gap: 2px
+                }
+
+                .rail-calendar-header {
+                    padding: 10px 8px 8px;
+                    gap: 8px
+                }
+
+                .rail-calendar-scroll {
+                    padding: 8px 4px
+                }
+
+                .calendar-month {
+                    padding-inline:2px}
+
+                .calendar-month table {
+                    border-spacing: 1px 3px
+                }
+
+                .calendar-day {
+                    font-size: 12px
+                }
+
+                .calendar-month h3 {
+                    font-size: 13px
+                }
+            }
+
+            @media(max-width: 760px) {
+                #main {
+                    grid-template-rows:calc(100dvh - var(--ticker-height)) calc(100dvh - var(--ticker-height))
+                }
+
+                #siteRail {
+                    --rail-gutter: 9px
+                }
+
+                .rail-calendar {
+                    border-radius: 10px
+                }
+
+                .rail-calendar-tools {
+                    gap: 1px
+                }
+
+                .calendar-tool {
+                    width: 20px;
+                    height: 24px;
+                    min-width: 20px
+                }
+
+                .calendar-tool svg {
+                    width: 14px;
+                    height: 14px
+                }
+
+                #railCalendarYear {
+                    font-size: 12px
+                }
+
+                .rail-calendar-heading h2 {
+                    font-size: 13px
+                }
+
+                .rail-calendar-heading>span {
+                    font-size: 9px
+                }
+
+                .rail-calendar-scroll {
+                    padding: 6px 2px
+                }
+
+                .calendar-month {
+                    padding-inline:0;margin-bottom: 10px
+                }
+
+                .calendar-month h3 {
+                    font-size: 12px;
+                    margin-bottom: 6px
+                }
+
+                .calendar-month th {
+                    font-size: 9px
+                }
+
+                .calendar-day {
+                    font-size: 11px;
+                    height: 27px;
+                    border-radius: 4px
+                }
+
+                .calendar-month td {
+                    height: 27px
+                }
+
+                .calendar-month table {
+                    border-spacing: 1px 2px
+                }
+
+                .holiday-dialog .dialog-header h2 {
+                    font-size: 20px
+                }
+
+                .holiday-date {
+                    font-size: 17px
+                }
+
+                .holiday-regions ul {
+                    columns: 1
+                }
+            }
+
+            @media(prefers-reduced-motion:reduce) {
+                #siteViewport,.rail-calendar {
+                    transition: opacity .15s linear
+                }
+
+                .calendar-day.is-today {
+                    animation: none;
+                    box-shadow: 0 0 0 2px #bce3ff9c
+                }
+            }
         </style>
         <!-- DOMPurify: Apache-2.0
 
@@ -5001,10 +5503,30 @@ PDF.js: Apache-2.0
                     <p class="clock-date" id="tbilisiDate"></p>
                 </div>
             </section>
-            <nav id="siteRail" aria-label="Internetseiten">
+            <nav id="siteRail" aria-label="Internetseiten und Feiertagskalender" data-view="sites">
                 <div id="siteViewport">
                     <div id="siteTrack"></div>
                 </div>
+                <section id="railCalendar" class="rail-calendar" aria-labelledby="railCalendarTitle" aria-hidden="true" inert>
+                    <header class="rail-calendar-header">
+                        <div class="rail-calendar-heading">
+                            <h2 id="railCalendarTitle">Feiertage</h2>
+                            <span>
+                                Deutschland<span data-icon="separator" class="calendar-scope-separator"></span>Sachsen
+                            </span>
+                        </div>
+                        <div class="rail-calendar-tools">
+                            <button type="button" id="calendarPreviousYear" class="calendar-tool" aria-label="Vorheriges Jahr" title="Vorheriges Jahr" data-icon="chevronLeft"></button>
+                            <output id="railCalendarYear" aria-live="polite"></output>
+                            <button type="button" id="calendarNextYear" class="calendar-tool" aria-label="Nächstes Jahr" title="Nächstes Jahr" data-icon="chevronRight"></button>
+                            <button type="button" id="calendarToday" class="calendar-tool" aria-label="Aktuellen Monat anzeigen" title="Aktuellen Monat anzeigen" data-icon="calendar"></button>
+                        </div>
+                    </header>
+                    <div id="railCalendarScroll" class="rail-calendar-scroll" tabindex="0" aria-label="Alle Monate und gesetzlichen Feiertage">
+                        <div id="railCalendarMonths"></div>
+                        <div id="railCalendarEndSpace" aria-hidden="true"></div>
+                    </div>
+                </section>
             </nav>
             <aside id="mailPanels" aria-label="E-Mail-Postfächer"></aside>
         </main>
@@ -5306,6 +5828,13 @@ PDF.js: Apache-2.0
                 </div>
             </div>
             <div id="mailAttachmentBody" class="dialog-body mail-attachment-body"></div>
+        </dialog>
+        <dialog id="holidayDialog" class="holiday-dialog" aria-labelledby="holidayTitle">
+            <div class="dialog-header">
+                <h2 id="holidayTitle">Gesetzlicher Feiertag</h2>
+                <button class="round-button" data-close="holidayDialog" aria-label="Schließen" data-icon="x"></button>
+            </div>
+            <div id="holidayBody" class="dialog-body holiday-body"></div>
         </dialog>
         <dialog id="allSitesDialog" class="all-dialog full-dialog" aria-labelledby="allSitesTitle">
             <div class="dialog-header">
@@ -6595,14 +7124,246 @@ PDF.js: Apache-2.0
                         return index * (plan.cardHeight + plan.gap);
                     return ((index * (plan.cardHeight + plan.gap) + phase + plan.cardHeight) % plan.cycle + plan.cycle) % plan.cycle - plan.cardHeight;
                 }
+                const SPEED = 27;
+                class ViewCycle {
+                    constructor({sitesSeconds=10, calendarSeconds=15}={}) {
+                        this.sitesSeconds = sitesSeconds;
+                        this.calendarSeconds = calendarSeconds;
+                        this.reset();
+                    }
+                    reset() {
+                        this.view = 'sites';
+                        this.elapsed = 0;
+                        this.moving = null;
+                    }
+                    step(seconds, {moving=false, cycleCompleted=false, paused=false}={}) {
+                        if (paused)
+                            return false;
+                        if (this.moving !== moving) {
+                            this.moving = moving;
+                            if (this.view === 'sites')
+                                this.elapsed = 0;
+                        }
+                        const previous = this.view
+                          , dt = Math.max(0, Number(seconds) || 0);
+                        if (this.view === 'calendar') {
+                            this.elapsed += dt;
+                            if (this.elapsed + 1e-9 >= this.calendarSeconds) {
+                                this.view = 'sites';
+                                this.elapsed = 0;
+                            }
+                        } else if (moving) {
+                            if (cycleCompleted) {
+                                this.view = 'calendar';
+                                this.elapsed = 0;
+                            }
+                        } else {
+                            this.elapsed += dt;
+                            if (this.elapsed + 1e-9 >= this.sitesSeconds) {
+                                this.view = 'calendar';
+                                this.elapsed = 0;
+                            }
+                        }
+                        return previous !== this.view;
+                    }
+                }
                 const api = {
                     layout,
-                    position
+                    position,
+                    SPEED,
+                    ViewCycle
                 };
                 if (typeof module !== 'undefined' && module.exports)
                     module.exports = api;
                 else
                     global.ShogiRail = api;
+            }
+            )(typeof globalThis !== 'undefined' ? globalThis : this);
+
+            (function(global) {
+                'use strict';
+                const VERIFIED = '2026-11-20'
+                  , SAXONY_LAW = 'https://www.revosax.sachsen.de/vorschrift/3997-SaechsSFG'
+                  , CORPUS_LAW = 'https://www.revosax.sachsen.de/vorschrift/4142-FronleichnamsVO'
+                  , UNITY_LAW = 'https://www.gesetze-im-internet.de/einigvtr/art_2.html'
+                  , FEDERAL_LIST = 'https://www.bundesbank.de/resource/blob/749314/df7b628542f7ec41a477d46130345c64/mL/feiertage-in-deutschland-1-data.pdf';
+                const REFORMATION_STATES = ['Brandenburg', 'Bremen', 'Hamburg', 'Mecklenburg-Vorpommern', 'Niedersachsen', 'Sachsen', 'Sachsen-Anhalt', 'Schleswig-Holstein', 'Thüringen'];
+                const CORPUS_REGIONS = ['Königswartha', 'Luga', 'Luppa', 'Luttowitz', 'Neschwitz', 'Prischwitz', 'Puschwitz', 'Radibor', 'Salzenforst-Bolbritz', 'Saritsch', 'Sdier', 'Dörgenhausen', 'Dubring', 'Hoske', 'Kotten', 'Sollschwitz', 'Spohla', 'Wittichenau', 'Crostwitz', 'Nebelschütz', 'Ostro', 'Panschwitz-Kuckau', 'Ralbitz', 'Räckelwitz', 'Rosenthal'];
+                const WEEKDAYS = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
+                function key(date) {
+                    return date.toISOString().slice(0, 10);
+                }
+                function date(year, month, day) {
+                    return new Date(Date.UTC(year, month - 1, day, 12));
+                }
+                function add(value, days) {
+                    const result = new Date(value);
+                    result.setUTCDate(result.getUTCDate() + days);
+                    return result;
+                }
+                function easter(year) {
+                    const a = year % 19
+                      , b = Math.floor(year / 100)
+                      , c = year % 100
+                      , d = Math.floor(b / 4)
+                      , e = b % 4
+                      , f = Math.floor((b + 8) / 25)
+                      , g = Math.floor((b - f + 1) / 3)
+                      , h = (19 * a + b - d - g + 15) % 30
+                      , i = Math.floor(c / 4)
+                      , k = c % 4
+                      , l = (32 + 2 * e + 2 * i - h - k) % 7
+                      , m = Math.floor((a + 11 * h + 22 * l) / 451)
+                      , month = Math.floor((h + l - 7 * m + 114) / 31)
+                      , day = (h + l - 7 * m + 114) % 31 + 1;
+                    return date(year, month, day);
+                }
+                function today(now=new Date()) {
+                    const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA',{
+                        timeZone: 'Europe/Berlin',
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    }).formatToParts(now).filter(p => p.type !== 'literal').map(p => [p.type, p.value]));
+                    return p.year + '-' + p.month + '-' + p.day;
+                }
+                function fullDate(value) {
+                    return new Intl.DateTimeFormat('de-DE',{
+                        timeZone: 'Europe/Berlin',
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                    }).format(new Date(value + 'T12:00:00Z'));
+                }
+                function holidays(year) {
+                    year = Number(year);
+                    if (!Number.isInteger(year) || year < 1583 || year > 9999)
+                        throw new RangeError('Ungültiges Kalenderjahr.');
+                    const sunday = easter(year)
+                      , repentance = date(year, 11, 22);
+                    repentance.setUTCDate(22 - (repentance.getUTCDay() - 3 + 7) % 7);
+                    const entries = [];
+                    function push(id, name, value, description, {scope='bundesweit', where='Ganz Deutschland, einschließlich Sachsen.', rule='', notes='', sources=[SAXONY_LAW, FEDERAL_LIST]}={}) {
+                        entries.push({
+                            id,
+                            name,
+                            date: key(value),
+                            description,
+                            scope,
+                            where,
+                            rule,
+                            notes,
+                            sources,
+                            regions: id === 'corpus-christi' ? [...CORPUS_REGIONS] : []
+                        });
+                    }
+                    push('new-year', 'Neujahr', date(year, 1, 1), 'Beginn des neuen Kalenderjahres.', {
+                        rule: 'Jedes Jahr am 1. Januar.'
+                    });
+                    push('good-friday', 'Karfreitag', add(sunday, -2), 'Christlicher Gedenktag an die Kreuzigung Jesu.', {
+                        rule: 'Freitag vor Ostersonntag.',
+                        notes: 'In Sachsen gelten zusätzliche Schutzvorschriften für diesen stillen Feiertag.'
+                    });
+                    push('easter-monday', 'Ostermontag', add(sunday, 1), 'Zweiter Tag des christlichen Osterfestes.', {
+                        rule: 'Montag nach Ostersonntag.'
+                    });
+                    push('labour-day', 'Tag der Arbeit', date(year, 5, 1), 'Feiertag der Arbeitnehmerbewegung.', {
+                        rule: 'Jedes Jahr am 1. Mai.'
+                    });
+                    push('ascension', 'Christi Himmelfahrt', add(sunday, 39), 'Christliches Fest der Himmelfahrt Jesu.', {
+                        rule: '39 Tage nach Ostersonntag; immer donnerstags.'
+                    });
+                    push('whit-monday', 'Pfingstmontag', add(sunday, 50), 'Zweiter Tag des Pfingstfestes; Erinnerung an die Sendung des Heiligen Geistes.', {
+                        rule: '50 Tage nach Ostersonntag; immer montags.'
+                    });
+                    push('corpus-christi', 'Fronleichnam', add(sunday, 60), 'Katholisches Fest zur Feier der Eucharistie.', {
+                        scope: 'regional',
+                        where: 'In Sachsen nur in den Gebieten der Anlage zur Fronleichnamsverordnung. Außerdem landesweit in Baden-Württemberg, Bayern, Hessen, Nordrhein-Westfalen, Rheinland-Pfalz und Saarland sowie regional in Thüringen.',
+                        rule: '60 Tage nach Ostersonntag; immer donnerstags.',
+                        notes: 'Kein landesweiter Feiertag in Sachsen; in Chemnitz kein gesetzlicher Feiertag. Bei Eingemeindungen gilt die Freistellung nur für die in der Verordnung bezeichneten fortbestehenden Gemeindeteile.',
+                        sources: [CORPUS_LAW, SAXONY_LAW, FEDERAL_LIST]
+                    });
+                    push('unity', 'Tag der Deutschen Einheit', date(year, 10, 3), 'Erinnert an die deutsche Wiedervereinigung am 3. Oktober 1990.', {
+                        rule: 'Jedes Jahr am 3. Oktober.',
+                        sources: [UNITY_LAW, SAXONY_LAW]
+                    });
+                    push('reformation', 'Reformationstag', date(year, 10, 31), 'Erinnert an die Reformation und Martin Luthers Thesen von 1517.', {
+                        scope: 'sachsen',
+                        where: 'In ganz Sachsen sowie in ' + REFORMATION_STATES.filter(state => state !== 'Sachsen').join(', ') + '.',
+                        rule: 'Jedes Jahr am 31. Oktober.',
+                        sources: [SAXONY_LAW, FEDERAL_LIST]
+                    });
+                    push('repentance', 'Buß- und Bettag', repentance, 'Evangelischer Tag der Besinnung, Buße und des Gebets.', {
+                        scope: 'sachsen',
+                        where: 'Sachsen, im gesamten Bundesland.',
+                        rule: 'Mittwoch vor dem 23. November.',
+                        notes: 'In Sachsen gelten zusätzliche Schutzvorschriften für diesen stillen Feiertag.'
+                    });
+                    push('christmas-day', '1. Weihnachtstag', date(year, 12, 25), 'Christliches Weihnachtsfest zur Erinnerung an die Geburt Jesu.', {
+                        rule: 'Jedes Jahr am 25. Dezember.'
+                    });
+                    push('boxing-day', '2. Weihnachtstag', date(year, 12, 26), 'Zweiter gesetzlicher Feiertag des Weihnachtsfestes.', {
+                        rule: 'Jedes Jahr am 26. Dezember.'
+                    });
+                    return entries.sort( (a, b) => a.date.localeCompare(b.date));
+                }
+                function months(year, current=today()) {
+                    const index = new Map();
+                    for (const holiday of holidays(year)) {
+                        if (!index.has(holiday.date))
+                            index.set(holiday.date, []);
+                        index.get(holiday.date).push(holiday);
+                    }
+                    return Array.from({
+                        length: 12
+                    }, (_, month) => {
+                        const first = date(year, month + 1, 1)
+                          , offset = (first.getUTCDay() + 6) % 7
+                          , count = date(year, month + 2, 0).getUTCDate();
+                        return {
+                            index: month,
+                            name: new Intl.DateTimeFormat('de-DE',{
+                                month: 'long',
+                                timeZone: 'UTC'
+                            }).format(first),
+                            current: current.startsWith(year + '-' + String(month + 1).padStart(2, '0') + '-'),
+                            offset,
+                            days: Array.from({
+                                length: count
+                            }, (_, i) => {
+                                const value = key(date(year, month + 1, i + 1));
+                                return {
+                                    date: value,
+                                    number: i + 1,
+                                    today: value === current,
+                                    weekend: (offset + i) % 7 >= 5,
+                                    holidays: index.get(value) || []
+                                };
+                            }
+                            )
+                        };
+                    }
+                    );
+                }
+                const api = {
+                    VERIFIED,
+                    SAXONY_LAW,
+                    CORPUS_LAW,
+                    UNITY_LAW,
+                    FEDERAL_LIST,
+                    WEEKDAYS,
+                    CORPUS_REGIONS,
+                    easter,
+                    today,
+                    fullDate,
+                    holidays,
+                    months
+                };
+                if (typeof module !== 'undefined' && module.exports)
+                    module.exports = api;
+                else
+                    global.ShogiHolidays = api;
             }
             )(typeof globalThis !== 'undefined' ? globalThis : this);
         </script>
@@ -7881,6 +8642,9 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                 return nt()
             });
             window.ShogiIcons = {
+                chevronLeft: '<path d="m14 5-7 7 7 7"/>',
+                chevronRight: '<path d="m10 5 7 7-7 7"/>',
+                region: '<path d="M12 3 3 20h18Z" fill="currentColor" stroke="none"/>',
                 gmail: '<path d="M3 7v13h4V10m14-3v13h-4V10" stroke="none" fill="#4285f4"/><path d="m3 6 9 7 9-7" stroke="#ea4335" stroke-width="4"/><path d="M3 7v13h4V10" stroke="none" fill="#34a853"/><path d="M17 10v10h4V7" stroke="none" fill="#fbbc04"/><path d="M3 7v13h4V10" stroke="none" fill="#4285f4"/>',
                 inboxEmpty: '<path d="m4 5-2 9v5h20v-5l-2-9Z"/><path d="M2 14h6l2 3h4l2-3h6M8 9h8"/>',
                 download: '<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>',
@@ -8758,6 +9522,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                         $('berlinDate').textContent = fullDate(now, 'Europe/Berlin');
                         $('tbilisiDate').textContent = fullDate(now, 'Asia/Tbilisi');
                         updateTicker();
+                        refreshRailCalendarDate();
                     }
                     updateCountdowns();
                 }
@@ -9021,15 +9786,19 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     $('siteTrack').innerHTML = list.map(site => `<a class="site-card" href="${site.url ? esc(site.url) : '#'}" target="_self" data-open-site="${esc(site.id)}" style="--site-color:${site.color}" aria-label="${esc(site.name)}"><strong class="site-card-name">${esc(site.name)}</strong><span class="site-card-url" title="${esc(site.url)}">${esc(site.url || 'Adresse ergänzen')}</span><span class="site-card-symbol">${siteIcon(site)}</span><span class="site-card-frequency" aria-label="${site.visits} Aufrufe">${site.visits}</span></a>`).join('') || '<button class="site-rail-empty" data-mail-go-sites>Internetseite hinzufügen</button>';
                     railItems = [...$('siteTrack').querySelectorAll('.site-card')];
                     railPhase = 0;
+                    resetRailView();
                     measureSiteRail();
                 }
-                function animateSiteRail(dt) {
-                    if (!railPlan?.overflow || mediaMotion.matches)
-                        return;
-                    if ($('siteViewport').matches(':focus-within') && railItems.some(el => el.matches(':focus-visible')))
-                        return;
-                    railPhase = (railPhase + dt * 23) % railPlan.cycle;
-                    positionSiteCards();
+                function animateSiteRail(dt, elapsed=dt) {
+                    let cycleCompleted = false;
+                    const moving = !!railPlan?.overflow && !mediaMotion.matches;
+                    if (moving && !($('siteViewport').matches(':focus-within') && railItems.some(el => el.matches(':focus-visible')))) {
+                        const next = railPhase + dt * R.SPEED;
+                        cycleCompleted = next >= railPlan.cycle;
+                        railPhase = next % railPlan.cycle;
+                        positionSiteCards();
+                    }
+                    updateRailView(elapsed, moving, cycleCompleted);
                 }
                 $('siteViewport').addEventListener('focusin', event => {
                     const index = railItems.indexOf(event.target);
@@ -9041,17 +9810,158 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                 );
                 mediaMotion.addEventListener('change', measureSiteRail);
                 function animate(now) {
-                    const dt = Math.min((now - lastFrame) / 1000, .05) || 0;
+                    const elapsed = lastFrame ? Math.max(0, (now - lastFrame) / 1000) : 0
+                      , dt = Math.min(elapsed, .05);
                     lastFrame = now;
                     if (!document.hidden) {
                         if (settings.motion && !mediaMotion.matches)
                             waveTime += dt;
-                        animateSiteRail(dt);
+                        animateSiteRail(Math.min(elapsed, .25), elapsed);
                         if ((settings.motion && !mediaMotion.matches) || waveDirty)
                             renderWaveFrames(now);
                     }
                     requestAnimationFrame(animate);
                 }
+
+                const H = window.ShogiHolidays
+                  , railViewCycle = new R.ViewCycle();
+                let railCalendarDate = H.today()
+                  , railCalendarYear = Number(railCalendarDate.slice(0, 4))
+                  , railCalendarRendered = false;
+                function renderRailCalendar({scroll=true}={}) {
+                    const currentYear = Number(railCalendarDate.slice(0, 4))
+                      , months = H.months(railCalendarYear, railCalendarDate);
+                    $('railCalendarYear').textContent = String(railCalendarYear);
+                    $('calendarPreviousYear').disabled = railCalendarYear <= currentYear - 1;
+                    $('calendarNextYear').disabled = railCalendarYear >= currentYear + 4;
+                    $('railCalendarMonths').innerHTML = months.map(month => {
+                        const cells = [...Array(month.offset).fill(null), ...month.days];
+                        while (cells.length % 7)
+                            cells.push(null);
+                        let rows = '';
+                        for (let i = 0; i < cells.length; i += 7)
+                            rows += '<tr>' + cells.slice(i, i + 7).map(day => {
+                                if (!day)
+                                    return '<td aria-hidden="true"></td>';
+                                const holiday = day.holidays.length > 0
+                                  , regional = day.holidays.some(item => item.scope === 'regional')
+                                  , classes = 'calendar-day' + (day.weekend ? ' is-weekend' : '') + (holiday ? ' is-holiday' : '') + (regional ? ' is-regional' : '') + (day.today ? ' is-today' : '')
+                                  , label = H.fullDate(day.date) + (holiday ? ', ' + day.holidays.map(item => item.name).join(', ') + (regional ? ', nur regional in Sachsen' : ', gesetzlicher Feiertag') : '');
+                                return '<td>' + (holiday ? `<button type="button" class="${classes}" data-holiday-date="${day.date}" aria-label="${esc(label)}" title="${esc(label)}"${day.today ? ' aria-current="date"' : ''}>${day.number}${regional ? `<span class="calendar-region-mark" aria-hidden="true">${icon('region')}</span>` : ''}</button>` : `<time class="${classes}" datetime="${day.date}" aria-label="${esc(label)}"${day.today ? ' aria-current="date"' : ''}>${day.number}</time>`) + '</td>';
+                            }
+                            ).join('') + '</tr>';
+                        return `<section class="calendar-month${month.current ? ' is-current' : ''}" id="rail-month-${month.index}" data-calendar-month="${month.index}"><h3 id="rail-month-title-${month.index}">${esc(month.name)}</h3><table aria-labelledby="rail-month-title-${month.index}"><thead><tr>${H.WEEKDAYS.map(name => `<th scope="col" title="${name}">${name.slice(0, 2)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></section>`;
+                    }
+                    ).join('');
+                    railCalendarRendered = true;
+                    requestAnimationFrame( () => {
+                        sizeRailCalendar();
+                        if (scroll)
+                            scrollRailCalendarToCurrentMonth();
+                    }
+                    );
+                }
+                function sizeRailCalendar() {
+                    const scroller = $('railCalendarScroll')
+                      , last = $('rail-month-11');
+                    if (!last)
+                        return;
+                    $('railCalendarEndSpace').style.height = Math.max(0, scroller.clientHeight - last.offsetHeight - 20) + 'px';
+                }
+                function scrollRailCalendarToCurrentMonth() {
+                    const scroller = $('railCalendarScroll')
+                      , month = Number(railCalendarDate.slice(5, 7)) - 1
+                      , target = $('rail-month-' + (railCalendarYear === Number(railCalendarDate.slice(0, 4)) ? month : 0));
+                    if (!target)
+                        return;
+                    sizeRailCalendar();
+                    scroller.scrollTop += target.getBoundingClientRect().top - scroller.getBoundingClientRect().top - 10;
+                }
+                function refreshRailCalendarDate() {
+                    const current = H.today();
+                    if (current === railCalendarDate)
+                        return;
+                    const oldYear = Number(railCalendarDate.slice(0, 4));
+                    railCalendarDate = current;
+                    if (railCalendarYear === oldYear)
+                        railCalendarYear = Number(current.slice(0, 4));
+                    renderRailCalendar({
+                        scroll: railViewCycle.view === 'calendar'
+                    });
+                }
+                function applyRailView() {
+                    const show = railViewCycle.view === 'calendar'
+                      , viewport = $('siteViewport')
+                      , calendar = $('railCalendar');
+                    if (show) {
+                        refreshRailCalendarDate();
+                        if (!railCalendarRendered)
+                            renderRailCalendar();
+                        else
+                            requestAnimationFrame(scrollRailCalendarToCurrentMonth);
+                    }
+                    viewport.inert = show;
+                    viewport.setAttribute('aria-hidden', String(show));
+                    calendar.inert = !show;
+                    calendar.setAttribute('aria-hidden', String(!show));
+                    $('siteRail').classList.toggle('show-calendar', show);
+                    $('siteRail').dataset.view = railViewCycle.view;
+                }
+                function resetRailView() {
+                    railViewCycle.reset();
+                    applyRailView();
+                }
+                function updateRailView(seconds, moving, cycleCompleted) {
+                    if (!railCalendarRendered)
+                        renderRailCalendar();
+                    const paused = !!document.querySelector('dialog[open]');
+                    if (railViewCycle.step(seconds, {
+                        moving,
+                        cycleCompleted,
+                        paused
+                    }))
+                        applyRailView();
+                }
+                function showHoliday(date) {
+                    const items = H.holidays(Number(date.slice(0, 4))).filter(item => item.date === date);
+                    if (!items.length)
+                        return;
+                    $('holidayTitle').textContent = items.map(item => item.name).join(' / ');
+                    const sourceNames = new Map([[H.SAXONY_LAW, 'Sächsisches Sonn- und Feiertagsgesetz'], [H.CORPUS_LAW, 'Fronleichnamsverordnung mit Gebietsverzeichnis'], [H.UNITY_LAW, 'Einigungsvertrag, Artikel 2'], [H.FEDERAL_LIST, 'Feiertagsübersicht der Deutschen Bundesbank']]);
+                    $('holidayBody').innerHTML = `<time class="holiday-date" datetime="${date}">${esc(H.fullDate(date))}</time>` + items.map(item => `<span class="holiday-badge">${item.scope === 'bundesweit' ? 'Bundesweiter Feiertag' : item.scope === 'regional' ? 'Regionaler Feiertag in Sachsen' : 'Gesetzlicher Feiertag in Sachsen'}</span><section class="holiday-detail"><h3>Geltungsbereich</h3><p>${esc(item.where)}</p></section><section class="holiday-detail"><h3>Was wird gefeiert?</h3><p>${esc(item.description)}</p></section><section class="holiday-detail"><h3>Termin</h3><p>${esc(item.rule)}</p></section>${item.notes ? `<p class="holiday-note">${esc(item.notes)}</p>` : ''}${item.regions.length ? `<details class="holiday-regions"><summary>Sächsische Gebiete laut Verordnung</summary><p>Bezeichnungen aus der gesetzlichen Anlage. Nach einer Eingemeindung ist nur das bezeichnete fortbestehende Gebiet erfasst.</p><ul>${item.regions.map(name => `<li>${esc(name)}</li>`).join('')}</ul></details>` : ''}`).join('') + `<p class="holiday-note">Ob Sie persönlich dienstfrei haben, richtet sich zusätzlich nach Ihrem Dienstplan und den gesetzlichen Ausnahmen.</p><div class="holiday-sources"><strong>Amtliche Quellen</strong>${[...new Set(items.flatMap(item => item.sources))].map(url => `<a href="${url}" target="_top" rel="noreferrer">${esc(sourceNames.get(url))}</a>`).join('')}<small>Rechtsgrundlagen geprüft am ${esc(H.fullDate(H.VERIFIED))}. Bewegliche Feiertage werden für jedes Jahr berechnet.</small></div>`;
+                    $('holidayDialog').showModal();
+                }
+                $('railCalendarMonths').addEventListener('click', event => {
+                    const target = event.target.closest('[data-holiday-date]');
+                    if (target)
+                        showHoliday(target.dataset.holidayDate);
+                }
+                );
+                $('calendarPreviousYear').addEventListener('click', () => {
+                    railViewCycle.elapsed = 0;
+                    railCalendarYear--;
+                    renderRailCalendar();
+                }
+                );
+                $('calendarNextYear').addEventListener('click', () => {
+                    railViewCycle.elapsed = 0;
+                    railCalendarYear++;
+                    renderRailCalendar();
+                }
+                );
+                $('calendarToday').addEventListener('click', () => {
+                    railViewCycle.elapsed = 0;
+                    railCalendarDate = H.today();
+                    railCalendarYear = Number(railCalendarDate.slice(0, 4));
+                    renderRailCalendar();
+                }
+                );
+                const calendarResizeObserver = new ResizeObserver(sizeRailCalendar);
+                calendarResizeObserver.observe($('railCalendarScroll'));
+                document.addEventListener('visibilitychange', () => {
+                    lastFrame = 0;
+                }
+                );
 
                 function makeItem(id, type, title, parts, extra={}) {
                     const category = type === 'balance' || type === 'daily' ? 'budget' : type;
