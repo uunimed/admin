@@ -4588,17 +4588,20 @@
 
             #siteRail {
                 --rail-gutter: 14px;
-                padding-inline:var(--rail-gutter)}
+                padding-inline:var(--rail-gutter);perspective: 1200px
+            }
 
             #siteViewport {
-                transition: opacity .65s cubic-bezier(.22,.7,.3,1),transform .65s cubic-bezier(.22,.7,.3,1);
+                backface-visibility: hidden;
+                transform-origin: 50% 50%;
+                transition: opacity .8s ease,transform .8s cubic-bezier(.22,.7,.3,1);
                 opacity: 1;
-                transform: translateY(0)
+                transform: rotateY(0) scale(1)
             }
 
             #siteRail.show-calendar #siteViewport {
                 opacity: 0;
-                transform: translateY(-16px);
+                transform: rotateY(-85deg) scale(.97);
                 pointer-events: none
             }
 
@@ -4618,16 +4621,18 @@
                 box-shadow: inset 0 1px 0 #ffffff0c;
                 color: #eaf3ff;
                 opacity: 0;
-                transform: translateY(18px);
+                transform: rotateY(85deg) scale(.97);
+                backface-visibility: hidden;
+                transform-origin: 50% 50%;
                 visibility: hidden;
                 pointer-events: none;
-                transition: opacity .65s cubic-bezier(.22,.7,.3,1),transform .65s cubic-bezier(.22,.7,.3,1),visibility 0s .65s;
+                transition: opacity .8s ease,transform .8s cubic-bezier(.22,.7,.3,1),visibility 0s .8s;
                 overflow: hidden
             }
 
             #siteRail.show-calendar .rail-calendar {
                 opacity: 1;
-                transform: translateY(0);
+                transform: rotateY(0) scale(1);
                 visibility: visible;
                 pointer-events: auto;
                 transition-delay: 0s
@@ -4652,27 +4657,6 @@
             .rail-calendar-heading h2 {
                 font: 700 14px/1.4 var(--number);
                 margin: 0
-            }
-
-            .rail-calendar-heading>span {
-                display: flex;
-                align-items: center;
-                gap: 4px;
-                font: 10px/1.5 var(--number);
-                color: #adc4e0;
-                white-space: nowrap
-            }
-
-            .calendar-scope-separator {
-                display: flex;
-                align-items: center
-            }
-
-            .calendar-scope-separator svg {
-                width: 4px;
-                height: 4px;
-                fill: currentColor;
-                stroke: none
             }
 
             .rail-calendar-tools {
@@ -4892,61 +4876,6 @@
                 overflow-wrap: anywhere
             }
 
-            .holiday-note {
-                padding: 13px 16px;
-                background: #dbe6f17d;
-                border-radius: 9px;
-                margin-top: 19px;
-                font-size: 14px
-            }
-
-            .holiday-regions {
-                margin-top: 17px
-            }
-
-            .holiday-regions summary {
-                font: 650 14px/1.7 var(--number);
-                color: #496d90
-            }
-
-            .holiday-regions ul {
-                columns: 2;
-                column-gap: 28px;
-                padding-left: 20px;
-                font-size: 13px;
-                line-height: 1.9;
-                margin-top: 10px
-            }
-
-            .holiday-regions p {
-                font-size: 13px;
-                line-height: 1.8;
-                color: #6d849c;
-                margin-top: 10px
-            }
-
-            .holiday-sources {
-                border-top: 1px solid #b8cde14d;
-                margin-top: 25px;
-                padding-top: 17px;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                font-size: 13px
-            }
-
-            .holiday-sources a {
-                color: #3f75a6;
-                text-decoration: underline;
-                text-underline-offset: 3px
-            }
-
-            .holiday-sources small {
-                font-size: 12px;
-                color: #7890a8;
-                margin-top: 5px
-            }
-
             @keyframes calendar-today-pulse {
                 0%,100% {
                     box-shadow: 0 0 0 1px #92c4ff20,0 0 5px #92c4ff20
@@ -5029,10 +4958,6 @@
                     font-size: 13px
                 }
 
-                .rail-calendar-heading>span {
-                    font-size: 9px
-                }
-
                 .rail-calendar-scroll {
                     padding: 6px 2px
                 }
@@ -5071,10 +4996,6 @@
                 .holiday-date {
                     font-size: 17px
                 }
-
-                .holiday-regions ul {
-                    columns: 1
-                }
             }
 
             @media(prefers-reduced-motion:reduce) {
@@ -5085,6 +5006,271 @@
                 .calendar-day.is-today {
                     animation: none;
                     box-shadow: 0 0 0 2px #bce3ff9c
+                }
+            }
+
+            .calendar-month:last-child {
+                margin-bottom: 0
+            }
+
+            .year-calendar-dialog {
+                background: #eef3fa;
+                font-family: var(--number)
+            }
+
+            .year-calendar-dialog .dialog-header h2 {
+                font-family: var(--number);
+                font-weight: 750;
+                color: #254663
+            }
+
+            .year-calendar-tools {
+                display: flex;
+                align-items: center;
+                gap: 12px
+            }
+
+            .year-calendar-tools output {
+                font-size: 21px;
+                font-weight: 750;
+                font-variant-numeric: tabular-nums;
+                color: #365774;
+                min-width: 60px;
+                text-align: center
+            }
+
+            .year-calendar-body {
+                padding: 24px 32px;
+                min-height: 0;
+                flex: 1
+            }
+
+            .year-calendar-grid {
+                display: grid;
+                grid-template-columns: repeat(4,minmax(0,1fr));
+                gap: 20px
+            }
+
+            .year-calendar-grid .calendar-month {
+                padding: 18px 14px 14px;
+                border-color: #c8d6e6;
+                background: #ffffff6e;
+                margin: 0;
+                border-radius: 12px;
+                align-self: start
+            }
+
+            .year-calendar-grid .calendar-month.is-current {
+                background: #d9e8fa;
+                border-color: #86a9d3
+            }
+
+            .year-calendar-grid .calendar-month h3 {
+                font-size: 18px;
+                color: #31526e;
+                margin-bottom: 12px
+            }
+
+            .year-calendar-grid .calendar-month th {
+                color: #71869e;
+                font-size: 12px;
+                height: 24px
+            }
+
+            .year-calendar-grid .calendar-month table {
+                border-spacing: 3px 4px
+            }
+
+            .year-calendar-grid .calendar-month td {
+                height: 34px
+            }
+
+            .year-calendar-grid .calendar-day {
+                height: 34px;
+                font-size: 14px;
+                color: #365774;
+                background: #dbe5f144
+            }
+
+            .year-calendar-grid .calendar-day.is-weekend {
+                color: #8b9caf;
+                background: #dbe5f122
+            }
+
+            .year-calendar-grid .calendar-day.is-holiday {
+                background: #f7d3dc;
+                border-color: #cf7e93;
+                color: #a12247;
+                font-weight: 750
+            }
+
+            .year-calendar-grid .calendar-day.is-holiday:hover {
+                background: #f3bdcc;
+                border-color: #b75c75
+            }
+
+            .year-calendar-grid .calendar-day.is-today {
+                background: #c4dcf8;
+                border-color: #648fc8;
+                color: #1e4e8e;
+                font-weight: 850
+            }
+
+            .year-calendar-grid .calendar-day.is-holiday.is-today {
+                background: #efbdcd;
+                color: #931e41
+            }
+
+            .calendar-data-footer {
+                margin-top: 26px;
+                padding-top: 19px;
+                border-top: 1px solid #c8d6e6;
+                font: 13px/1.8 var(--number);
+                color: #69829d
+            }
+
+            .calendar-data-footer p {
+                margin: 0 0 12px
+            }
+
+            .calendar-data-footer a {
+                color: #3b6e9c;
+                text-decoration: underline;
+                text-underline-offset: 3px
+            }
+
+            .calendar-data-credit {
+                font-size: 11px;
+                line-height: 1.8
+            }
+
+            .calendar-data-footer .is-error {
+                color: #a94d61
+            }
+
+            #holidayChanges {
+                margin: 12px 0 20px
+            }
+
+            #holidayChanges summary {
+                cursor: pointer;
+                font-weight: 700;
+                color: #365774
+            }
+
+            #holidayChangesList {
+                padding-left: 20px;
+                margin: 12px 0
+            }
+
+            #holidayChangesList li {
+                padding: 8px 0;
+                border-bottom: 1px solid #c8d6e655
+            }
+
+            #holidayChangesList strong {
+                display: block;
+                font-weight: 600
+            }
+
+            #holidayChangesList time {
+                display: block;
+                font-size: 11px;
+                color: #8a9db2
+            }
+
+            @media(max-width: 1100px) {
+                .year-calendar-grid {
+                    grid-template-columns:repeat(3,minmax(0,1fr));
+                    gap: 16px
+                }
+
+                .year-calendar-body {
+                    padding: 20px 24px
+                }
+            }
+
+            @media(max-width: 760px) {
+                .year-calendar-grid {
+                    grid-template-columns:repeat(2,minmax(0,1fr));
+                    gap: 12px
+                }
+
+                .year-calendar-grid .calendar-month {
+                    padding: 12px 7px
+                }
+
+                .year-calendar-grid .calendar-month table {
+                    border-spacing: 1px 3px
+                }
+
+                .year-calendar-grid .calendar-month h3 {
+                    font-size: 16px
+                }
+
+                .year-calendar-grid .calendar-day {
+                    font-size: 12px
+                }
+
+                .year-calendar-tools {
+                    gap: 5px
+                }
+
+                .year-calendar-tools output {
+                    font-size: 17px;
+                    min-width: 45px
+                }
+
+                .year-calendar-dialog .dialog-header {
+                    gap: 10px;
+                    padding: 16px
+                }
+
+                .year-calendar-body {
+                    padding: 16px
+                }
+            }
+
+            @media(max-width: 440px) {
+                .year-calendar-grid {
+                    grid-template-columns:1fr
+                }
+
+                .year-calendar-dialog .dialog-header h2 {
+                    font-size: 18px
+                }
+
+                .year-calendar-tools {
+                    gap: 3px
+                }
+
+                .year-calendar-tools .round-button {
+                    height: 29px;
+                    width: 29px
+                }
+
+                .year-calendar-tools output {
+                    font-size: 15px;
+                    min-width: 36px
+                }
+
+                .year-calendar-grid .calendar-day {
+                    font-size: 14px
+                }
+
+                .year-calendar-grid .calendar-month h3 {
+                    font-size: 18px
+                }
+            }
+
+            @media(prefers-reduced-motion:reduce) {
+                #siteRail #siteViewport,#siteRail .rail-calendar {
+                    transform: none;
+                    transition: opacity .15s linear,visibility 0s .15s
+                }
+
+                #siteRail.show-calendar .rail-calendar {
+                    transition-delay: 0s
                 }
             }
         </style>
@@ -5510,21 +5696,17 @@ PDF.js: Apache-2.0
                 <section id="railCalendar" class="rail-calendar" aria-labelledby="railCalendarTitle" aria-hidden="true" inert>
                     <header class="rail-calendar-header">
                         <div class="rail-calendar-heading">
-                            <h2 id="railCalendarTitle">Feiertage</h2>
-                            <span>
-                                Deutschland<span data-icon="separator" class="calendar-scope-separator"></span>Sachsen
-                            </span>
+                            <h2 id="railCalendarTitle">Kalender</h2>
                         </div>
                         <div class="rail-calendar-tools">
                             <button type="button" id="calendarPreviousYear" class="calendar-tool" aria-label="Vorheriges Jahr" title="Vorheriges Jahr" data-icon="chevronLeft"></button>
                             <output id="railCalendarYear" aria-live="polite"></output>
                             <button type="button" id="calendarNextYear" class="calendar-tool" aria-label="Nächstes Jahr" title="Nächstes Jahr" data-icon="chevronRight"></button>
-                            <button type="button" id="calendarToday" class="calendar-tool" aria-label="Aktuellen Monat anzeigen" title="Aktuellen Monat anzeigen" data-icon="calendar"></button>
+                            <button type="button" id="calendarToday" class="calendar-tool" aria-label="Jahreskalender öffnen" title="Jahreskalender öffnen" data-icon="calendar"></button>
                         </div>
                     </header>
                     <div id="railCalendarScroll" class="rail-calendar-scroll" tabindex="0" aria-label="Alle Monate und gesetzlichen Feiertage">
                         <div id="railCalendarMonths"></div>
-                        <div id="railCalendarEndSpace" aria-hidden="true"></div>
                     </div>
                 </section>
             </nav>
@@ -5835,6 +6017,31 @@ PDF.js: Apache-2.0
                 <button class="round-button" data-close="holidayDialog" aria-label="Schließen" data-icon="x"></button>
             </div>
             <div id="holidayBody" class="dialog-body holiday-body"></div>
+        </dialog>
+        <dialog id="yearCalendarDialog" class="full-dialog year-calendar-dialog" aria-labelledby="yearCalendarTitle">
+            <div class="dialog-header">
+                <h2 id="yearCalendarTitle">Kalender</h2>
+                <div class="year-calendar-tools">
+                    <button type="button" id="yearCalendarPrevious" class="round-button" aria-label="Vorheriges Jahr" title="Vorheriges Jahr" data-icon="chevronLeft"></button>
+                    <output id="yearCalendarYear" aria-live="polite"></output>
+                    <button type="button" id="yearCalendarNext" class="round-button" aria-label="Nächstes Jahr" title="Nächstes Jahr" data-icon="chevronRight"></button>
+                    <button type="button" id="yearCalendarRefresh" class="round-button" aria-label="Feiertagsdaten aktualisieren" title="Feiertagsdaten aktualisieren" data-icon="refresh"></button>
+                    <button class="round-button" data-close="yearCalendarDialog" aria-label="Schließen" data-icon="x"></button>
+                </div>
+            </div>
+            <div id="yearCalendarBody" class="dialog-body year-calendar-body">
+                <div id="yearCalendarMonths" class="year-calendar-grid"></div>
+                <footer class="calendar-data-footer">
+                    <p id="holidayDataStatus" role="status"></p>
+                    <details id="holidayChanges">
+                        <summary id="holidayChangesTitle">Änderungen</summary>
+                        <ol id="holidayChangesList"></ol>
+                    </details>
+                    <p class="calendar-data-credit">
+                        Feiertagsdaten: <a href="https://www.openholidaysapi.org/" target="_top" rel="noopener noreferrer">OpenHolidays API</a> (<a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_top" rel="noopener noreferrer">ODbL</a>); regionale Ergänzungen: <a href="https://feiertage-api.de/" target="_top" rel="noopener noreferrer">Feiertage API</a>. Automatische Prüfung alle 6 Stunden bei geöffneter Seite. Änderungen erscheinen, sobald sie in den Datenquellen verfügbar sind.
+                    </p>
+                </footer>
+            </div>
         </dialog>
         <dialog id="allSitesDialog" class="all-dialog full-dialog" aria-labelledby="allSitesTitle">
             <div class="dialog-header">
@@ -7308,9 +7515,9 @@ PDF.js: Apache-2.0
                     });
                     return entries.sort( (a, b) => a.date.localeCompare(b.date));
                 }
-                function months(year, current=today()) {
+                function months(year, current=today(), entries=holidays(year)) {
                     const index = new Map();
-                    for (const holiday of holidays(year)) {
+                    for (const holiday of entries) {
                         if (!index.has(holiday.date))
                             index.set(holiday.date, []);
                         index.get(holiday.date).push(holiday);
@@ -7364,6 +7571,271 @@ PDF.js: Apache-2.0
                     module.exports = api;
                 else
                     global.ShogiHolidays = api;
+            }
+            )(typeof globalThis !== 'undefined' ? globalThis : this);
+
+            (function(global) {
+                'use strict';
+                const KEY = 'shogi-holiday-cache-v1'
+                  , INTERVAL = 6 * 60 * 60 * 1000;
+                const SOURCES = ['https://www.openholidaysapi.org/', 'https://feiertage-api.de/'];
+                const STATES = {
+                    BW: 'Baden-Württemberg',
+                    BY: 'Bayern',
+                    BE: 'Berlin',
+                    BB: 'Brandenburg',
+                    HB: 'Bremen',
+                    HH: 'Hamburg',
+                    HE: 'Hessen',
+                    MV: 'Mecklenburg-Vorpommern',
+                    NI: 'Niedersachsen',
+                    NW: 'Nordrhein-Westfalen',
+                    RP: 'Rheinland-Pfalz',
+                    SL: 'Saarland',
+                    SN: 'Sachsen',
+                    ST: 'Sachsen-Anhalt',
+                    SH: 'Schleswig-Holstein',
+                    TH: 'Thüringen'
+                };
+                const normalize = value => String(value || '').normalize('NFKC').replace(/\s+/g, ' ').trim();
+                const aliases = {
+                    'neujahr': 'new-year',
+                    'neujahrstag': 'new-year',
+                    'karfreitag': 'good-friday',
+                    'ostermontag': 'easter-monday',
+                    'tag der arbeit': 'labour-day',
+                    'christi himmelfahrt': 'ascension',
+                    'pfingstmontag': 'whit-monday',
+                    'fronleichnam': 'corpus-christi',
+                    'tag der deutschen einheit': 'unity',
+                    'reformationstag': 'reformation',
+                    'reformationsfest': 'reformation',
+                    'buß- und bettag': 'repentance',
+                    '1. weihnachtstag': 'christmas-day',
+                    '1. weihnachtsfeiertag': 'christmas-day',
+                    '2. weihnachtstag': 'boxing-day',
+                    '2. weihnachtsfeiertag': 'boxing-day'
+                };
+                const canonical = name => aliases[normalize(name).toLowerCase()] || 'name:' + normalize(name).toLowerCase();
+                function validDate(value, year) {
+                    return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && value.startsWith(year + '-') && !Number.isNaN(Date.parse(value)) && new Date(value + 'T12:00:00Z').toISOString().slice(0, 10) === value;
+                }
+                function german(values) {
+                    return normalize(values?.find(item => item.language === 'DE')?.text || values?.[0]?.text);
+                }
+                function parse(open, regional, year, fallback) {
+                    if (!Array.isArray(open) || !regional?.SN || !regional?.NATIONAL)
+                        throw new Error('Unvollständige Feiertagsdaten.');
+                    const known = new Map(fallback.map(item => [item.id, item]))
+                      , records = [];
+                    function entry(id, name, date, scope, where) {
+                        const canonicalId = canonical(name)
+                          , base = known.get(canonicalId);
+                        return {
+                            id,
+                            canonicalId,
+                            name: base?.name || name,
+                            date,
+                            scope,
+                            where: normalize(where),
+                            description: base?.description || 'Eine weitergehende Beschreibung liegt der Datenquelle noch nicht vor.'
+                        };
+                    }
+                    for (const raw of open) {
+                        if (raw.type !== 'Public' || raw.temporalScope !== 'FullDay')
+                            continue;
+                        if (raw.nationwide !== true && !raw.subdivisions?.some(item => item.code === 'DE-SN'))
+                            continue;
+                        const name = german(raw.name);
+                        if (!raw.id || !name || !validDate(raw.startDate, year) || !validDate(raw.endDate, year) || raw.endDate < raw.startDate)
+                            throw new Error('Ungültige Feiertagsdaten.');
+                        const range = (Date.parse(raw.endDate) - Date.parse(raw.startDate)) / 86400000;
+                        if (range > 31)
+                            throw new Error('Ungültiger Feiertagszeitraum.');
+                        const scope = raw.nationwide === true ? 'bundesweit' : 'sachsen'
+                          , states = [...new Set((raw.subdivisions || []).map(item => STATES[item.code?.slice(3)]).filter(Boolean))].sort()
+                          , comment = german(raw.comment);
+                        const where = scope === 'bundesweit' ? 'Ganz Deutschland, einschließlich Sachsen.' : ('In ' + states.join(', ') + '.' + (comment ? ' ' + comment : ''));
+                        for (let offset = 0; offset <= range; offset++) {
+                            const date = new Date(Date.parse(raw.startDate) + offset * 86400000).toISOString().slice(0, 10);
+                            records.push(entry('open:' + raw.id + (range ? ':' + offset : ''), name, date, scope, where));
+                        }
+                    }
+                    const supplemental = Object.entries(regional.SN)
+                      , national = Object.entries(regional.NATIONAL);
+                    if (records.length < 6 || supplemental.length < 6 || national.length < 6)
+                        throw new Error('Die Jahresdaten sind noch nicht vollständig verfügbar.');
+                    for (const [name,value] of supplemental) {
+                        if (!validDate(value?.datum, year) || typeof value.hinweis !== 'string')
+                            throw new Error('Ungültige regionale Feiertagsdaten.');
+                        if (!normalize(value.hinweis) || !/gemeinde|ortsteil|regional|nur in/i.test(value.hinweis))
+                            continue;
+                        const id = canonical(name);
+                        if (records.some(item => item.canonicalId === id && item.date === value.datum))
+                            continue;
+                        const where = normalize(value.hinweis).split(/Entscheidend ist|Die gesetzliche Grundlage/i)[0].trim();
+                        records.push(entry('regional:' + id, name, value.datum, 'regional', where));
+                    }
+                    return records.sort( (a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
+                }
+                function differences(previous, next, {initial=false}={}) {
+                    const before = new Map(previous.map(item => [initial ? item.canonicalId || item.id : item.id, item]))
+                      , after = new Map(next.map(item => [initial ? item.canonicalId || item.id : item.id, item]))
+                      , changes = [];
+                    const signature = item => JSON.stringify(initial ? [item.date, item.scope] : [normalize(item.name), item.date, item.scope, normalize(item.where), normalize(item.description)]);
+                    for (const [id,item] of after) {
+                        const old = before.get(id);
+                        if (!old)
+                            changes.push({
+                                type: 'added',
+                                before: null,
+                                after: item
+                            });
+                        else if (signature(old) !== signature(item))
+                            changes.push({
+                                type: 'changed',
+                                before: old,
+                                after: item
+                            });
+                    }
+                    for (const [id,item] of before)
+                        if (!after.has(id))
+                            changes.push({
+                                type: 'removed',
+                                before: item,
+                                after: null
+                            });
+                    return changes;
+                }
+                function read(storage) {
+                    try {
+                        const data = JSON.parse(storage?.getItem(KEY));
+                        if (data?.version === 1 && data.years && typeof data.years === 'object' && Array.isArray(data.changes)) {
+                            const valid = item => item && typeof item.id === 'string' && typeof item.name === 'string' && typeof item.description === 'string' && typeof item.where === 'string' && ['bundesweit', 'sachsen', 'regional'].includes(item.scope);
+                            for (const [year,snapshot] of Object.entries(data.years))
+                                if (!Number.isFinite(snapshot?.checkedAt) || !Array.isArray(snapshot.records) || !snapshot.records.length || !snapshot.records.every(item => valid(item) && validDate(item.date, year)))
+                                    delete data.years[year];
+                            data.changes = data.changes.filter(change => ['added', 'removed', 'changed'].includes(change?.type) && Number.isFinite(change.checkedAt) && (change.after || change.before) && [change.after, change.before].filter(Boolean).every(item => valid(item) && validDate(item.date, change.year))).slice(0, 100);
+                            return data;
+                        }
+                    } catch {}
+                    return {
+                        version: 1,
+                        years: {},
+                        changes: []
+                    };
+                }
+                class Client {
+                    constructor({storage, fetcher, fallback, now=Date.now, onChange= () => {}
+                    }) {
+                        this.storage = storage;
+                        this.fetcher = fetcher;
+                        this.fallback = fallback;
+                        this.now = now;
+                        this.onChange = onChange;
+                        this.data = read(storage);
+                        this.pending = new Map();
+                        this.attempts = new Map();
+                        this.errors = new Map();
+                        this.storageFailed = !storage;
+                    }
+                    reload() {
+                        this.data = read(this.storage);
+                    }
+                    events(year) {
+                        const cached = this.data.years[year];
+                        return Array.isArray(cached?.records) && cached.records.length ? cached.records : this.fallback(year);
+                    }
+                    status(year) {
+                        return {
+                            checkedAt: this.data.years[year]?.checkedAt || null,
+                            error: this.errors.get(year) || '',
+                            storageFailed: this.storageFailed
+                        };
+                    }
+                    history() {
+                        return this.data.changes;
+                    }
+                    refresh(year, {force=false}={}) {
+                        if (this.pending.has(year))
+                            return this.pending.get(year);
+                        const checked = this.data.years[year]?.checkedAt
+                          , attempt = this.attempts.get(year);
+                        if (!force && ((checked && this.now() - checked < INTERVAL) || (attempt && this.now() - attempt < 300000)))
+                            return Promise.resolve({
+                                skipped: true,
+                                changes: []
+                            });
+                        this.attempts.set(year, this.now());
+                        const task = this.load(year).finally( () => this.pending.delete(year));
+                        this.pending.set(year, task);
+                        return task;
+                    }
+                    async load(year) {
+                        try {
+                            const [open,regional] = await Promise.all([this.fetcher('https://openholidaysapi.org/PublicHolidays?' + new URLSearchParams({
+                                countryIsoCode: 'DE',
+                                languageIsoCode: 'DE',
+                                validFrom: year + '-01-01',
+                                validTo: year + '-12-31'
+                            })), this.fetcher('https://feiertage-api.de/api/?jahr=' + year)]);
+                            const records = parse(open, regional, year, this.fallback(year));
+                            const shared = read(this.storage);
+                            if ((shared.years[year]?.checkedAt || 0) > (this.data.years[year]?.checkedAt || 0))
+                                this.data = shared;
+                            const old = this.data.years[year]
+                              , changes = differences(old?.records || this.fallback(year), records, {
+                                initial: !old
+                            })
+                              , checkedAt = this.now();
+                            this.data.years[year] = {
+                                checkedAt,
+                                records
+                            };
+                            this.errors.delete(year);
+                            const batch = changes.map(change => ({
+                                ...change,
+                                year,
+                                checkedAt
+                            }));
+                            this.data.changes = [...batch, ...this.data.changes].slice(0, 100);
+                            try {
+                                if (!this.storage)
+                                    throw new Error('Speicherung nicht verfügbar.');
+                                this.storage.setItem(KEY, JSON.stringify(this.data));
+                                this.storageFailed = false;
+                            } catch {
+                                this.storageFailed = true;
+                            }
+                            if (batch.length)
+                                this.onChange(batch);
+                            return {
+                                changes: batch,
+                                checkedAt
+                            };
+                        } catch (error) {
+                            const message = error?.message || 'Die Feiertagsdaten konnten nicht aktualisiert werden.';
+                            this.errors.set(year, message);
+                            return {
+                                changes: [],
+                                error: message
+                            };
+                        }
+                    }
+                }
+                const api = {
+                    KEY,
+                    INTERVAL,
+                    SOURCES,
+                    canonical,
+                    parse,
+                    differences,
+                    Client
+                };
+                if (typeof module !== 'undefined' && module.exports)
+                    module.exports = api;
+                else
+                    global.ShogiHolidayData = api;
             }
             )(typeof globalThis !== 'undefined' ? globalThis : this);
         </script>
@@ -8642,6 +9114,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                 return nt()
             });
             window.ShogiIcons = {
+                refresh: '<path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.3 7a7 7 0 0 1 11.6-1L20 9M4 15l2.1 3A7 7 0 0 0 17.7 17"/>',
                 chevronLeft: '<path d="m14 5-7 7 7 7"/>',
                 chevronRight: '<path d="m10 5 7 7-7 7"/>',
                 region: '<path d="M12 3 3 20h18Z" fill="currentColor" stroke="none"/>',
@@ -9824,17 +10297,34 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                 }
 
                 const H = window.ShogiHolidays
+                  , HD = window.ShogiHolidayData
                   , railViewCycle = new R.ViewCycle();
                 let railCalendarDate = H.today()
                   , railCalendarYear = Number(railCalendarDate.slice(0, 4))
-                  , railCalendarRendered = false;
-                function renderRailCalendar({scroll=true}={}) {
-                    const currentYear = Number(railCalendarDate.slice(0, 4))
-                      , months = H.months(railCalendarYear, railCalendarDate);
-                    $('railCalendarYear').textContent = String(railCalendarYear);
-                    $('calendarPreviousYear').disabled = railCalendarYear <= currentYear - 1;
-                    $('calendarNextYear').disabled = railCalendarYear >= currentYear + 4;
-                    $('railCalendarMonths').innerHTML = months.map(month => {
+                  , railCalendarRendered = false
+                  , holidayOpenDate = ''
+                  , holidayRefreshing = 0;
+                let holidayStorage;
+                try {
+                    holidayStorage = localStorage;
+                } catch {}
+                const holidayClient = new HD.Client({
+                    storage: holidayStorage,
+                    fetcher: url => readJson(url),
+                    fallback: H.holidays,
+                    onChange: changes => {
+                        const counts = {
+                            added: 0,
+                            removed: 0,
+                            changed: 0
+                        };
+                        changes.forEach(item => counts[item.type]++);
+                        const parts = [counts.added ? counts.added + ' hinzugefügt' : '', counts.removed ? counts.removed + ' entfallen' : '', counts.changed ? counts.changed + ' geändert' : ''].filter(Boolean);
+                        notify('Kalender aktualisiert: ' + parts.join(', ') + '. Details im Jahreskalender.', 'info');
+                    }
+                });
+                function calendarMonthMarkup(year, prefix) {
+                    return H.months(year, railCalendarDate, holidayClient.events(year)).map(month => {
                         const cells = [...Array(month.offset).fill(null), ...month.days];
                         while (cells.length % 7)
                             cells.push(null);
@@ -9850,32 +10340,32 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                                 return '<td>' + (holiday ? `<button type="button" class="${classes}" data-holiday-date="${day.date}" aria-label="${esc(label)}" title="${esc(label)}"${day.today ? ' aria-current="date"' : ''}>${day.number}${regional ? `<span class="calendar-region-mark" aria-hidden="true">${icon('region')}</span>` : ''}</button>` : `<time class="${classes}" datetime="${day.date}" aria-label="${esc(label)}"${day.today ? ' aria-current="date"' : ''}>${day.number}</time>`) + '</td>';
                             }
                             ).join('') + '</tr>';
-                        return `<section class="calendar-month${month.current ? ' is-current' : ''}" id="rail-month-${month.index}" data-calendar-month="${month.index}"><h3 id="rail-month-title-${month.index}">${esc(month.name)}</h3><table aria-labelledby="rail-month-title-${month.index}"><thead><tr>${H.WEEKDAYS.map(name => `<th scope="col" title="${name}">${name.slice(0, 2)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></section>`;
+                        return `<section class="calendar-month${month.current ? ' is-current' : ''}" id="${prefix}-month-${month.index}" data-calendar-month="${month.index}"><h3 id="${prefix}-month-title-${month.index}">${esc(month.name)}</h3><table aria-labelledby="${prefix}-month-title-${month.index}"><thead><tr>${H.WEEKDAYS.map(name => `<th scope="col" title="${name}">${name.slice(0, 2)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></section>`;
                     }
                     ).join('');
-                    railCalendarRendered = true;
-                    requestAnimationFrame( () => {
-                        sizeRailCalendar();
-                        if (scroll)
-                            scrollRailCalendarToCurrentMonth();
-                    }
-                    );
                 }
-                function sizeRailCalendar() {
-                    const scroller = $('railCalendarScroll')
-                      , last = $('rail-month-11');
-                    if (!last)
-                        return;
-                    $('railCalendarEndSpace').style.height = Math.max(0, scroller.clientHeight - last.offsetHeight - 20) + 'px';
+                function calendarYearControls() {
+                    const year = Number(railCalendarDate.slice(0, 4));
+                    for (const id of ['railCalendarYear', 'yearCalendarYear'])
+                        $(id).textContent = String(railCalendarYear);
+                    for (const id of ['calendarPreviousYear', 'yearCalendarPrevious'])
+                        $(id).disabled = railCalendarYear <= year - 1;
+                    for (const id of ['calendarNextYear', 'yearCalendarNext'])
+                        $(id).disabled = railCalendarYear >= year + 4;
+                }
+                function renderRailCalendar({scroll=true}={}) {
+                    calendarYearControls();
+                    $('railCalendarMonths').innerHTML = calendarMonthMarkup(railCalendarYear, 'rail');
+                    railCalendarRendered = true;
+                    if (scroll)
+                        requestAnimationFrame(scrollRailCalendarToCurrentMonth);
                 }
                 function scrollRailCalendarToCurrentMonth() {
                     const scroller = $('railCalendarScroll')
                       , month = Number(railCalendarDate.slice(5, 7)) - 1
                       , target = $('rail-month-' + (railCalendarYear === Number(railCalendarDate.slice(0, 4)) ? month : 0));
-                    if (!target)
-                        return;
-                    sizeRailCalendar();
-                    scroller.scrollTop += target.getBoundingClientRect().top - scroller.getBoundingClientRect().top - 10;
+                    if (target)
+                        scroller.scrollTop += target.getBoundingClientRect().top - scroller.getBoundingClientRect().top - 10;
                 }
                 function refreshRailCalendarDate() {
                     const current = H.today();
@@ -9888,6 +10378,9 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     renderRailCalendar({
                         scroll: railViewCycle.view === 'calendar'
                     });
+                    if ($('yearCalendarDialog').open)
+                        renderYearCalendar();
+                    refreshHolidayData();
                 }
                 function applyRailView() {
                     const show = railViewCycle.view === 'calendar'
@@ -9923,43 +10416,142 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                         applyRailView();
                 }
                 function showHoliday(date) {
-                    const items = H.holidays(Number(date.slice(0, 4))).filter(item => item.date === date);
+                    const items = holidayClient.events(Number(date.slice(0, 4))).filter(item => item.date === date);
                     if (!items.length)
                         return;
+                    holidayOpenDate = date;
                     $('holidayTitle').textContent = items.map(item => item.name).join(' / ');
-                    const sourceNames = new Map([[H.SAXONY_LAW, 'Sächsisches Sonn- und Feiertagsgesetz'], [H.CORPUS_LAW, 'Fronleichnamsverordnung mit Gebietsverzeichnis'], [H.UNITY_LAW, 'Einigungsvertrag, Artikel 2'], [H.FEDERAL_LIST, 'Feiertagsübersicht der Deutschen Bundesbank']]);
-                    $('holidayBody').innerHTML = `<time class="holiday-date" datetime="${date}">${esc(H.fullDate(date))}</time>` + items.map(item => `<span class="holiday-badge">${item.scope === 'bundesweit' ? 'Bundesweiter Feiertag' : item.scope === 'regional' ? 'Regionaler Feiertag in Sachsen' : 'Gesetzlicher Feiertag in Sachsen'}</span><section class="holiday-detail"><h3>Geltungsbereich</h3><p>${esc(item.where)}</p></section><section class="holiday-detail"><h3>Was wird gefeiert?</h3><p>${esc(item.description)}</p></section><section class="holiday-detail"><h3>Termin</h3><p>${esc(item.rule)}</p></section>${item.notes ? `<p class="holiday-note">${esc(item.notes)}</p>` : ''}${item.regions.length ? `<details class="holiday-regions"><summary>Sächsische Gebiete laut Verordnung</summary><p>Bezeichnungen aus der gesetzlichen Anlage. Nach einer Eingemeindung ist nur das bezeichnete fortbestehende Gebiet erfasst.</p><ul>${item.regions.map(name => `<li>${esc(name)}</li>`).join('')}</ul></details>` : ''}`).join('') + `<p class="holiday-note">Ob Sie persönlich dienstfrei haben, richtet sich zusätzlich nach Ihrem Dienstplan und den gesetzlichen Ausnahmen.</p><div class="holiday-sources"><strong>Amtliche Quellen</strong>${[...new Set(items.flatMap(item => item.sources))].map(url => `<a href="${url}" target="_top" rel="noreferrer">${esc(sourceNames.get(url))}</a>`).join('')}<small>Rechtsgrundlagen geprüft am ${esc(H.fullDate(H.VERIFIED))}. Bewegliche Feiertage werden für jedes Jahr berechnet.</small></div>`;
-                    $('holidayDialog').showModal();
+                    $('holidayBody').innerHTML = `<time class="holiday-date" datetime="${date}">${esc(H.fullDate(date))}</time>` + items.map(item => `<span class="holiday-badge">${item.scope === 'bundesweit' ? 'Bundesweiter Feiertag' : item.scope === 'regional' ? 'Regionaler Feiertag in Sachsen' : 'Gesetzlicher Feiertag in Sachsen'}</span><section class="holiday-detail"><h3>Geltungsbereich</h3><p>${esc(item.where)}</p></section><section class="holiday-detail"><h3>Was wird gefeiert?</h3><p>${esc(item.description)}</p></section>`).join('');
+                    if (!$('holidayDialog').open)
+                        $('holidayDialog').showModal();
                 }
-                $('railCalendarMonths').addEventListener('click', event => {
-                    const target = event.target.closest('[data-holiday-date]');
-                    if (target)
-                        showHoliday(target.dataset.holidayDate);
+                function changeDescription(change) {
+                    const item = change.after || change.before
+                      , date = H.fullDate(item.date);
+                    if (change.type === 'added')
+                        return 'Hinzugefügt: ' + item.name + ' – ' + date;
+                    if (change.type === 'removed')
+                        return 'Entfallen: ' + item.name + ' – ' + date;
+                    const previous = change.before;
+                    return 'Geändert: ' + item.name + ' – ' + date + (previous.date !== item.date ? ' (zuvor ' + H.fullDate(previous.date) + ')' : previous.scope !== item.scope || previous.where !== item.where ? ' (Geltungsbereich geändert)' : ' (Angaben aktualisiert)');
                 }
-                );
-                $('calendarPreviousYear').addEventListener('click', () => {
+                function renderHolidayStatus() {
+                    const status = holidayClient.status(railCalendarYear)
+                      , time = value => new Intl.DateTimeFormat('de-DE',{
+                        dateStyle: 'medium',
+                        timeStyle: 'short',
+                        timeZone: 'Europe/Berlin'
+                    }).format(new Date(value));
+                    const message = holidayRefreshing ? 'Feiertagsdaten werden geprüft …' : status.error ? (status.checkedAt ? 'Aktualisierung nicht möglich. Letzte erfolgreiche Prüfung: ' + time(status.checkedAt) + '. Gespeicherte Daten werden angezeigt.' : 'Online-Daten derzeit nicht verfügbar. Berechnete Feiertage werden angezeigt.') : status.checkedAt ? 'Zuletzt geprüft: ' + time(status.checkedAt) + '.' : 'Berechnete Feiertage. Online-Prüfung steht noch aus.';
+                    $('holidayDataStatus').textContent = message + (status.storageFailed ? ' Änderungen können in diesem Browser nicht dauerhaft gespeichert werden.' : '');
+                    $('holidayDataStatus').classList.toggle('is-error', !!status.error);
+                    $('yearCalendarRefresh').disabled = holidayRefreshing > 0;
+                    $('yearCalendarRefresh').setAttribute('aria-busy', String(holidayRefreshing > 0));
+                    const changes = holidayClient.history();
+                    $('holidayChangesTitle').textContent = 'Änderungen (' + changes.length + ')';
+                    $('holidayChangesList').innerHTML = changes.length ? changes.map(change => `<li><strong>${esc(changeDescription(change))}</strong><time datetime="${new Date(change.checkedAt).toISOString()}">${esc(time(change.checkedAt))}</time></li>`).join('') : '<li>Noch keine Änderungen festgestellt.</li>';
+                    $('calendarToday').title = 'Jahreskalender öffnen' + (changes.length ? ' – ' + changes.length + ' Änderungen' : '');
+                }
+                function renderYearCalendar() {
+                    calendarYearControls();
+                    $('yearCalendarMonths').innerHTML = calendarMonthMarkup(railCalendarYear, 'year');
+                    renderHolidayStatus();
+                }
+                function openYearCalendar() {
+                    refreshRailCalendarDate();
+                    renderYearCalendar();
+                    $('yearCalendarDialog').showModal();
+                    $('yearCalendarBody').scrollTop = 0;
+                    refreshHolidayData();
+                }
+                async function refreshHolidayData(force=false, {silent=false}={}) {
+                    holidayRefreshing++;
+                    renderHolidayStatus();
+                    const current = Number(H.today().slice(0, 4))
+                      , years = [...new Set([current, current + 1, railCalendarYear])];
+                    try {
+                        const results = await Promise.all(years.map(year => holidayClient.refresh(year, {
+                            force
+                        })));
+                        if (results.some(result => !result.skipped)) {
+                            const top = $('railCalendarScroll').scrollTop;
+                            renderRailCalendar({
+                                scroll: false
+                            });
+                            $('railCalendarScroll').scrollTop = top;
+                            if ($('yearCalendarDialog').open)
+                                renderYearCalendar();
+                            if ($('holidayDialog').open && holidayOpenDate) {
+                                if (holidayClient.events(Number(holidayOpenDate.slice(0, 4))).some(item => item.date === holidayOpenDate))
+                                    showHoliday(holidayOpenDate);
+                                else
+                                    $('holidayDialog').close();
+                            }
+                        }
+                        if (force && !silent && results.some(result => result.error))
+                            notify('Die Feiertagsdaten konnten nicht vollständig aktualisiert werden. Vorhandene Daten bleiben erhalten.', 'warning');
+                        else if (force && !silent && results.every(result => !result.changes.length))
+                            notify('Die Feiertagsdaten sind aktuell.', 'success');
+                    } finally {
+                        holidayRefreshing--;
+                        renderHolidayStatus();
+                    }
+                }
+                function changeCalendarYear(offset) {
                     railViewCycle.elapsed = 0;
-                    railCalendarYear--;
+                    railCalendarYear += offset;
                     renderRailCalendar();
+                    if ($('yearCalendarDialog').open) {
+                        renderYearCalendar();
+                        $('yearCalendarBody').scrollTop = 0;
+                    }
+                    refreshHolidayData();
+                }
+                for (const id of ['railCalendarMonths', 'yearCalendarMonths'])
+                    $(id).addEventListener('click', event => {
+                        const target = event.target.closest('[data-holiday-date]');
+                        if (target)
+                            showHoliday(target.dataset.holidayDate);
+                    }
+                    );
+                $('calendarPreviousYear').addEventListener('click', () => changeCalendarYear(-1));
+                $('calendarNextYear').addEventListener('click', () => changeCalendarYear(1));
+                $('yearCalendarPrevious').addEventListener('click', () => changeCalendarYear(-1));
+                $('yearCalendarNext').addEventListener('click', () => changeCalendarYear(1));
+                $('calendarToday').addEventListener('click', openYearCalendar);
+                $('yearCalendarRefresh').addEventListener('click', () => refreshHolidayData(true));
+                $('holidayDialog').addEventListener('close', () => {
+                    holidayOpenDate = '';
                 }
                 );
-                $('calendarNextYear').addEventListener('click', () => {
-                    railViewCycle.elapsed = 0;
-                    railCalendarYear++;
-                    renderRailCalendar();
+                setTimeout( () => refreshHolidayData(true, {
+                    silent: true
+                }), 0);
+                setInterval( () => {
+                    if (!document.hidden)
+                        refreshHolidayData();
+                }
+                , 60000);
+                window.addEventListener('online', () => refreshHolidayData());
+                window.addEventListener('focus', () => refreshHolidayData());
+                window.addEventListener('pageshow', () => refreshHolidayData());
+                window.addEventListener('storage', event => {
+                    if (event.key !== HD.KEY)
+                        return;
+                    holidayClient.reload();
+                    renderRailCalendar({
+                        scroll: false
+                    });
+                    if ($('yearCalendarDialog').open)
+                        renderYearCalendar();
                 }
                 );
-                $('calendarToday').addEventListener('click', () => {
-                    railViewCycle.elapsed = 0;
-                    railCalendarDate = H.today();
-                    railCalendarYear = Number(railCalendarDate.slice(0, 4));
-                    renderRailCalendar();
-                }
-                );
-                const calendarResizeObserver = new ResizeObserver(sizeRailCalendar);
-                calendarResizeObserver.observe($('railCalendarScroll'));
                 document.addEventListener('visibilitychange', () => {
                     lastFrame = 0;
+                    if (!document.hidden) {
+                        refreshRailCalendarDate();
+                        refreshHolidayData();
+                    }
                 }
                 );
 
@@ -10527,7 +11119,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                             renderSources();
                         }
                     }
-                    ), refreshWeather(manual), refreshCustomFeeds(), refreshMail(manual)]);
+                    ), refreshWeather(manual), refreshCustomFeeds(), refreshMail(manual), refreshHolidayData(manual)]);
                     refreshing = false;
                     $('refreshDataButton').disabled = false;
                     $('brandRefresh').classList.remove('refreshing');
@@ -10537,7 +11129,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     renderSources();
                     if (manualRefreshRequested) {
                         manualRefreshRequested = false;
-                        const success = [...Object.values(sources), weatherSource, ...customSources.values()].every(source => source.status === 'ok') && settings.mail.accounts.every(account => mailSession(account) && !mailState(account.id).error);
+                        const success = !holidayClient.status(railCalendarYear).error && [...Object.values(sources), weatherSource, ...customSources.values()].every(source => source.status === 'ok') && settings.mail.accounts.every(account => mailSession(account) && !mailState(account.id).error);
                         notify(success ? 'Alle Daten wurden aktualisiert.' : 'Die Daten wurden teilweise aktualisiert. Einige Datenquellen sind nicht erreichbar.', success ? 'success' : 'warning');
                     }
                 }
